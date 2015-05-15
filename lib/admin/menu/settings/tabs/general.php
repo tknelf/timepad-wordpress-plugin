@@ -88,7 +88,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @param array $events Events array from TimePad response
          * @return void
          */
-        private function _make_posts_from_events( array $events ) {
+        private function _make_posts_from_events( array $events ) {//die('ffff');
             
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
@@ -137,10 +137,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
              * If we have token but no organizations, we make first request to get organizations list
              */
             if ( !empty( $this->_token ) ) {
-                
-                if ( isset( $_GET['syncronize'] ) && $_GET['syncronize'] == 1 && !empty( $this->_data['current_organization_id'] ) ) {
-                    $this->post_events( $this->_data['current_organization_id'] );
-                }
                 
                 if ( !isset( $this->_data['organizations'] ) ) {
                     //request about getting organizations list
@@ -219,7 +215,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 }
                             }
                         } else {
-                            $this->post_events( $this->_data['current_organization_id'] );
+                            if ( isset( $_GET['syncronize'] ) && intval( $_GET['syncronize'] ) == 1 ) {
+                                $this->post_events( $this->_data['current_organization_id'] );
+                            }
                         }
                     }
                 }
@@ -232,14 +230,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $ret_array = array();
                 if ( !empty( $this->_data['events'][$this->_data['current_organization_id']] ) && is_array( $this->_data['events'][$this->_data['current_organization_id']] ) ) {
                     $current_events_ids = array_keys( $this->_data['events'][$this->_data['current_organization_id']] );
-
                     if ( !empty( $current_events_ids ) && is_array( $this->_data['events'][$this->_data['current_organization_id']] ) ) {
                         foreach ( $events as $event ) {
                             if ( !in_array( $event->id, $current_events_ids ) ) {
                                 $ret_array[] = $event;
                             }
                         }
-                        
                         return $ret_array;
                     }
                 } else {
@@ -247,7 +243,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
             
-            return false;
+            return array();
         }
 
 
@@ -256,11 +252,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //@todo - убрать starts at min
             $events = $this->_get_request_array( $this->_config['events_request_url'] . '?organization_ids=' . $organization_id . '&moderation_statuses=hidden,not_moderated,shown,featured&starts_at_min=1970-01-01' );
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
-                $events = $this->_prepare_events( $events['values'] );
-                if ( !empty( $events ) && is_array( $events ) ) {
+                $events = $this->_prepare_events( $events['values'] );//print_r($events);die;
+                if ( !empty( $events ) && is_array( $events ) ) {//print_r($events);die;
                     $events = $this->_make_events_array( $events );
                     $this->_data['events'][$organization_id] = $events;
                     $this->_make_posts_from_events( $events );
+                } else {
+                    return $events;
                 }
             }
 
