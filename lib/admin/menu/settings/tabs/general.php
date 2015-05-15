@@ -9,9 +9,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         public function __construct() {
             parent::__construct();
             
-            $this->tab_title = __( 'General', TIMEPADEVENTS_DOMAIN );
-            $this->action    = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save.php';
-
+            //set the tab title
+            $this->tab_title = __( 'General', 'timepad' );
+            
+            //init TimePadEvents cron functionality
             add_action( 'timepad_cron', function() {
                 if ( $this->_data['autoimport'] ) {
                     $this->post_events($this->_data['current_organization_id']);
@@ -23,7 +24,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function makes nice array with keys of [Organization ID] => Organization info at global key 'organizations'
          * 
          * @param array $organizations Organizations native array from TimePad response
-         * @return type array Organizations array with meta info plus key 'organizations' with keys of organization ID
+         * @access private
+         * @return array Organizations array with meta info plus key 'organizations' with keys of organization ID
          */
         private function _make_organizations_array( array $organizations ) {
             if ( !empty( $organizations ) && is_array( $organizations ) ) {
