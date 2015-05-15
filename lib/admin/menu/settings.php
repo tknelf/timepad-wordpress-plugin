@@ -28,17 +28,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings' ) ) :
                 if ( file_exists( $path ) && class_exists( $class_name ) && $this->check_class( $class_name ) ) {
                     $instance = $class_name::getInstance();
                     $this->_settings_tabs[] = array(
-                        'title'   => $instance->tab_title,
-                        'class'   => $class_name,
-                        'handler' => $instance->handler,
-                        'fields'  => apply_filters( 'timepadevents_settings_fields_' . $instance->handler, $instance->fields )
+                        'title'    => $instance->tab_title
+                        ,'class'   => $class_name
+                        ,'handler' => $instance->handler
                     );
                 }
             }
         }
 
         public function display() {
-            $self_url = $this->self_url;
             $active_tab = $this->active_tab;
             $tabs = $this->_settings_tabs;
             include 'views/settings-view.php';

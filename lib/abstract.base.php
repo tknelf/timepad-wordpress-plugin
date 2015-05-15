@@ -15,52 +15,51 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
      * @abstract
      */
     abstract class TimepadEvents_Base {
-    
+        
+        /**
+         * TimePad Events plugin configs from config.ini
+         * @access protected
+         * @var array
+         */
         protected $_config = array();
 
         /**
-         * This array collect all local TimepadEvents Classes of some part of NetMolis
+         * This array collect all local TimepadEvents Classes of some part of the plugin
          *
          * @access protected
-         * @var    array
+         * @var array
          */
         protected $_classes = array();
 
         /**
          * Current class handler taken from current called class name,
-         * for example class name: NetMolis_Admin_Metaboxes; handler is 'metaboxes'
+         * for example class name: TimepadEvents_Admin_Metaboxes; handler is 'metaboxes'
          * This option will help to access class data
          * This variable is very useful for developers
          * By the $handler you can get access to Class Name and to Class instance
          *
          * @access public
-         * @var    string Handler of current class taken from class name
+         * @var string Handler of current class taken from class name
          */
         public $handler;
-
-        /**
-         * @var array|mixed Current item data
-         */
-        protected $_item_data = array();
         
-        protected $_events_request_url;
-
+        /**
+         * Post type handler
+         * @var string
+         */
         public static $post_type = 'timepad-events';
-
+        
+        /**
+         * Singleton
+         */
         private static $_instances = array();
 
         public function __construct( $post = null ) {
-            
-            $this->_events_request_url      = 'https://api.timepad.ru/v1/events.json';
             
             $this->_config = self::_get_config();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
 
-        }
-
-        public function get_id() {
-            return $this->_id;
         }
 
         /**
@@ -83,12 +82,13 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             return self::$_instances[$class];
         }
         
+        /**
+         * This function parse config.ini file
+         * @access private
+         * @return array
+         */
         private static function _get_config() {
             return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'config.ini' );
-        }
-
-        public function get_item_options( $key ) {
-            return isset( $this->_item_data[$key]['options'] ) ? $this->_item_data[$key]['options'] : array();
         }
 
         /**
@@ -153,10 +153,10 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
 
             if ( ! defined( 'TIMEPADEVENTS_DOMAIN' ) ) {
                 /**
-                 * NetMolis domain
+                 * TimePadEvents domain
                  *
                  * @var    string
-                 * @return string NetMolis domain for locales
+                 * @return string TimePad Events domain for locales
                  */
                 define( 'TIMEPADEVENTS_DOMAIN', $config['domain'] );
             }
@@ -214,6 +214,14 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             }
         }
         
+        /**
+         * This function make remote request to TimePad API and return response as an array
+         * 
+         * @param string $url request URI
+         * @param string $method request method, default is 'get'
+         * @access protected
+         * @return array Results of request
+         */
         protected function _get_request_array( $url, $method = 'get' ) {
             $ret_array = array();
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
@@ -225,10 +233,23 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             return $ret_array;
         }
         
+        /**
+         * This function adds to request body some params from $body
+         * 
+         * @param array $body params for request body
+         * @access public
+         */
         public function add_request_body( array $body ) {
-            $this->_request_args['body'] = $body;
+            if ( !empty( $body ) && is_array( $body ) ) {
+                $this->_request_args['body'] = $body;
+            }
         }
         
+        /**
+         * This function removes request body
+         * 
+         * @access public
+         */
         public function remove_request_body() {
             if ( isset( $this->_request_args['body'] ) ) {
                 unset( $this->_request_args['body'] );

@@ -142,7 +142,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 
                 if ( !isset( $this->_data['organizations'] ) ) {
                     //request about getting organizations list
-                    $organizations = $this->_get_request_array( $this->_organizer_request_url . '?token=' . $this->_token );
+                    $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
 
                     if ( $organizations ) {
                         //if we already has some organizations - save the ones to options ( $this->_data variable )
@@ -165,7 +165,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 )
                         );
                         //@tocheck
-                        $this->_get_request_array( $this->_create_organization_url, 'post' );
+                        $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
 
                     }
                     
@@ -190,7 +190,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             if ( term_exists( $cat_name, $cat_taxonomy ) ) {
                                 $category = get_term_by( 'name', $cat_name, $cat_taxonomy, ARRAY_A );
                                 if ( isset( $category['term_id'] ) ) {
-                                    $this->_data['category_id'] = $this->_category_id = intval( $category['term_id'] );
+                                    $this->_data['category_id'] = intval( $category['term_id'] );
                                     TimepadEvents_Helpers::update_option_key( 'timepad_data', $this->_data['category_id'], 'category_id' );
                                     $this->post_events( $this->_data['current_organization_id'] );
                                 }
@@ -203,7 +203,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                         'category_nicename' => $cat_nicename, 
                                         'taxonomy'          => $cat_taxonomy ) ) 
                                     ) {
-                                        $this->_data['category_id'] = $this->_category_id = intval( $category_id );
+                                        $this->_data['category_id'] = intval( $category_id );
                                         TimepadEvents_Helpers::update_option_key( 'timepad_data', $this->_data['category_id'], 'category_id' );
                                         $this->post_events( $this->_data['current_organization_id'] );
                                     } else {
@@ -252,7 +252,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         public function post_events( $organization_id ) {
             //get all events for current organization
             //@todo - убрать starts at min
-            $events = $this->_get_request_array( $this->_events_request_url . '?organization_ids=' . $organization_id . '&moderation_statuses=hidden,not_moderated,shown,featured&starts_at_min=1970-01-01' );
+            $events = $this->_get_request_array( $this->_config['events_request_url'] . '?organization_ids=' . $organization_id . '&moderation_statuses=hidden,not_moderated,shown,featured&starts_at_min=1970-01-01' );
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
                 $events = $this->_prepare_events( $events['values'] );
                 if ( !empty( $events ) && is_array( $events ) ) {

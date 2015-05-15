@@ -67,7 +67,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
             
             //JavaScript Array to transfer data from backend/php/wp to frontend
             $this->_timepadevents_js_array = array(
-                '_site_url'           => TIMEPADEVENTS_SITEURL
+                '_site_url' => TIMEPADEVENTS_SITEURL
             );
             
             wp_localize_script( 'timepad-admin-js', 'timepad', $this->_timepadevents_js_array );

@@ -2,7 +2,7 @@
 
 /**
  * 
- * Timepad Events is free software: you can redistribute it and/or modify 
+ * TimePadEvents is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by 
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
@@ -10,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name: TimepadEvents
  * Plugin URI:  http://timepad.ru
- * Description: Timepad events plugin
+ * Description: This plugin allows to integrate and synchronize your TimePad events as custom post types in your WordPress site
  * Version:     1.0.0
  * Author:      Igor Sazonov (@tigusigalpa)
  * Author URI:  http://wpspb.org
@@ -71,11 +71,14 @@ if ( ! defined( 'TIMEPADEVENTS_FOLDER' ) && defined( 'TIMEPADEVENTS_PLUGIN_ABS_P
 require_once( 'lib/helpers.php' );
 
 /**
- * Base TimepadEvents Class
+ * Base TimepadEvents Abstract Class
  */
 require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.base.php' );
 TimepadEvents_Base::define_constants();
 
+/**
+ * Adding new cron schedule hook to do cron once in three minutes
+ */
 add_filter( 'cron_schedules', function( $intervals ) {
     $intervals['once_three_mins'] = array(
         'interval' => HOUR_IN_SECONDS / 20
@@ -104,6 +107,9 @@ if ( is_admin() ) {
 
 } else {
     
+    /**
+     * Hack to display events at general posts stock
+     */
     add_filter( 'pre_get_posts', function( $query ) {
         if ( is_home() && $query->is_main_query() )
 		$query->set( 'post_type', array( 'post', 'timepad-events' ) );
@@ -111,6 +117,9 @@ if ( is_admin() ) {
 	return $query;
     } );
     
+    /**
+     * Enable new shortcode to display the one at site posts and pages
+     */
     add_shortcode( 'timepadevent' , function( array $atts ) {
         return "<script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['id'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script>";
     } );
