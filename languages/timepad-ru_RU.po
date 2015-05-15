@@ -1,0 +1,274 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TimepadEvents\n"
+"POT-Creation-Date: 2015-05-11 22:45+0300\n"
+"PO-Revision-Date: 2015-05-11 23:17+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.7\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: lib/admin/menu.php:19
+#, fuzzy
+msgid "TimePad Settings"
+msgstr "Настройки TimePad"
+
+#: lib/admin/menu.php:19
+msgid "Settings"
+msgstr "Настройки"
+
+#: lib/admin/menu/settings/save.php:59
+msgid "Category name must have string length more than 5 characters."
+msgstr "Наименование категории должно быть более 5 символов."
+
+#: lib/admin/menu/settings/save.php:67
+msgid "Category slug must have string length more than 5 characters."
+msgstr "Ярлык категории должен быть более 5 символов"
+
+#: lib/admin/menu/settings/save.php:75
+msgid "Wrong security nonce value."
+msgstr "Неверное значение security nonce."
+
+#: lib/admin/menu/settings/save.php:76
+msgid "Security nonce value is empty."
+msgstr "Обязательное значение Security nonce пустое."
+
+#: lib/admin/menu/settings/tabs/general.php:12
+msgid "General"
+msgstr "Основное"
+
+#: lib/admin/menu/settings/tabs/general.php:170
+msgid "TimePad Events"
+msgstr "События TimePad"
+
+#: lib/admin/menu/views/settings-general-data.php:4
+msgid "TimePad account"
+msgstr "Аккаунт TimePad"
+
+#: lib/admin/menu/views/settings-general-data.php:6
+msgid "Cancel account"
+msgstr "Отключить аккаунт"
+
+#: lib/admin/menu/views/settings-general-data.php:6
+msgid "Are you sure about cancel account"
+msgstr "Вы уверены что хотите отключить аккаунт"
+
+#: lib/admin/menu/views/settings-general-data.php:11
+msgid "To start work with events, select one of TimePad organizations"
+msgstr ""
+"Чтобы начать работать с событиями, выберите одну из организаций на TimePad"
+
+#: lib/admin/menu/views/settings-general-data.php:22
+msgid "Select"
+msgstr "Выбрать"
+
+#: lib/admin/menu/views/settings-general-data.php:26
+msgid "Organization"
+msgstr "Организация"
+
+#: lib/admin/menu/views/settings-general-data.php:28
+#, fuzzy
+msgid "Cancel organization"
+msgstr "Организация"
+
+#: lib/admin/menu/views/settings-general-data.php:28
+msgid "Are you sure about cancel organization"
+msgstr "Вы уверены что хотите отключить организацию"
+
+#: lib/admin/menu/views/settings-general-data.php:33
+msgid "Import TimePad events as custom post types"
+msgstr ""
+
+#: lib/admin/menu/views/settings-general-data.php:34
+msgid ""
+"All your organization events will be automatically imported to this site in "
+"the form of pages with customizable categories"
+msgstr ""
+"Все события вашей организации будут автоматически импортироваться на этот "
+"сайт в виде страниц с настраиваемой категорией"
+
+#: lib/admin/menu/views/settings-general-data.php:37
+msgid "Import status"
+msgstr "Статус импорта"
+
+#: lib/admin/menu/views/settings-general-data.php:42
+msgid "Automatically import events and create entries for the ones"
+msgstr "Автоматически импортировать события и создавать для них записи"
+
+#: lib/admin/menu/views/settings-general-data.php:45
+msgid "Synchronize"
+msgstr "Синхронизировать"
+
+#: lib/admin/menu/views/settings-general-data.php:48
+msgid "The name of the event category"
+msgstr "Название категории событий"
+
+#: lib/admin/menu/views/settings-general-data.php:55
+msgid "Events category label"
+msgstr "Ярлык категории событий"
+
+#: lib/admin/menu/views/settings-general-data.php:62
+msgid "Save changes"
+msgstr "Сохранить изменения"
+
+#: lib/admin/menu/views/settings-general.php:2
+msgid ""
+"If you're already using TimePad, simply sync your events with this website. "
+"To do this, simply click the &laquo;prepare the system for TimePad events "
+"organization&raquo;"
+msgstr ""
+"Если вы уже пользуетесь TimePad, просто синхронизируйте ваши события с этим "
+"сайтом. Для этого просто нажмите кнопку &laquo;Подготовить систему для "
+"организации событий TimePad&raquo;"
+
+#: lib/admin/menu/views/settings-general.php:3
+msgid "Prepare the system for TimePad events organization"
+msgstr "Подготовить систему для организации событий TimePad"
+
+#: lib/admin/menu/views/settings-view.php:11
+msgid "Timepad Settings"
+msgstr "Настройки TimePad"
+
+#: lib/admin/metaboxes/time.php:10
+msgid "TimePad Event Time"
+msgstr ""
+
+#: lib/admin/metaboxes/views/time.php:5
+msgid "Время начала события"
+msgstr ""
+
+#: lib/admin/metaboxes/views/time.php:11
+msgid "Время окончания события"
+msgstr ""
+
+#: lib/admin/post-type.php:28
+msgid "Edit events at TimePad"
+msgstr ""
+
+#: lib/admin/post-type.php:28
+msgid "Members"
+msgstr "Участники"
+
+#: lib/admin/post-type.php:28
+msgid "View on TimePad"
+msgstr "Смотреть на TimePad"
+
+#: lib/admin/post-type.php:58
+msgid "Event"
+msgstr "Событие"
+
+#: lib/admin/post-type.php:59
+msgid "Events"
+msgstr "События"
+
+#: lib/admin/post-type.php:79 lib/admin/post-type.php:91
+msgid "Timepad Events"
+msgstr "События TimePad"
+
+#: lib/admin/post-type.php:81
+msgid "Add New"
+msgstr "Добавить новое"
+
+#: lib/admin/post-type.php:82
+#, php-format
+msgid "Add New %1$s"
+msgstr "Добавить новое %1$s"
+
+#: lib/admin/post-type.php:83
+#, php-format
+msgid "Edit %1$s"
+msgstr "Редактировать %1$s"
+
+#: lib/admin/post-type.php:84
+#, php-format
+msgid "New %1$s"
+msgstr "Новое %1$s"
+
+#: lib/admin/post-type.php:85
+#, php-format
+msgid "All %2$s"
+msgstr "Все %2$s"
+
+#: lib/admin/post-type.php:86
+#, php-format
+msgid "View %1$s"
+msgstr "Просмотр %1$s"
+
+#: lib/admin/post-type.php:87
+#, php-format
+msgid "Search %2$s"
+msgstr "Поиск %2$s"
+
+#: lib/admin/post-type.php:88
+#, php-format
+msgid "No %2$s found"
+msgstr ""
+
+#: lib/admin/post-type.php:89
+#, php-format
+msgid "No %2$s found in Trash"
+msgstr ""
+
+#: lib/admin/post-type.php:127
+#, php-format
+msgctxt "taxonomy general name"
+msgid "%s Categories"
+msgstr "%s: Категории"
+
+#: lib/admin/post-type.php:128
+msgctxt "taxonomy singular name"
+msgid "Category"
+msgstr ""
+
+#: lib/admin/post-type.php:129
+msgid "Search Categories"
+msgstr ""
+
+#: lib/admin/post-type.php:130
+msgid "All Categories"
+msgstr "Все категории"
+
+#: lib/admin/post-type.php:131
+msgid "Parent Category"
+msgstr ""
+
+#: lib/admin/post-type.php:132
+msgid "Parent Category:"
+msgstr ""
+
+#: lib/admin/post-type.php:133
+msgid "Edit Category"
+msgstr ""
+
+#: lib/admin/post-type.php:134
+msgid "Update Category"
+msgstr "Обновить категорию"
+
+#: lib/admin/post-type.php:135
+msgid "Add New Category"
+msgstr "Добавить новую категорию"
+
+#: lib/admin/post-type.php:136
+msgid "New Category Name"
+msgstr "Новое название категории"
+
+#: lib/admin/post-type.php:137
+msgid "Categories"
+msgstr "Категории"
+
+#~ msgid "Выбрать"
+#~ msgstr "Select"
+
+#~ msgid "Статус импорта"
+#~ msgstr "Import status"
