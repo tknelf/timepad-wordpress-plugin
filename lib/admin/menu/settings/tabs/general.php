@@ -41,6 +41,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             return false;
         }
         
+        /**
+         * This function make a pretty key=>value array for events info
+         * Every event item has an own key is an event id
+         * 
+         * @param array $events Events array from TimePad API
+         * @access private
+         * @return array
+         */
         private function _make_events_array( array $events ) {
             if ( !empty( $events ) && is_array( $events ) ) {
                 $ret_array = array();
@@ -51,14 +59,30 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 return $ret_array;
             }
             
-            return false;
+            return array();
         }
-
+        
+        /**
+         * This function converts a given $date_array to pretty a date format to convert the one to time
+         * 
+         * @param array $date_array
+         * @access private
+         * @return string
+         */
         private function _make_time_format( array $date_array ) {
             return $date_array['year'] . '-' . $date_array['month'] . '-' . $date_array['day'] . ' ' . $date_array['hour'] . ':' . $date_array['minute'] . ':' . $date_array['second'];
         }
 
-
+        /**
+         * This function make a WordPress needle format for a post (TimePad event)
+         * If event is past - its own post/event time in WPDB will be as this time
+         * If event wiil be in the future - its own WPDB time will be as now time 
+         * but with rand interval to make some time different to fix prev/next post navigation
+         * 
+         * @param string $time time string from TimePad API to be converted
+         * @access private
+         * @return array Array with two keys for WordPress database: date and date_gmt
+         */
         private function _make_post_time( $time ) {
             $date_parse = date_parse( $time );
             $format = $this->_make_time_format( $date_parse );
@@ -85,10 +109,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
         /**
          * This function insert custom post types from Timpad events array
+         * 
          * @param array $events Events array from TimePad response
+         * @access private
          * @return void
          */
-        private function _make_posts_from_events( array $events ) {//die('ffff');
+        private function _make_posts_from_events( array $events ) {
             
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
@@ -131,7 +157,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
         }
-
+        
+        /**
+         * This function makes some prepare job before settings page loads
+         * 
+         * @access private
+         */
         private function _prepare() {
             /**
              * If we have token but no organizations, we make first request to get organizations list
@@ -224,6 +255,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             }
         }
         
+        /**
+         * This function checks for exist posts/events in WPDB against given array $events
+         * If some of array items are not exists in WPDB - it will be returns in result array of the function
+         * 
+         * @param array $events Events array from TimePad API
+         * @access private
+         * @return array
+         */
         private function _prepare_events( array $events ) {
             if ( !empty( $events ) && is_array( $events ) ) {
                 $current_events_ids = array();
@@ -246,14 +285,21 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             return array();
         }
 
-
+        /**
+         * This function insterts in WPDB events that need to be inserted 
+         * for given organization: all of prepare job is given
+         * 
+         * @param type $organization_id ID of needle organization
+         * @access public
+         * @return array|boolean
+         */
         public function post_events( $organization_id ) {
             //get all events for current organization
             //@todo - убрать starts at min
             $events = $this->_get_request_array( $this->_config['events_request_url'] . '?organization_ids=' . $organization_id . '&moderation_statuses=hidden,not_moderated,shown,featured&starts_at_min=1970-01-01' );
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
-                $events = $this->_prepare_events( $events['values'] );//print_r($events);die;
-                if ( !empty( $events ) && is_array( $events ) ) {//print_r($events);die;
+                $events = $this->_prepare_events( $events['values'] );
+                if ( !empty( $events ) && is_array( $events ) ) {
                     $events = $this->_make_events_array( $events );
                     $this->_data['events'][$organization_id] = $events;
                     $this->_make_posts_from_events( $events );
@@ -265,6 +311,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             return TimepadEvents_Helpers::update_option_key( 'timepad_data', $events, 'events', $organization_id );
         }
 
+        /**
+         * This function make a display control for settings page
+         * 
+         * @access public
+         */
         public function display() {
             $this->_prepare();
             if ( $this->_data ) {
