@@ -10,8 +10,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
         }
         
         public function init() {
-            add_action( 'init',      array( $this, 'init_post_type' ) );
-            //add_action( 'save_post', array( $this, 'save' ) );
+            add_action( 'init', array( $this, 'init_post_type' ) );
             
             add_filter( 'post_row_actions', function( $actions, $post ) {
                 if ( $post->post_type == parent::$post_type ) {
@@ -19,7 +18,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                     if ( !empty( $post_meta ) ) {
                         $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
                         $organization_id   = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
-                        unset( $actions['edit'], $actions['inline hide-if-no-js'] );
+                        //unset( $actions['edit'], $actions['inline hide-if-no-js'] );
                         if ( isset( $this->_data['current_organization_id'] ) && $organization_id == $this->_data['current_organization_id'] ) {
                             unset( $actions['trash'] );
                         }
@@ -33,7 +32,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 return $actions;
             }, 0 ,2 );
             
-            add_filter( 'get_edit_post_link', function( $url, $id, $context ) {
+            /*add_filter( 'get_edit_post_link', function( $url, $id, $context ) {
                 $post_meta       = get_post_meta( $id, 'timepad_meta', true );
                 $organization_id = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                 if ( $organization_id ) {
@@ -45,7 +44,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 }
                 
                 return $url;
-            },0 ,3 );
+            },0 ,3 );*/
             
             add_filter( 'bulk_actions-edit-' . parent::$post_type, function( $actions ) {
                 unset($actions['trash']);
@@ -108,7 +107,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'show_in_menu' 	     => true,
                 'query_var' 	     => true,
                 'rewrite'            => array(
-                    'slug'           => 'events',
+                    'slug'           => 'timepad-events',
                     'with_front'     => true
                 ),
                 'capability_type'    => 'post',
@@ -142,7 +141,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'show_ui' 	   => true,
                 'query_var'    => 'timepadevents_category',
                 'rewrite' 	   => array(
-                    'slug' => 'events/category',
+                    'slug' => 'timepad-events',
                     'with_front' => false,
                     'hierarchical' => true
                 )

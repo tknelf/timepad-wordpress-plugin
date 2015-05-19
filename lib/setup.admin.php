@@ -78,7 +78,6 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             }
             
             setcookie( 'timepad_site_url', site_url(), 3600 * 24 * 5, '/' );
-
         }
 
         /**
