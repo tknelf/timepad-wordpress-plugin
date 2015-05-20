@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-05-11 22:45+0300\n"
-"PO-Revision-Date: 2015-05-11 23:17+0300\n"
+"POT-Creation-Date: 2015-05-20 13:55+0300\n"
+"PO-Revision-Date: 2015-05-20 13:56+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -28,27 +28,27 @@ msgstr "Настройки TimePad"
 msgid "Settings"
 msgstr "Настройки"
 
-#: lib/admin/menu/settings/save.php:59
+#: lib/admin/menu/settings/save.php:65
 msgid "Category name must have string length more than 5 characters."
 msgstr "Наименование категории должно быть более 5 символов."
 
-#: lib/admin/menu/settings/save.php:67
+#: lib/admin/menu/settings/save.php:73
 msgid "Category slug must have string length more than 5 characters."
 msgstr "Ярлык категории должен быть более 5 символов"
 
-#: lib/admin/menu/settings/save.php:75
+#: lib/admin/menu/settings/save.php:81
 msgid "Wrong security nonce value."
 msgstr "Неверное значение security nonce."
 
-#: lib/admin/menu/settings/save.php:76
+#: lib/admin/menu/settings/save.php:82
 msgid "Security nonce value is empty."
 msgstr "Обязательное значение Security nonce пустое."
 
-#: lib/admin/menu/settings/tabs/general.php:12
+#: lib/admin/menu/settings/tabs/general.php:13
 msgid "General"
 msgstr "Основное"
 
-#: lib/admin/menu/settings/tabs/general.php:170
+#: lib/admin/menu/settings/tabs/general.php:211
 msgid "TimePad Events"
 msgstr "События TimePad"
 
@@ -69,28 +69,27 @@ msgid "To start work with events, select one of TimePad organizations"
 msgstr ""
 "Чтобы начать работать с событиями, выберите одну из организаций на TimePad"
 
-#: lib/admin/menu/views/settings-general-data.php:22
+#: lib/admin/menu/views/settings-general-data.php:24
 msgid "Select"
 msgstr "Выбрать"
 
-#: lib/admin/menu/views/settings-general-data.php:26
+#: lib/admin/menu/views/settings-general-data.php:28
 msgid "Organization"
 msgstr "Организация"
 
-#: lib/admin/menu/views/settings-general-data.php:28
-#, fuzzy
+#: lib/admin/menu/views/settings-general-data.php:30
 msgid "Cancel organization"
-msgstr "Организация"
+msgstr "Отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:28
+#: lib/admin/menu/views/settings-general-data.php:30
 msgid "Are you sure about cancel organization"
 msgstr "Вы уверены что хотите отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:33
+#: lib/admin/menu/views/settings-general-data.php:35
 msgid "Import TimePad events as custom post types"
-msgstr ""
+msgstr "Импортировать события из TimePad как кастомные типы записей"
 
-#: lib/admin/menu/views/settings-general-data.php:34
+#: lib/admin/menu/views/settings-general-data.php:36
 msgid ""
 "All your organization events will be automatically imported to this site in "
 "the form of pages with customizable categories"
@@ -98,27 +97,27 @@ msgstr ""
 "Все события вашей организации будут автоматически импортироваться на этот "
 "сайт в виде страниц с настраиваемой категорией"
 
-#: lib/admin/menu/views/settings-general-data.php:37
+#: lib/admin/menu/views/settings-general-data.php:39
 msgid "Import status"
 msgstr "Статус импорта"
 
-#: lib/admin/menu/views/settings-general-data.php:42
+#: lib/admin/menu/views/settings-general-data.php:44
 msgid "Automatically import events and create entries for the ones"
 msgstr "Автоматически импортировать события и создавать для них записи"
 
-#: lib/admin/menu/views/settings-general-data.php:45
+#: lib/admin/menu/views/settings-general-data.php:47
 msgid "Synchronize"
 msgstr "Синхронизировать"
 
-#: lib/admin/menu/views/settings-general-data.php:48
+#: lib/admin/menu/views/settings-general-data.php:50
 msgid "The name of the event category"
 msgstr "Название категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:55
+#: lib/admin/menu/views/settings-general-data.php:57
 msgid "Events category label"
 msgstr "Ярлык категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:62
+#: lib/admin/menu/views/settings-general-data.php:64
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
@@ -140,132 +139,124 @@ msgstr "Подготовить систему для организации со
 msgid "Timepad Settings"
 msgstr "Настройки TimePad"
 
-#: lib/admin/metaboxes/time.php:10
-msgid "TimePad Event Time"
-msgstr ""
-
-#: lib/admin/metaboxes/views/time.php:5
-msgid "Время начала события"
-msgstr ""
-
-#: lib/admin/metaboxes/views/time.php:11
-msgid "Время окончания события"
-msgstr ""
-
-#: lib/admin/post-type.php:28
+#: lib/admin/post-type.php:27
 msgid "Edit events at TimePad"
-msgstr ""
+msgstr "Изменить событие на TimePad-е"
 
-#: lib/admin/post-type.php:28
+#: lib/admin/post-type.php:27
 msgid "Members"
 msgstr "Участники"
 
-#: lib/admin/post-type.php:28
+#: lib/admin/post-type.php:27
 msgid "View on TimePad"
 msgstr "Смотреть на TimePad"
 
-#: lib/admin/post-type.php:58
+#: lib/admin/post-type.php:57
 msgid "Event"
 msgstr "Событие"
 
-#: lib/admin/post-type.php:59
+#: lib/admin/post-type.php:58
 msgid "Events"
 msgstr "События"
 
-#: lib/admin/post-type.php:79 lib/admin/post-type.php:91
+#: lib/admin/post-type.php:78 lib/admin/post-type.php:90
 msgid "Timepad Events"
 msgstr "События TimePad"
 
-#: lib/admin/post-type.php:81
+#: lib/admin/post-type.php:80
 msgid "Add New"
 msgstr "Добавить новое"
 
-#: lib/admin/post-type.php:82
+#: lib/admin/post-type.php:81
 #, php-format
 msgid "Add New %1$s"
 msgstr "Добавить новое %1$s"
 
-#: lib/admin/post-type.php:83
+#: lib/admin/post-type.php:82
 #, php-format
 msgid "Edit %1$s"
 msgstr "Редактировать %1$s"
 
-#: lib/admin/post-type.php:84
+#: lib/admin/post-type.php:83
 #, php-format
 msgid "New %1$s"
 msgstr "Новое %1$s"
 
-#: lib/admin/post-type.php:85
+#: lib/admin/post-type.php:84
 #, php-format
 msgid "All %2$s"
 msgstr "Все %2$s"
 
-#: lib/admin/post-type.php:86
+#: lib/admin/post-type.php:85
 #, php-format
 msgid "View %1$s"
 msgstr "Просмотр %1$s"
 
-#: lib/admin/post-type.php:87
+#: lib/admin/post-type.php:86
 #, php-format
 msgid "Search %2$s"
 msgstr "Поиск %2$s"
 
-#: lib/admin/post-type.php:88
+#: lib/admin/post-type.php:87
 #, php-format
 msgid "No %2$s found"
-msgstr ""
+msgstr "Ничего из %2$s не найдено"
 
-#: lib/admin/post-type.php:89
+#: lib/admin/post-type.php:88
 #, php-format
 msgid "No %2$s found in Trash"
 msgstr ""
 
-#: lib/admin/post-type.php:127
+#: lib/admin/post-type.php:126
 #, php-format
 msgctxt "taxonomy general name"
 msgid "%s Categories"
 msgstr "%s: Категории"
 
-#: lib/admin/post-type.php:128
+#: lib/admin/post-type.php:127
 msgctxt "taxonomy singular name"
 msgid "Category"
 msgstr ""
 
-#: lib/admin/post-type.php:129
+#: lib/admin/post-type.php:128
 msgid "Search Categories"
-msgstr ""
+msgstr "Искать категории"
 
-#: lib/admin/post-type.php:130
+#: lib/admin/post-type.php:129
 msgid "All Categories"
 msgstr "Все категории"
 
-#: lib/admin/post-type.php:131
+#: lib/admin/post-type.php:130
 msgid "Parent Category"
-msgstr ""
+msgstr "Родительская категория"
+
+#: lib/admin/post-type.php:131
+msgid "Parent Category:"
+msgstr "Родительская категория:"
 
 #: lib/admin/post-type.php:132
-msgid "Parent Category:"
-msgstr ""
+msgid "Edit Category"
+msgstr "Изменить категорию"
 
 #: lib/admin/post-type.php:133
-msgid "Edit Category"
-msgstr ""
-
-#: lib/admin/post-type.php:134
 msgid "Update Category"
 msgstr "Обновить категорию"
 
-#: lib/admin/post-type.php:135
+#: lib/admin/post-type.php:134
 msgid "Add New Category"
 msgstr "Добавить новую категорию"
 
-#: lib/admin/post-type.php:136
+#: lib/admin/post-type.php:135
 msgid "New Category Name"
 msgstr "Новое название категории"
 
-#: lib/admin/post-type.php:137
+#: lib/admin/post-type.php:136
 msgid "Categories"
 msgstr "Категории"
+
+#: timepad-events.php:85
+msgid "Once in three minutes"
+msgstr "Один раз в три минуты"
 
 #~ msgid "Выбрать"
 #~ msgstr "Select"
