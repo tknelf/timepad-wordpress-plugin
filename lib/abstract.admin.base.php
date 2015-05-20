@@ -26,7 +26,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
         public function __construct() {
             parent::__construct();
             
-            $this->_data = get_option( 'timepad_data' );
+            $this->_data = get_option( $this->_config['optionkey'] );
 
         }
 

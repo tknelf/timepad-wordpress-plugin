@@ -61,7 +61,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
             wp_register_script( 'timepad-jquery-cookie', plugins_url( 'assets/js/admin/jquery.cookie.js', TIMEPADEVENTS_FILE ), self::$_jsHandlesInsidePluginAdmin, null/*, true*/ );
             wp_enqueue_script( 'timepad-jquery-cookie' );
             
-            //NetMolis admin script
+            //TimePadEvents admin script
             wp_register_script( 'timepad-admin-js', plugins_url( 'assets/js/admin/admin.js', TIMEPADEVENTS_FILE ), self::$_jsHandlesInsidePluginAdmin, null/*, true*/ );
             wp_enqueue_script( 'timepad-admin-js' );
             

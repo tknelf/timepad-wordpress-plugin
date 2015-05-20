@@ -87,9 +87,9 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
 
 
         /**
-         * This function get NetMolis class handler by $classname
+         * This function get TimePadEvents class handler by $classname
          *
-         * @param  string $classname Needle NetMolis class name
+         * @param  string $classname Needle TimePadEvents class name
          * @return string Handler of needle class
          */
         public static function get_class_handler( $classname ) {

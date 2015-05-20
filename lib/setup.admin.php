@@ -117,7 +117,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 }
             }
             
-            delete_option( 'timepad_data' );
+            delete_option( $this->_config['optionkey'] );
             
             setcookie( 'timepad_site_url', null, -1, '/' );
             setcookie( 'timepad_token', null, -1, '/' );

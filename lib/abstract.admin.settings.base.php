@@ -52,7 +52,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
             if ( isset( $_COOKIE['timepad_token'] ) && !empty( $_COOKIE['timepad_token'] ) ) {
                 $this->_token = esc_attr( $_COOKIE['timepad_token'] );
                 if ( !isset( $this->_data['token'] ) || empty( $this->_data['token'] ) ) {
-                    TimepadEvents_Helpers::update_option_key( 'timepad_data', $this->_token, 'token' );
+                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_token, 'token' );
                     $this->_data['token'] = $this->_token;
                 }
             } else {
@@ -88,7 +88,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                         if ( empty( $this->_data['events'][$org_id] ) ) unset( $this->_data['events'][$org_id] );
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( 'timepad_data' , $this->_data['events'], 'events' );
+                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'] , $this->_data['events'], 'events' );
                 }
             } );
         }

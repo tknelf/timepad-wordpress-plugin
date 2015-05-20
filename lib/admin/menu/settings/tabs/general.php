@@ -183,6 +183,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         }
         
         /**
+         * This function save organizations data
+         * If is just single organization, the one makes as current one
+         * 
+         * @access private
+         * @param array $organizations Organizations array from TimePad API response
+         * @return void
+         */
+        private function _make_organizations( array $organizations ) {
+            //if we already has some organizations - save the ones to options ( $this->_data variable )
+            $this->_data['organizations'] = $organizations = $this->_make_organizations_array( $organizations );
+
+            //If we have only one organization - let's make the one is default!
+            if ( count( $organizations['organizations'] ) == 1 ) {
+                $keys = array_keys( $organizations['organizations'] );
+                $this->_data['current_organization_id'] = $keys[0];
+                TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], intval( $keys[0] ), 'current_organization_id' );
+            }
+        }
+
+        /**
          * This function makes some prepare job before settings page loads
          * 
          * @access private
@@ -198,31 +218,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
 
                     if ( $organizations ) {
-                        //if we already has some organizations - save the ones to options ( $this->_data variable )
-                        $this->_data['organizations'] = $organizations = $this->_make_organizations_array( $organizations );
-
-                        //If we have only one organization - let's make the one is default!
-                        if ( count( $organizations['organizations'] ) == 1 ) {
-                            $keys = array_keys( $organizations['organizations'] );
-                            $this->_data['current_organization_id'] = $keys[0];
-                            TimepadEvents_Helpers::update_option_key( 'timepad_data', intval( $keys[0] ), 'current_organization_id' );
-                        }
+                        $this->_make_organizations( $organizations );
                     } else {
                         //if we hasn't yet organizations - make the one!
                         $site_name = get_bloginfo( 'name' );
                         $this->add_request_body( 
-                                array( 
-                                    'name'      => sanitize_text_field( $site_name ), 
-                                    'subdomain' => sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ),
-                                    'phone'     => '0000000000' 
-                                )
+                            array( 
+                                'name'      => sanitize_text_field( $site_name ), 
+                                'subdomain' => sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ),
+                                'phone'     => '0000000000' 
+                            )
                         );
-                        //@tocheck
-                        $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
+                        
+                        $organizations = $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
+                        if ( $organizations ) {
+                            $this->_make_organizations( $organizations );
+                        }
 
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( 'timepad_data', $organizations, 'organizations' );
+                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $organizations, 'organizations' );
                 }
                 
                 /**
@@ -244,7 +259,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 $category = get_term_by( 'name', $cat_name, $cat_taxonomy, ARRAY_A );
                                 if ( isset( $category['term_id'] ) ) {
                                     $this->_data['category_id'] = intval( $category['term_id'] );
-                                    TimepadEvents_Helpers::update_option_key( 'timepad_data', $this->_data['category_id'], 'category_id' );
+                                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['category_id'], 'category_id' );
                                     $this->post_events( $this->_data['current_organization_id'] );
                                 }
                             } else {
@@ -257,7 +272,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                         'taxonomy'          => $cat_taxonomy ) ) 
                                     ) {
                                         $this->_data['category_id'] = intval( $category_id );
-                                        TimepadEvents_Helpers::update_option_key( 'timepad_data', $this->_data['category_id'], 'category_id' );
+                                        TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['category_id'], 'category_id' );
                                         $this->post_events( $this->_data['current_organization_id'] );
                                     } else {
                                         //security for hacks with unlimited requests
@@ -350,7 +365,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
 
-            return TimepadEvents_Helpers::update_option_key( 'timepad_data', $events, 'events', $organization_id );
+            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $events, 'events', $organization_id );
         }
 
         /**

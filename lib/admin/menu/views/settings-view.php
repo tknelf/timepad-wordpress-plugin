@@ -1,6 +1,6 @@
 <?php $maybe_class = 'TimepadEvents_Admin_Settings_' . ucfirst( $active_tab );
 if ( class_exists( $maybe_class ) ) : ?>
-    <div class="wrap netmolis-settings">
+    <div class="wrap timepadevents-settings">
         <?php if ( count( $tabs ) > 1 ) : ?>
         <h2 class="nav-tab-wrapper">
             <?php foreach ( $tabs as $tab_id => $tab_array ) : ?>

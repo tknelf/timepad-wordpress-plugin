@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @class       TimepadEvents_Admin_Styles
  * @version     1.0.0
- * @package     NetMolis/Admin
+ * @package     TimePadEvents/Admin
  * @author      TimePad Team
  * @extends     TimepadEvents_Admin_Base
  * @category    Admin Class

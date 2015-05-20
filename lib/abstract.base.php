@@ -132,10 +132,10 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             
             if ( ! defined( 'TIMEPADEVENTS_VERSION' ) ) {
                 /**
-                 * NetMolis version
+                 * TimePadEvents version
                  *
                  * @var string
-                 * @return string NetMolis version
+                 * @return string TimePadEvents version
                  */
                 define( 'TIMEPADEVENTS_VERSION', $config['version'] );
             }
@@ -149,36 +149,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
                  * @example https://wordpress.google.com
                  */
                 define( 'TIMEPADEVENTS_SITEURL', site_url() );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_DOMAIN' ) ) {
-                /**
-                 * TimePadEvents domain
-                 *
-                 * @var    string
-                 * @return string TimePad Events domain for locales
-                 */
-                define( 'TIMEPADEVENTS_DOMAIN', $config['domain'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_DATA_META' ) ) {
-                /**
-                 * The name of plugin database option
-                 *
-                 * @var    string
-                 * @return string The name of plugin database option/postmeta that stores item data
-                 */
-                define( 'TIMEPADEVENTS_DATA_META', $config['meta_data_item'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_SETTINGS_DATA_META' ) ) {
-                /**
-                 * The name of plugin database option that stores plugin settings data
-                 *
-                 * @var    string
-                 * @return string The name of plugin database option that stores plugin settings data
-                 */
-                define( 'TIMEPADEVENTS_SETTINGS_DATA_META', $config['meta_data_settings'] );
             }
 
             if ( ! defined( 'TIMEPADEVENTS_BASENAME' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
