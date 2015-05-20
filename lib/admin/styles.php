@@ -25,7 +25,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Styles' ) ) :
          * @return void
          */
         public function init() {
-            //add_action( 'admin_enqueue_scripts', array( $this, 'admin_init_styles' ) );
+            add_action( 'admin_enqueue_scripts', array( $this, 'admin_init_styles' ) );
         }
         
         /**
@@ -35,6 +35,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Styles' ) ) :
          * @param type $hook
          * @return void
          */
-        //public function admin_init_styles( $hook ) {}
+        public function admin_init_styles( $hook ) {
+            wp_register_style( 'timepadevents-admin', plugins_url( 'assets/css/admin/admin.css', TIMEPADEVENTS_FILE ) );
+            wp_enqueue_style( 'timepadevents-admin' );
+        }
     }
 endif;
