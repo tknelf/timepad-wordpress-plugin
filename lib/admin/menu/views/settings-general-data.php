@@ -55,7 +55,7 @@
     </tr>
     <tr>
         <td></td>
-        <td><input type="submit" name="syncronize" class="button button-secondary" value="<?php _e( 'Synchronize', 'timepad' ); ?>" /></td>
+        <td><input type="submit" name="syncronize" class="button button-secondary" value="<?php _e( 'Synchronize now', 'timepad' ); ?>" /></td>
         <td colspan="2"></td>
     </tr>
     <tr>

@@ -18,7 +18,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                     if ( !empty( $post_meta ) ) {
                         $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
                         $organization_id   = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
-                        //unset( $actions['edit'], $actions['inline hide-if-no-js'] );
+                        unset( $actions['edit'], $actions['inline hide-if-no-js'] );
                         if ( isset( $this->_data['current_organization_id'] ) && $organization_id == $this->_data['current_organization_id'] ) {
                             unset( $actions['trash'] );
                         }
@@ -32,7 +32,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 return $actions;
             }, 0 ,2 );
             
-            /*add_filter( 'get_edit_post_link', function( $url, $id, $context ) {
+            add_filter( 'get_edit_post_link', function( $url, $id, $context ) {
                 $post_meta       = get_post_meta( $id, 'timepad_meta', true );
                 $organization_id = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                 if ( $organization_id ) {
@@ -44,7 +44,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 }
                 
                 return $url;
-            },0 ,3 );*/
+            },0 ,3 );
             
             add_filter( 'bulk_actions-edit-' . parent::$post_type, function( $actions ) {
                 unset($actions['trash']);
@@ -75,7 +75,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
              * @link http://codex.wordpress.org/Function_Reference/register_post_type#Arguments
              */
             $custom_post_type_labels =  apply_filters( 'timepadevents_labels', array(
-                'name' 		     => __( 'Timepad Events',               'timepad' ),
+                'name' 		     => __( 'Events',               'timepad' ),
                 'singular_name'      => '%1$s',
                 'add_new'            => __( 'Add New',                'timepad' ),
                 'add_new_item' 	     => __( 'Add New %1$s',           'timepad' ),
@@ -99,7 +99,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                     $this->_get_label_plural() );
             }
             $custom_post_type_labels = $custom_post_type_labels_tmp;
-            $custom_post_type_args = array(
+            $custom_post_type_args   = array(
                 'labels'             => $custom_post_type_labels,
                 'public'             => true,
                 'publicly_queryable' => true,

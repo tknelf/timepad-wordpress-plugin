@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-05-20 13:55+0300\n"
-"PO-Revision-Date: 2015-05-20 13:56+0300\n"
+"POT-Creation-Date: 2015-05-20 17:37+0300\n"
+"PO-Revision-Date: 2015-05-20 17:37+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -44,11 +44,11 @@ msgstr "Неверное значение security nonce."
 msgid "Security nonce value is empty."
 msgstr "Обязательное значение Security nonce пустое."
 
-#: lib/admin/menu/settings/tabs/general.php:13
+#: lib/admin/menu/settings/tabs/general.php:37
 msgid "General"
 msgstr "Основное"
 
-#: lib/admin/menu/settings/tabs/general.php:211
+#: lib/admin/menu/settings/tabs/general.php:250
 msgid "TimePad Events"
 msgstr "События TimePad"
 
@@ -64,32 +64,32 @@ msgstr "Отключить аккаунт"
 msgid "Are you sure about cancel account"
 msgstr "Вы уверены что хотите отключить аккаунт"
 
-#: lib/admin/menu/views/settings-general-data.php:11
+#: lib/admin/menu/views/settings-general-data.php:12
 msgid "To start work with events, select one of TimePad organizations"
 msgstr ""
 "Чтобы начать работать с событиями, выберите одну из организаций на TimePad"
 
-#: lib/admin/menu/views/settings-general-data.php:24
+#: lib/admin/menu/views/settings-general-data.php:26
 msgid "Select"
 msgstr "Выбрать"
 
-#: lib/admin/menu/views/settings-general-data.php:28
+#: lib/admin/menu/views/settings-general-data.php:31
 msgid "Organization"
 msgstr "Организация"
 
-#: lib/admin/menu/views/settings-general-data.php:30
+#: lib/admin/menu/views/settings-general-data.php:33
 msgid "Cancel organization"
 msgstr "Отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:30
+#: lib/admin/menu/views/settings-general-data.php:33
 msgid "Are you sure about cancel organization"
 msgstr "Вы уверены что хотите отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:35
+#: lib/admin/menu/views/settings-general-data.php:40
 msgid "Import TimePad events as custom post types"
 msgstr "Импортировать события из TimePad как кастомные типы записей"
 
-#: lib/admin/menu/views/settings-general-data.php:36
+#: lib/admin/menu/views/settings-general-data.php:41
 msgid ""
 "All your organization events will be automatically imported to this site in "
 "the form of pages with customizable categories"
@@ -97,31 +97,31 @@ msgstr ""
 "Все события вашей организации будут автоматически импортироваться на этот "
 "сайт в виде страниц с настраиваемой категорией"
 
-#: lib/admin/menu/views/settings-general-data.php:39
+#: lib/admin/menu/views/settings-general-data.php:46
 msgid "Import status"
 msgstr "Статус импорта"
 
-#: lib/admin/menu/views/settings-general-data.php:44
+#: lib/admin/menu/views/settings-general-data.php:51
 msgid "Automatically import events and create entries for the ones"
 msgstr "Автоматически импортировать события и создавать для них записи"
 
-#: lib/admin/menu/views/settings-general-data.php:47
-msgid "Synchronize"
-msgstr "Синхронизировать"
+#: lib/admin/menu/views/settings-general-data.php:58
+msgid "Synchronize now"
+msgstr "Синхронизировать сейчас"
 
-#: lib/admin/menu/views/settings-general-data.php:50
+#: lib/admin/menu/views/settings-general-data.php:62
 msgid "The name of the event category"
 msgstr "Название категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:57
+#: lib/admin/menu/views/settings-general-data.php:70
 msgid "Events category label"
 msgstr "Ярлык категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:64
+#: lib/admin/menu/views/settings-general-data.php:78
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
-#: lib/admin/menu/views/settings-general.php:2
+#: lib/admin/menu/views/settings-general.php:3
 msgid ""
 "If you're already using TimePad, simply sync your events with this website. "
 "To do this, simply click the &laquo;prepare the system for TimePad events "
@@ -131,7 +131,7 @@ msgstr ""
 "сайтом. Для этого просто нажмите кнопку &laquo;Подготовить систему для "
 "организации событий TimePad&raquo;"
 
-#: lib/admin/menu/views/settings-general.php:3
+#: lib/admin/menu/views/settings-general.php:4
 msgid "Prepare the system for TimePad events organization"
 msgstr "Подготовить систему для организации событий TimePad"
 
@@ -155,13 +155,9 @@ msgstr "Смотреть на TimePad"
 msgid "Event"
 msgstr "Событие"
 
-#: lib/admin/post-type.php:58
+#: lib/admin/post-type.php:58 lib/admin/post-type.php:78
 msgid "Events"
 msgstr "События"
-
-#: lib/admin/post-type.php:78 lib/admin/post-type.php:90
-msgid "Timepad Events"
-msgstr "События TimePad"
 
 #: lib/admin/post-type.php:80
 msgid "Add New"
@@ -206,6 +202,10 @@ msgstr "Ничего из %2$s не найдено"
 #, php-format
 msgid "No %2$s found in Trash"
 msgstr ""
+
+#: lib/admin/post-type.php:90
+msgid "Timepad Events"
+msgstr "События TimePad"
 
 #: lib/admin/post-type.php:126
 #, php-format
