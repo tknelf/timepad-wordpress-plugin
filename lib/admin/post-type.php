@@ -87,7 +87,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'not_found' 	     => __( 'No %2$s found',          'timepad' ),
                 'not_found_in_trash' => __( 'No %2$s found in Trash', 'timepad' ),
                 'parent_item_colon'  => '',
-                'menu_name' 	     => __( 'Timepad Events',               'timepad' )
+                'menu_name' 	     => __( 'Events',               'timepad' )
             ) );
             /**
              * @todo может и не надо так исхитряться, сделал на всякий случай, надо будет проверить

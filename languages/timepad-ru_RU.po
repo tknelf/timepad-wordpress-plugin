@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-05-20 17:37+0300\n"
-"PO-Revision-Date: 2015-05-20 17:37+0300\n"
+"POT-Creation-Date: 2015-05-20 18:54+0300\n"
+"PO-Revision-Date: 2015-05-20 18:54+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -20,7 +20,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: lib/admin/menu.php:19
-#, fuzzy
 msgid "TimePad Settings"
 msgstr "Настройки TimePad"
 
@@ -156,6 +155,7 @@ msgid "Event"
 msgstr "Событие"
 
 #: lib/admin/post-type.php:58 lib/admin/post-type.php:78
+#: lib/admin/post-type.php:90
 msgid "Events"
 msgstr "События"
 
@@ -202,10 +202,6 @@ msgstr "Ничего из %2$s не найдено"
 #, php-format
 msgid "No %2$s found in Trash"
 msgstr ""
-
-#: lib/admin/post-type.php:90
-msgid "Timepad Events"
-msgstr "События TimePad"
 
 #: lib/admin/post-type.php:126
 #, php-format
@@ -257,6 +253,9 @@ msgstr "Категории"
 #: timepad-events.php:85
 msgid "Once in three minutes"
 msgstr "Один раз в три минуты"
+
+#~ msgid "Timepad Events"
+#~ msgstr "События TimePad"
 
 #~ msgid "Выбрать"
 #~ msgstr "Select"
