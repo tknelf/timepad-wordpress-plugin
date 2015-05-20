@@ -5,6 +5,30 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
     
     class TimepadEvents_Admin_Settings_General extends TimepadEvents_Admin_Settings_Base {
+         
+        /**
+         * default limit for events response
+         * 
+         * @access protected
+         * @var int
+         */
+        protected $_default_limit = 10;
+        
+        /**
+         * moderation statues for events request
+         * 
+         * @access protected
+         * @var string
+         */
+        protected $_moderation_statuses = 'hidden,not_moderated,shown,featured';
+        
+        /**
+         * from date string for events request
+         * 
+         * @access protected
+         * @var string
+         */
+        protected $_starts_at_min = '1970-01-01';
 
         public function __construct() {
             parent::__construct();
@@ -295,8 +319,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          */
         public function post_events( $organization_id ) {
             //get all events for current organization
-            //@todo - убрать starts at min
-            $events = $this->_get_request_array( $this->_config['events_request_url'] . '?organization_ids=' . $organization_id . '&moderation_statuses=hidden,not_moderated,shown,featured&starts_at_min=1970-01-01' );
+            $query_args = array(
+                'organization_ids'     => $organization_id
+                ,'moderation_statuses' => $this->_moderation_statuses
+                ,'starts_at_min'       => $this->_starts_at_min
+                ,'limit'               => $this->_default_limit
+            );
+            $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
+            $events = $this->_get_request_array( $query_str );
+            if ( isset( $events['total'] ) ) {
+                $events_count = intval( $events['total'] );
+                if ( $events_count > $this->_default_limit ) {
+                    
+                    //make paging
+                    $pages_count = ceil( $events_count / $this->_default_limit ) - 1;
+                    for ( $i = 1; $i <= $pages_count; $i++ ) {
+                        $offset_events = $this->_get_request_array( $query_str . '&skip=' . $i * $this->_default_limit );
+                        array_push( $events['values'], $offset_events['values'] );
+                    }
+                }
+            }
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
                 $events = $this->_prepare_events( $events['values'] );
                 if ( !empty( $events ) && is_array( $events ) ) {
