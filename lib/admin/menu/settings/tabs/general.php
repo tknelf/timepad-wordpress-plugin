@@ -58,11 +58,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $ret_array[$organization->id] = (array) $organization;
                 }
                 $organizations['organizations'] = $ret_array;
-                
                 return $organizations;
             }
             
-            return false;
+            return array();
         }
         
         /**
@@ -181,26 +180,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
         }
-        
-        /**
-         * This function save organizations data
-         * If is just single organization, the one makes as current one
-         * 
-         * @access private
-         * @param array $organizations Organizations array from TimePad API response
-         * @return void
-         */
-        private function _make_organizations( array $organizations ) {
-            //if we already has some organizations - save the ones to options ( $this->_data variable )
-            $this->_data['organizations'] = $organizations = $this->_make_organizations_array( $organizations );
-
-            //If we have only one organization - let's make the one is default!
-            if ( count( $organizations['organizations'] ) == 1 ) {
-                $keys = array_keys( $organizations['organizations'] );
-                $this->_data['current_organization_id'] = $keys[0];
-                TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], intval( $keys[0] ), 'current_organization_id' );
-            }
-        }
 
         /**
          * This function makes some prepare job before settings page loads
@@ -218,7 +197,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
 
                     if ( $organizations ) {
-                        $this->_make_organizations( $organizations );
+                        $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
+
+                        //If we have only one organization - let's make the one is default!
+                        if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
+                            $keys = array_keys( $this->_data['organizations']['organizations'] );
+                            $this->_data['current_organization_id'] = intval( $keys[0] );
+                            TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                        }
                     } else {
                         //if we hasn't yet organizations - make the one!
                         $site_name = get_bloginfo( 'name' );
@@ -226,18 +212,25 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             array( 
                                 'name'      => sanitize_text_field( $site_name ), 
                                 'subdomain' => sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ),
-                                'phone'     => '0000000000' 
+                                'phone'     => '0000000000'
                             )
                         );
                         
                         $organizations = $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
                         if ( $organizations ) {
-                            $this->_make_organizations( $organizations );
+                            $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
+
+                            //If we have only one organization - let's make the one is default!
+                            if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
+                                $keys = array_keys( $this->_data['organizations']['organizations'] );
+                                $this->_data['current_organization_id'] = intval( $keys[0] );
+                                TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                            }
                         }
 
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $organizations, 'organizations' );
+                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['organizations'], 'organizations' );
                 }
                 
                 /**

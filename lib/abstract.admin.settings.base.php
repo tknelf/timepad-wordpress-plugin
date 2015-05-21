@@ -80,7 +80,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
             add_action( 'wp_trash_post', function( $id ) {
                 $post_data = get_post_meta( $id, 'timepad_meta', true );
                 $tmp_events = isset( $this->_data['events'] ) ? $this->_data['events'] : array();
-                if ( !empty( $tmp_events ) && is_array( $tmp_events ) ) {
+                if ( !empty( $tmp_events ) && is_array( $tmp_events ) && !empty( $post_data ) && is_array( $post_data ) ) {
                     foreach ( $tmp_events as $org_id => $event_array ) {
                         if ( isset( $event_array[$post_data['event_id']] ) ) {
                             unset( $this->_data['events'][$org_id][$post_data['event_id']] );
