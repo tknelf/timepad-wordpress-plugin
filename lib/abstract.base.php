@@ -44,12 +44,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         public $handler;
         
         /**
-         * Post type handler
-         * @var string
-         */
-        public static $post_type = 'timepad-events';
-        
-        /**
          * Singleton
          */
         private static $_instances = array();

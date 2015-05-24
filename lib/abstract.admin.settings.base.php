@@ -103,7 +103,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
          * @return object|array
          */
         protected function _get_category( $id, $output = OBJECT, $filter = 'raw' ) {
-            $category = get_term( $id, parent::$post_type . '_category', $output, $filter );
+            $category = get_term( $id, TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
             if ( is_wp_error( $category ) )
                 return $category;
             

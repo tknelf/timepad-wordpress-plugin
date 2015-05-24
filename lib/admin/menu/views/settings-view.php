@@ -1,4 +1,7 @@
-<?php $maybe_class = 'TimepadEvents_Admin_Settings_' . ucfirst( $active_tab );
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+$maybe_class = 'TimepadEvents_Admin_Settings_' . ucfirst( $active_tab );
 if ( class_exists( $maybe_class ) ) : ?>
     <div class="wrap timepadevents-settings">
         <?php if ( count( $tabs ) > 1 ) : ?>
@@ -36,7 +39,7 @@ if ( class_exists( $maybe_class ) ) : ?>
                     endforeach;
                 endif;
                 ?>
-                <input type="hidden" name="timepad_post_type" value="<?php echo esc_attr( $maybe_class::$post_type ); ?>" />
+                <input type="hidden" name="timepad_post_type" value="<?php echo esc_attr( TIMEPADEVENTS_POST_TYPE ); ?>" />
                 <?php wp_nonce_field( 'timepadevents-settings' ); ?>
             </form>
         </div>

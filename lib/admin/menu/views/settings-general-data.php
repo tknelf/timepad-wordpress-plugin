@@ -1,4 +1,7 @@
-<?php if ( !empty( $data['organizations'] ) ) : ?>
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if ( !empty( $data['organizations'] ) ) : ?>
 <table class="form-table">
     <tr>
         <th scope="row"><?php _e( 'TimePad account', 'timepad' ); ?></th>

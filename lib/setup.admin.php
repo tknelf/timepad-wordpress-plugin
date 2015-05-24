@@ -101,7 +101,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             }
             
             $timepad_posts = get_posts(array(
-                'post_type'       => parent::$post_type
+                'post_type'       => TIMEPADEVENTS_POST_TYPE
                 ,'posts_per_page' => -1
             ));
             if ( !empty( $timepad_posts ) && is_array( $timepad_posts ) ) {
@@ -110,10 +110,10 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 }
             }
             
-            $timepad_terms = get_terms( parent::$post_type . '_category', array( 'hide_empty' => false ) );
+            $timepad_terms = get_terms( TIMEPADEVENTS_POST_TYPE . '_category', array( 'hide_empty' => false ) );
             if ( !empty( $timepad_terms ) && is_array( $timepad_terms ) ) {
                 foreach ( $timepad_terms as $timepad_term ) {
-                    wp_delete_term( $timepad_term->term_id, parent::$post_type . '_category' );
+                    wp_delete_term( $timepad_term->term_id, TIMEPADEVENTS_POST_TYPE . '_category' );
                 }
             }
             

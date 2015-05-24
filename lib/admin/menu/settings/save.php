@@ -1,9 +1,7 @@
 <?php
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 require_once( '../../../../../../../wp-load.php' );
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( isset( $_POST['_wpnonce'] ) ) {
     if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) ) {

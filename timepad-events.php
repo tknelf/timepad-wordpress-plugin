@@ -46,6 +46,26 @@ if ( ! defined ( 'TIMEPADEVENTS_FILE' ) ) {
     define( 'TIMEPADEVENTS_FILE',  __FILE__ );
 }
 
+if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
+    /**
+     * Post type slug for TimePad Events plugin
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_POST_TYPE',  'timepad-events' );
+}
+
+if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
+    /**
+     * Post type category slug for TimePad Events plugin
+     *
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_POST_TYPE_CATEGORY',  'timepad-events-category' );
+}
+
 if ( ! defined( 'TIMEPADEVENTS_PLUGIN_ABS_PATH' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
     /**
      * Path to plugin absolute path
@@ -88,31 +108,31 @@ add_filter( 'cron_schedules', function( $intervals ) {
     return $intervals;
 } );
 
-if ( is_admin() ) {
-    /**
-     * Base Admin Class
-     */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php');
-    
-    /**
-     * Admin Settings Base class
-     */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php');
+/**
+ * Base Admin Class
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php');
 
-    /**
-     * Admin Setup File
-     */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php');
-    add_action('plugins_loaded', array('TimepadEvents_Setup_Admin', 'getInstance'), 9999);
+/**
+ * Admin Settings Base class
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php');
 
-} else {
+/**
+ * Admin Setup File
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php');
+add_action('plugins_loaded', array('TimepadEvents_Setup_Admin', 'getInstance'), 9999);
+
+if ( ! is_admin() ) {
     
     /**
      * Hack to display events at general posts stock
      */
     add_filter( 'pre_get_posts', function( $query ) {
-        if ( is_home() && $query->is_main_query() )
-		$query->set( 'post_type', array( 'post', 'timepad-events' ) );
+        if ( is_home() && $query->is_main_query() ) {
+            $query->set( 'post_type', array( 'post', TIMEPADEVENTS_POST_TYPE ) );
+        }
 
 	return $query;
     } );
