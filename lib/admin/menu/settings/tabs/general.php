@@ -93,7 +93,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return string
          */
         private function _make_time_format( array $date_array ) {
-            return $date_array['year'] . '-' . $date_array['month'] . '-' . $date_array['day'] . ' ' . $date_array['hour'] . ':' . $date_array['minute'] . ':' . $date_array['second'];
+            $months = ( $date_array['month'] < 10 ) ? '0' . $date_array['month'] : $date_array['month'];
+            $days = ( $date_array['day'] < 10 ) ? '0' . $date_array['day'] : $date_array['day'];
+            $hours = ( $date_array['hour'] < 10 ) ? '0' . $date_array['hour'] : $date_array['hour'];
+            $minutes = ( $date_array['minute'] < 10 ) ? '0' . $date_array['minute'] : $date_array['minute'];
+            $seconds = ( $date_array['second'] < 10 ) ? '0' . $date_array['second'] : $date_array['second'];
+            return $date_array['year'] . '-' . $months . '-' . $days . ' ' . $hours . ':' . $minutes . ':' . $seconds;
         }
 
         /**
@@ -111,17 +116,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $format = $this->_make_time_format( $date_parse );
             $strtime = strtotime( $format );
             
-            $gmt_time = $strtime + $date_parse['zone'] * 60;
-            $gmt_date_parse = date_parse( $gmt_time );
-            $gmt_format = $this->_make_time_format( $gmt_date_parse );
+            $gmt_format = get_gmt_from_date( $format );
             if ( time() < $strtime ) {
                 $rand = mt_rand( 5, 300 );
                 
                 $strtime = time() - $rand;
                 $format = date( 'Y-m-d H:i:s', $strtime );
                 
-                $gmt_time = $strtime + $date_parse['zone'] * 60 - $rand;
-                $gmt_format = date( 'Y-m-d H:i:s', $gmt_time );
+                $gmt_format = get_gmt_from_date( $format );
             }
             
             return array(
@@ -142,6 +144,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
                 foreach ( $events as $event ) {
+                    $meta_array = array(
+                        'event_id'         => intval( $event['id'] )
+                        ,'organization_id' => intval( $this->_data['current_organization_id'] )
+                    );
                     $content = $event['description_html'] . '<br />[timepadevent id="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $insert_args = array(
@@ -159,7 +165,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     //check for exist post
                     $check_args = array(
                         'meta_key'        => 'timepad_meta'
-                        ,'meta_value'     => intval( $event['id'] )
+                        ,'meta_value'     => $meta_array
                         ,'posts_per_page' => -1
                         ,'post_status'    => 'publish'
                     );
@@ -168,10 +174,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     if ( empty( $check_posts ) ) {
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
-                            $meta_array = array(
-                                'event_id'         => intval( $event['id'] )
-                                ,'organization_id' => intval( $this->_data['current_organization_id'] )
-                            );
                             update_post_meta( $id, 'timepad_meta', $meta_array );
 
                             wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
@@ -295,23 +297,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access private
          * @return array
          */
-        private function _prepare_events( array $events ) {
-            if ( !empty( $events ) && is_array( $events ) ) {
+        private function _prepare_events( array $events, $organization_id ) {
+            if ( !empty( $events ) && is_array( $events ) && !empty( $organization_id ) ) {
                 $current_events_ids = array();
                 $ret_array = array();
-                if ( !empty( $this->_data['events'][$this->_data['current_organization_id']] ) && is_array( $this->_data['events'][$this->_data['current_organization_id']] ) ) {
-                    $current_events_ids = array_keys( $this->_data['events'][$this->_data['current_organization_id']] );
-                    if ( !empty( $current_events_ids ) && is_array( $this->_data['events'][$this->_data['current_organization_id']] ) ) {
+                if ( !empty( $this->_data['events'][$organization_id] ) && is_array( $this->_data['events'][$organization_id] ) ) {
+                    $current_events_ids = array_keys( $this->_data['events'][$organization_id] );
+                    if ( !empty( $current_events_ids ) && is_array( $this->_data['events'][$organization_id] ) ) {
                         foreach ( $events as $event ) {
                             if ( !in_array( $event->id, $current_events_ids ) ) {
-                                $ret_array[] = $event->name;
+                                $ret_array[] = $event;
                             }
                         }
-                        return $ret_array;
                     }
                 } else {
-                    return $events;
+                    foreach ( $events as $event ) {
+                        $ret_array[] = $event;
+                    }
                 }
+                
+                return $ret_array;
             }
             
             return array();
@@ -348,7 +353,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
-                $events = $this->_prepare_events( $events['values'] );
+                $events = $this->_prepare_events( $events['values'], $organization_id );
                 if ( !empty( $events ) && is_array( $events ) ) {
                     $events = $this->_make_events_array( $events );
                     $this->_data['events'][$organization_id] = $events;
