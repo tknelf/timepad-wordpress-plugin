@@ -280,7 +280,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 }
                             }
                         } else {
-                            if ( isset( $_GET['syncronize'] ) && intval( $_GET['syncronize'] ) == 1 || ( isset( $_POST['select_organization'] ) && !empty( $_POST['select_organization'] ) ) ) {
+                            if ( isset( $_GET['syncronize'] ) && intval( $_GET['syncronize'] ) == 1 || ( isset( $_GET['select_organization'] ) && intval( $_GET['select_organization'] ) == 1 ) ) {
                                 $this->post_events( $this->_data['current_organization_id'] );
                             }
                         }
