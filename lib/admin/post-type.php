@@ -140,7 +140,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'menu_name' 	    => __( 'Categories',                                      'timepad' )
             );
             $custom_post_type_category_args = apply_filters( 'timepadevents_item_category_args', array(
-                'hierarchical' => true,
+                //'hierarchical' => true,
                 'labels'       => apply_filters( 'timepadevents_item_category_labels', $custom_post_type_category_labels ),
                 'show_ui'      => true,
                 'query_var'    => 'timepadevents_category',
@@ -151,6 +151,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 )
             ));
             register_taxonomy( TIMEPADEVENTS_POST_TYPE . '_category',  TIMEPADEVENTS_POST_TYPE, $custom_post_type_category_args );
+            
+            $is_flush = get_option( 'timepad_flushed', '' );
+            if ( empty( $is_flush ) ) {
+                flush_rewrite_rules();
+                update_option( 'timepad_flushed', 1 );
+            }
         }
     }
 endif;
