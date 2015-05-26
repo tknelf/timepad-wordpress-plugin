@@ -33,7 +33,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         if ( isset( $_POST['select_organization'] ) && !empty( $_POST['select_organization'] ) && isset( $_POST['organization'] ) && !empty( $_POST['organization'] ) ) {
             $data = get_option( 'timepad_data' );
             $data['current_organization_id'] = intval( $_POST['organization'] );
-            $additional_url = '&select_organization=1';
+            $additional_url = '&syncronize=1';
             update_option( 'timepad_data', $data );
         }
         
