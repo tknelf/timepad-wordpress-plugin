@@ -77,7 +77,9 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 return;
             }
             
-            setcookie( 'timepad_site_url', site_url(), 3600 * 24 * 5, '/' );
+            if ( !isset( $_COOKIE['timepad_site_url'] ) || empty( $_COOKIE['timepad_site_url'] ) ) {
+                setcookie( 'timepad_site_url', TIMEPADEVENTS_SITEURL, 3600 * 24 * 5, '/' );
+            }
         }
 
         /**

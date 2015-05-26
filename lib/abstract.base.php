@@ -50,6 +50,10 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
 
         public function __construct( $post = null ) {
             
+            if ( !isset( $_COOKIE['timepad_site_url'] ) || empty( $_COOKIE['timepad_site_url'] ) ) {
+                setcookie( 'timepad_site_url', TIMEPADEVENTS_SITEURL, 3600 * 24 * 5, '/' );
+            }
+            
             $this->_config = self::_get_config();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
@@ -132,17 +136,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
                  * @return string TimePadEvents version
                  */
                 define( 'TIMEPADEVENTS_VERSION', $config['version'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_SITEURL' ) ) {
-                /**
-                 * Current WordPress site URL
-                 *
-                 * @var     string
-                 * @return  string Your site WordPress URL
-                 * @example https://wordpress.google.com
-                 */
-                define( 'TIMEPADEVENTS_SITEURL', site_url() );
             }
 
             if ( ! defined( 'TIMEPADEVENTS_BASENAME' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {

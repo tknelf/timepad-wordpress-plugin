@@ -46,6 +46,17 @@ if ( ! defined ( 'TIMEPADEVENTS_FILE' ) ) {
     define( 'TIMEPADEVENTS_FILE',  __FILE__ );
 }
 
+if ( ! defined( 'TIMEPADEVENTS_SITEURL' ) ) {
+    /**
+     * Current WordPress site URL
+     *
+     * @var     string
+     * @return  string Your site WordPress URL
+     * @example https://wordpress.google.com
+     */
+    define( 'TIMEPADEVENTS_SITEURL', site_url() );
+}
+
 if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
     /**
      * Post type slug for TimePad Events plugin
