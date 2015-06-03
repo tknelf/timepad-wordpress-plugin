@@ -393,10 +393,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             }
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
                 $events = $this->_prepare_events( $events['values'], $organization_id, true );
-                $this->_data['events'][$organization_id] = $events['all'];
+                $this->_data['events'][$organization_id] = $this->_make_events_array( $events['all'] );
                 if ( !empty( $events['exist'] ) && is_array( $events['exist'] ) ) {
                     $events_exist = $this->_make_events_array( $events['exist'] );
-                    $this->_update_events_content( $events['exist'] );
+                    $this->_update_events_content( $events_exist );
                 }
                 if ( !empty( $events['new'] ) && is_array( $events['new'] ) ) {
                     $events_new = $this->_make_events_array( $events['new'] );
