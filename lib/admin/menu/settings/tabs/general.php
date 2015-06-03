@@ -135,7 +135,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function insert custom post types from Timpad events array
          * 
-         * @param array $events Events array from TimePad response
+         * @param  array $events Events array from TimePad response
          * @access private
          * @return void
          */
@@ -179,6 +179,44 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
                         }
                     }
+                }
+            }
+        }
+        
+        /**
+         * This function make update for all exist events. Part of syncronize scope
+         * 
+         * @param  array $events Prepared array of exist events in WP DB
+         * @access private
+         * @return void
+         */
+        private function _update_events_content( array $events ) {
+            foreach ( $events as $event ) {
+                $meta_array = array(
+                    'event_id'         => intval( $event['id'] )
+                    ,'organization_id' => intval( $this->_data['current_organization_id'] )
+                );
+                $events_posts = get_post(
+                    array(
+                        'meta_key'    => 'timepad_meta'
+                        ,'meta_value' => $meta_array
+                        ,'posts_per_page' => -1
+                        ,'post_status'    => 'publish'
+                    )
+                );
+                if ( !empty( $events_posts ) && !empty( $events_posts[0] ) && isset( $events_posts[0] ) ) {
+                    $content = $event['description_html'] . '<br />[timepadevent id="' . $event['id'] . '"]';
+                    $date = $this->_make_post_time( $event['starts_at'] );
+                    $update_args = array(
+                        'ID'             => $events_posts[0]->ID
+                        ,'post_title'    => sanitize_text_field( $event['name'] )
+                        ,'post_content'  => $content
+                        ,'post_date'     => $date['date']
+                        ,'post_date_gmt' => $date['date_gmt']
+                        ,'post_modified' => $date['date']
+                        ,'post_modified_gmt' => $date['date_gmt']
+                    );
+                    wp_update_post( $update_args );
                 }
             }
         }
@@ -293,30 +331,31 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function checks for exist posts/events in WPDB against given array $events
          * If some of array items are not exists in WPDB - it will be returns in result array of the function
          * 
-         * @param array $events Events array from TimePad API
+         * @param  array $events Events array from TimePad API
          * @access private
          * @return array
          */
-        private function _prepare_events( array $events, $organization_id ) {
+        private function _prepare_events( array $events, $organization_id, $return_exists = false ) {
             if ( !empty( $events ) && is_array( $events ) && !empty( $organization_id ) ) {
                 $current_events_ids = array();
                 $ret_array = array();
+                $ret_array_exists = array();
                 if ( !empty( $this->_data['events'][$organization_id] ) && is_array( $this->_data['events'][$organization_id] ) ) {
                     $current_events_ids = array_keys( $this->_data['events'][$organization_id] );
                     if ( !empty( $current_events_ids ) && is_array( $this->_data['events'][$organization_id] ) ) {
                         foreach ( $events as $event ) {
                             if ( !in_array( $event->id, $current_events_ids ) ) {
                                 $ret_array[] = $event;
+                            } else {
+                                $ret_array_exists[] = $event;
                             }
                         }
                     }
                 } else {
-                    foreach ( $events as $event ) {
-                        $ret_array[] = $event;
-                    }
+                    $ret_array = $events;
                 }
                 
-                return $ret_array;
+                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'exist' => $ret_array_exists, 'all' => $events );
             }
             
             return array();
@@ -353,11 +392,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
             if ( isset( $events['values'] ) && !empty( $events['values'] ) ) {
-                $events = $this->_prepare_events( $events['values'], $organization_id );
-                if ( !empty( $events ) && is_array( $events ) ) {
-                    $events = $this->_make_events_array( $events );
-                    $this->_data['events'][$organization_id] = $events;
-                    $this->_make_posts_from_events( $events );
+                $events = $this->_prepare_events( $events['values'], $organization_id, true );
+                $this->_data['events'][$organization_id] = $events['all'];
+                if ( !empty( $events['exist'] ) && is_array( $events['exist'] ) ) {
+                    $events_exist = $this->_make_events_array( $events['exist'] );
+                    $this->_update_events_content( $events['exist'] );
+                }
+                if ( !empty( $events['new'] ) && is_array( $events['new'] ) ) {
+                    $events_new = $this->_make_events_array( $events['new'] );
+                    $this->_make_posts_from_events( $events_new );
                 } else {
                     return $events;
                 }
