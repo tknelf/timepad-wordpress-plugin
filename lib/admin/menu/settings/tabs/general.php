@@ -148,7 +148,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         'event_id'         => intval( $event['id'] )
                         ,'organization_id' => intval( $this->_data['current_organization_id'] )
                     );
-                    $content = $event['description_html'] . '<br />[timepadevent id="' . $event['id'] . '"]';
+                    $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadevent id="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $insert_args = array(
                         'post_title'     => sanitize_text_field( $event['name'] )
@@ -405,8 +405,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     return $events;
                 }
             }
-
-            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $events, 'events', $organization_id );
+            
+            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['events'], 'events' );
         }
 
         /**
