@@ -29,6 +29,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @var string
          */
         protected $_starts_at_min = '1970-01-01';
+        
+        /**
+         * fields need to parse from TimePad API
+         * 
+         * @access protected
+         * @var    string
+         */
+        protected $_fields = 'description_html';
 
         public function __construct() {
             parent::__construct();
@@ -191,24 +199,20 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return void
          */
         private function _update_events_content( array $events ) {
+            global $wpdb;
+            
             foreach ( $events as $event ) {
                 $meta_array = array(
                     'event_id'         => intval( $event['id'] )
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
                 );
-                $events_posts = get_post(
-                    array(
-                        'meta_key'    => 'timepad_meta'
-                        ,'meta_value' => $meta_array
-                        ,'posts_per_page' => -1
-                        ,'post_status'    => 'publish'
-                    )
-                );
-                if ( !empty( $events_posts ) && !empty( $events_posts[0] ) && isset( $events_posts[0] ) ) {
+                $sql = "SELECT * FROM `{$wpdb->posts}` LEFT JOIN `{$wpdb->postmeta}` ON `{$wpdb->posts}`.`ID` = `{$wpdb->postmeta}`.`post_id` WHERE 1=1 AND `{$wpdb->postmeta}`.`meta_value` LIKE '%s'";
+                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
+                if ( !empty( $event_post ) ) {
                     $content = $event['description_html'] . '<br />[timepadevent id="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $update_args = array(
-                        'ID'             => $events_posts[0]->ID
+                        'ID'             => $event_post->ID
                         ,'post_title'    => sanitize_text_field( $event['name'] )
                         ,'post_content'  => $content
                         ,'post_date'     => $date['date']
@@ -375,6 +379,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 'organization_ids'     => $organization_id
                 ,'moderation_statuses' => $this->_moderation_statuses
                 ,'starts_at_min'       => $this->_starts_at_min
+                ,'fields'              => $this->_fields
                 ,'limit'               => $this->_default_limit
             );
             $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
