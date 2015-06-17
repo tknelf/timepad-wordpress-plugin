@@ -43,13 +43,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             
             //set the tab title
             $this->tab_title = __( 'General', 'timepad' );
-            
-            //init TimePadEvents cron functionality
-            add_action( 'timepad_cron', function() {
-                if ( $this->_data['autoimport'] ) {
-                    $this->post_events($this->_data['current_organization_id']);
-                }
-            } );
         }
         
         /**

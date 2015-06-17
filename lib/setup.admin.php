@@ -63,6 +63,13 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                     }
                 }
             }
+            
+            //init TimePadEvents cron functionality
+            add_action( 'timepad_cron', function() {
+                if ( $this->_data['autoimport'] && !wp_next_scheduled( 'timepad_cron' ) ) {
+                    TimepadEvents_Admin_Settings_General::getInstance()->post_events($this->_data['current_organization_id']);
+                }
+            } );
 
         }
 
@@ -119,7 +126,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 }
             }
             
-            delete_option( $this->_config['optionkey'] );
+            delete_option( 'timepad_data' );
             delete_option( 'timepad_flushed' );
             
             setcookie( 'timepad_site_url', null, -1, '/' );
