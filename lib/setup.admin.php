@@ -66,7 +66,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             
             //init TimePadEvents cron functionality
             add_action( 'timepad_cron', function() {
-                if ( $this->_data['autoimport'] && !wp_next_scheduled( 'timepad_cron' ) ) {
+                if ( $this->_data['autoimport'] ) {
                     TimepadEvents_Admin_Settings_General::getInstance()->post_events($this->_data['current_organization_id']);
                 }
             } );

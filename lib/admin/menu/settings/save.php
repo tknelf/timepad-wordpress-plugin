@@ -47,7 +47,9 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             if (isset($_POST['timepad_autoimport']) && !empty($_POST['timepad_autoimport'])) {
                 $data = get_option('timepad_data');
                 $data['autoimport'] = 1;
-                wp_schedule_event( time(), 'once_three_mins', 'timepad_cron' );
+                if ( !wp_next_scheduled( 'timepad_cron' ) ) {
+                    wp_schedule_event( time(), 'once_three_mins', 'timepad_cron' );
+                }
                 update_option('timepad_data', $data);
             } else {
                 $data = get_option('timepad_data');
