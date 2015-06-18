@@ -37,6 +37,22 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @var    string
          */
         protected $_fields = 'description_html';
+        
+        /**
+         * Max Length of event name/title
+         * 
+         * @access protected
+         * @var    int
+         */
+        protected $_title_maxlength = 250;
+        
+        /**
+         * Max Length of event subdomain
+         * 
+         * @access preotected
+         * @var int
+         */
+        protected $_subdomain_maxlength = 25;
 
         public function __construct() {
             parent::__construct();
@@ -244,11 +260,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     } else {
                         //if we hasn't yet organizations - make the one!
-                        $site_name = get_bloginfo( 'name' );
+                        $site_name = substr( get_bloginfo( 'name' ), 0, $this->_title_maxlength );
                         $this->add_request_body( 
                             array( 
                                 'name'       => sanitize_text_field( $site_name )
-                                ,'subdomain' => sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) )
+                                ,'subdomain' => sanitize_title( str_ireplace( '.' , '', substr( $_SERVER['HTTP_HOST'], 0, $this->_subdomain_maxlength ) ) )
                                 ,'phone'     => '0000000000'
                             )
                         );
