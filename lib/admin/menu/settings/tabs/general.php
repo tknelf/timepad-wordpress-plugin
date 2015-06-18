@@ -264,7 +264,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         $this->add_request_body( 
                             array( 
                                 'name'       => sanitize_text_field( $site_name )
-                                ,'subdomain' => sanitize_title( str_ireplace( '.' , '', substr( $_SERVER['HTTP_HOST'], 0, $this->_subdomain_maxlength ) ) )
+                                ,'subdomain' => substr( sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ), 0, $this->_subdomain_maxlength )
                                 ,'phone'     => '0000000000'
                             )
                         );
