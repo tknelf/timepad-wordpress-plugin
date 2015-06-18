@@ -49,7 +49,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * Max Length of event subdomain
          * 
-         * @access preotected
+         * @access protected
          * @var int
          */
         protected $_subdomain_maxlength = 25;
