@@ -149,7 +149,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         'event_id'         => intval( $event['id'] )
                         ,'organization_id' => intval( $this->_data['current_organization_id'] )
                     );
-                    $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadevent id="' . $event['id'] . '"]';
+                    $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadregistration id="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $insert_args = array(
                         'post_title'     => sanitize_text_field( $event['name'] )
@@ -202,7 +202,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $sql = "SELECT * FROM `{$wpdb->posts}` LEFT JOIN `{$wpdb->postmeta}` ON `{$wpdb->posts}`.`ID` = `{$wpdb->postmeta}`.`post_id` WHERE 1=1 AND `{$wpdb->postmeta}`.`meta_value` LIKE '%s'";
                 $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
                 if ( !empty( $event_post ) ) {
-                    $content = $event['description_html'] . '<br />[timepadevent id="' . $event['id'] . '"]';
+                    $content = $event['description_html'] . '<br />[timepadregistration id="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $update_args = array(
                         'ID'             => $event_post->ID

@@ -151,7 +151,7 @@ if ( ! is_admin() ) {
     /**
      * Enable new shortcode to display the one at site posts and pages
      */
-    add_shortcode( 'timepadevent' , function( array $atts ) {
+    add_shortcode( 'timepadregistration' , function( array $atts ) {
         return "<script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['id'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script>";
     } );
     
