@@ -30,6 +30,13 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * @var array
          */
         protected $_classes = array();
+        
+        /**
+         * Arguments to make requests
+         * @access protected
+         * @var array
+         */
+        protected $_request_args = array();
 
         /**
          * Current class handler taken from current called class name,
@@ -53,6 +60,11 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             if ( !isset( $_COOKIE['timepad_site_url'] ) || empty( $_COOKIE['timepad_site_url'] ) ) {
                 setcookie( 'timepad_site_url', TIMEPADEVENTS_SITEURL, 3600 * 24 * 5, '/' );
             }
+            
+            //default request header to make correct json request
+            $this->_request_args = array(
+                'headers' => array( 'Content-type' => 'application/json' )
+            );
             
             $this->_config = self::_get_config();
             
@@ -191,14 +203,38 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         }
         
         /**
+         * This function adds to request headers some params from $headers
+         * 
+         * @param array $headers params for request headers
+         * @access public
+         */
+        public function add_request_headers( array $headers ) {
+            if ( !empty( $headers ) && is_array( $headers ) ) {
+                $this->_request_args['headers'] = array_merge( $this->_request_args['headers'], $headers );
+            }
+        }
+
+        /**
          * This function adds to request body some params from $body
          * 
          * @param array $body params for request body
          * @access public
          */
-        public function add_request_body( array $body ) {
-            if ( !empty( $body ) && is_array( $body ) ) {
+        public function add_request_body( $body ) {
+            if ( !empty( $body ) ) {
                 $this->_request_args['body'] = $body;
+            }
+        }
+        
+        /**
+         * This function removes request headers by $key
+         * 
+         * @param $key
+         * @access public
+         */
+        public function remove_request_headers( $key ) {
+            if ( isset( $this->_request_args['headers'][$key] ) ) {
+                unset( $this->_request_args['headers'][$key] );
             }
         }
         

@@ -7,13 +7,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
     abstract class TimepadEvents_Admin_Settings_Base extends TimepadEvents_Admin_Base {
         
         /**
-         * Arguments to make requests
-         * @access protected
-         * @var array
-         */
-        protected $_request_args = array();
-        
-        /**
          * Token from TimePad API to make requests
          * @access protected
          * @var string
@@ -64,11 +57,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                     }
                 }
             }
-            
-            //default request header to make correct json request
-            $this->_request_args = array(
-                'headers' => array( 'Content-type' => 'application/json' )
-            );
             
             //default settings page tab action url
             $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save.php';

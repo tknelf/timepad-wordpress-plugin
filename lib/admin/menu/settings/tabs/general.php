@@ -261,12 +261,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     } else {
                         //if we hasn't yet organizations - make the one!
                         $site_name = substr( get_bloginfo( 'name' ), 0, $this->_title_maxlength );
-                        $this->add_request_body( 
+                        $this->add_request_headers( array( 'Authorization' => 'Bearer ' . $this->_token ) );
+                        $this->add_request_body( json_encode (
                             array( 
                                 'name'       => sanitize_text_field( $site_name )
                                 ,'subdomain' => substr( sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ), 0, $this->_subdomain_maxlength )
                                 ,'phone'     => '0000000000'
-                            )
+                            ) )
                         );
                         
                         $organizations = $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
@@ -280,6 +281,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
                             }
                         }
+                        $this->remove_request_headers( 'Authorization' );
+                        $this->remove_request_body();
 
                     }
                     
