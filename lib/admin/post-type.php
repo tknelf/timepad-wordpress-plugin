@@ -113,6 +113,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                     'with_front'     => true
                 ),
                 'capability_type'    => 'post',
+                'capabilities' => array(
+                    'create_posts' => false
+                ),
                 //'map_meta_cap'       => true,
                 'has_archive' 	     => true,
                 'hierarchical' 	     => false,
