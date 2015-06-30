@@ -244,14 +244,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
              * If we have token but no organizations, we make first request to get organizations list
              */
             if ( !empty( $this->_token ) ) {
-                
-                if ( !isset( $this->_data['organizations'] ) || empty( $this->_data['organizations'] ) ) {
+                if ( !isset( $this->_data['organizations'] ) || empty( $this->_data['organizations']['organizations'] ) ) {
                     //request about getting organizations list
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
-
-                    if ( $organizations ) {
+                    if ( $organizations['organizations'] ) {
                         $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
-
+                        
                         //If we have only one organization - let's make the one is default!
                         if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
                             $keys = array_keys( $this->_data['organizations']['organizations'] );
@@ -270,20 +268,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             ) )
                         );
                         
-                        $organizations = $this->_get_request_array( $this->_config['create_organization_url'], 'post' );
+                        $organizations = array(
+                            'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
+                        );
                         if ( $organizations ) {
-                            $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
+                            if ( empty( $organizations['organizations']['response_status']->error_code ) && empty( $organizations['organizations']['response_status']->message ) ) {
+                                $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
 
-                            //If we have only one organization - let's make the one is default!
-                            if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
-                                $keys = array_keys( $this->_data['organizations']['organizations'] );
-                                $this->_data['current_organization_id'] = intval( $keys[0] );
-                                TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                                //If we have only one organization - let's make the one is default!
+                                if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
+                                    $keys = array_keys( $this->_data['organizations']['organizations'] );
+                                    $this->_data['current_organization_id'] = intval( $keys[0] );
+                                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                                }
+                            } else {
+                                wp_die( $organizations['organizations']['response_status']->message . ': ' . $organizations['response_status']->errors[0]->field_name . ' - ' . $organizations['organizations']['response_status']->errors[0]->message , $organizations['organizations']['response_status']->message );
                             }
                         }
                         $this->remove_request_headers( 'Authorization' );
                         $this->remove_request_body();
-
+                        
                     }
                     
                     TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['organizations'], 'organizations' );
