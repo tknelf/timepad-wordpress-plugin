@@ -245,7 +245,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
              */
             if ( !empty( $this->_token ) ) {
                 
-                if ( !isset( $this->_data['organizations'] ) ) {
+                if ( !isset( $this->_data['organizations'] ) || empty( $this->_data['organizations'] ) ) {
                     //request about getting organizations list
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
 
