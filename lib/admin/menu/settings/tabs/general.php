@@ -233,6 +233,84 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
         }
+        
+        /**
+         * This function checks possible subdomain errors
+         * 
+         * @param  string $subdomain
+         * @access protected
+         * @return string Sanitized subdomain string
+         */
+        protected function _sanitize_new_organization( $subdomain ) {
+            $subdomain = substr( sanitize_title( str_ireplace( '.' , '', trim( $subdomain, '-' ) ) ), 0, $this->_subdomain_maxlength );
+            if ( is_numeric( $subdomain ) ) {
+                $subdomain = 'ip' . $subdomain;
+            }
+            
+            return $subdomain;
+        }
+        
+        /**
+         * This function adds new organization by Site name as Organization name and subdomain as TimePad subdomain
+         * 
+         * @param  string $site_name Organization name
+         * @param  string $subdomain Subdomain name
+         * @access protected
+         * @return array with keys 'organizations' with API response and 'errors_handle' width possible errors
+         */
+        protected function _add_new_organization( $site_name, $subdomain ) {
+            $this->add_request_body( json_encode (
+                array( 
+                    'name'       => $site_name
+                    ,'subdomain' => $subdomain
+                    ,'phone'     => '0000000000'
+                ) )
+            );
+
+            $organizations = array(
+                'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
+            );
+            $errors_handle = $this->_errors_handle( $organizations['organizations'] );
+            
+            return array(
+                'organizations'  => $organizations
+                ,'errors_handle' => $errors_handle
+            );
+        }
+        
+        /**
+         * This function handles possible errors at $response
+         * 
+         * @param  array $response
+         * @access protected
+         * @return array|boolean If errors exists returns array, if all OK returns false
+         */
+        protected function _errors_handle( $response ) {
+            $response = TimepadEvents_Helpers::object_to_array( $response );
+            if ( $response['response_status']['error_code'] === 422 ) {
+                $message = '[' . $response['response_status']['error_code'] . '] ' . $response['response_status']['message'];
+                if ( !empty( $response['response_status']['errors'] ) && is_array( $response['response_status']['errors'] ) ) {
+                    $message .= ': ';
+                    $not_unique = false;
+                    $errors_message_array = array();
+                    foreach ( $response['response_status']['errors'] as $error_array ) {
+                        $errors_message_array[] = '[' . $error_array['field_name'] . ': ' . $error_array['message'] . ']';
+                        if ( $error_array['field_name'] == 'subdomain' && $error_array['error_code'] == 'not_unique' ) {
+                            $not_unique = true;
+                        }
+                    }
+                    $message .= join( ', ', $errors_message_array );
+                }
+                
+                return array(
+                    'message'     => $message
+                    ,'response'   => $response
+                    ,'not_unique' => $not_unique
+                );
+            }
+            
+            return false;
+        }
 
         /**
          * This function makes some prepare job before settings page loads
@@ -258,32 +336,34 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     } else {
                         //if we hasn't yet organizations - make the one!
-                        $site_name = substr( get_bloginfo( 'name' ), 0, $this->_title_maxlength );
+                        $site_name = sanitize_text_field( substr( get_bloginfo( 'name' ), 0, $this->_title_maxlength ) );
+                        $subdomain = $this->_sanitize_new_organization( $_SERVER['HTTP_HOST'] );
                         $this->add_request_headers( array( 'Authorization' => 'Bearer ' . $this->_token ) );
-                        $this->add_request_body( json_encode (
-                            array( 
-                                'name'       => sanitize_text_field( $site_name )
-                                ,'subdomain' => substr( sanitize_title( str_ireplace( '.' , '', $_SERVER['HTTP_HOST'] ) ), 0, $this->_subdomain_maxlength )
-                                ,'phone'     => '0000000000'
-                            ) )
-                        );
-                        
-                        $organizations = array(
-                            'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
-                        );
-                        if ( $organizations ) {
-                            if ( empty( $organizations['organizations']['response_status']->error_code ) && empty( $organizations['organizations']['response_status']->message ) ) {
-                                $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
-
-                                //If we have only one organization - let's make the one is default!
-                                if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
-                                    $keys = array_keys( $this->_data['organizations']['organizations'] );
-                                    $this->_data['current_organization_id'] = intval( $keys[0] );
-                                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                        $new_organization = $this->_add_new_organization( $site_name, $subdomain );
+                        if ( isset( $new_organization['errors_handle'] ) && !empty( $new_organization['errors_handle'] ) ) {
+                            if ( $new_organization['errors_handle']['not_unique'] === true ) {
+                                $i = 2;
+                                while ( isset( $new_organization['errors_handle']['not_unique'] ) && $new_organization['errors_handle']['not_unique'] === true ) {
+                                    $site_name .= $i;
+                                    $new_organization = $this->_add_new_organization( $site_name, $subdomain );
+                                    $i++;
+                                    //just for security
+                                    if ( $i == 30 ) {
+                                        wp_die( $new_organization['errors_handle']['message'] );
+                                        break;
+                                    }
                                 }
                             } else {
-                                wp_die( $organizations['organizations']['response_status']->message . ': ' . $organizations['response_status']->errors[0]->field_name . ' - ' . $organizations['organizations']['response_status']->errors[0]->message , $organizations['organizations']['response_status']->message );
+                                wp_die( $new_organization['errors_handle']['message'] );
                             }
+                        }
+                        
+                        $this->_data['organizations'] = $this->_make_organizations_array( $new_organization['organizations'] );
+                        
+                        if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
+                            $keys = array_keys( $this->_data['organizations']['organizations'] );
+                            $this->_data['current_organization_id'] = intval( $keys[0] );
+                            TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
                         }
                         $this->remove_request_headers( 'Authorization' );
                         $this->remove_request_body();

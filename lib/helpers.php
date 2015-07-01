@@ -59,6 +59,10 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             
             return false;
         }
+        
+        public static function object_to_array( $data ) {
+            return json_decode( json_encode( $data ) );
+        }
 
         public static function update_option( $option_name, $value ) {
             return self::allowed_option( $option_name ) ? @update_option( $option_name, $value ) : false;
