@@ -68,13 +68,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access private
          * @return array Organizations array with meta info plus key 'organizations' with keys of organization ID
          */
-        private function _make_organizations_array( array $organizations ) {
+        private function _make_organizations_array( array $organizations, $single = false ) {
             if ( !empty( $organizations ) && is_array( $organizations ) ) {
                 $ret_array = array();
-                foreach ( $organizations['organizations'] as $organization ) {
-                    $ret_array[$organization->id] = (array) $organization;
+                if ( !$single ) {
+                    foreach ( $organizations['organizations'] as $organization ) {
+                        $ret_array[$organization['id']] = $organization;
+                    }
+                } else {
+                    $ret_array[$organizations['organizations']['id']] = $organizations['organizations'];
                 }
                 $organizations['organizations'] = $ret_array;
+                
                 return $organizations;
             }
             
@@ -121,7 +126,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function make a WordPress needle format for a post (TimePad event)
          * If event is past - its own post/event time in WPDB will be as this time
-         * If event wiil be in the future - its own WPDB time will be as now time 
+         * If event will be in the future - its own WPDB time will be as now time 
          * but with rand interval to make some time different to fix prev/next post navigation
          * 
          * @param string $time time string from TimePad API to be converted
@@ -270,6 +275,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $organizations = array(
                 'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
             );
+            $organizations = TimepadEvents_Helpers::object_to_array( $organizations );
             $errors_handle = $this->_errors_handle( $organizations['organizations'] );
             
             return array(
@@ -285,9 +291,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @return array|boolean If errors exists returns array, if all OK returns false
          */
-        protected function _errors_handle( $response ) {
-            $response = TimepadEvents_Helpers::object_to_array( $response );
-            if ( $response['response_status']['error_code'] === 422 ) {
+        protected function _errors_handle( array $response ) {
+            if ( isset( $response['response_status']['error_code'] ) && $response['response_status']['error_code'] === 422 ) {
                 $message = '[' . $response['response_status']['error_code'] . '] ' . $response['response_status']['message'];
                 if ( !empty( $response['response_status']['errors'] ) && is_array( $response['response_status']['errors'] ) ) {
                     $message .= ': ';
@@ -325,7 +330,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 if ( !isset( $this->_data['organizations'] ) || empty( $this->_data['organizations']['organizations'] ) ) {
                     //request about getting organizations list
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
-                    if ( $organizations['organizations'] ) {
+                    if ( isset( $organizations['organizations'] ) && !empty( $organizations['organizations'] ) ) {
                         $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
                         
                         //If we have only one organization - let's make the one is default!
@@ -343,9 +348,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         if ( isset( $new_organization['errors_handle'] ) && !empty( $new_organization['errors_handle'] ) ) {
                             if ( $new_organization['errors_handle']['not_unique'] === true ) {
                                 $i = 2;
-                                while ( isset( $new_organization['errors_handle']['not_unique'] ) && $new_organization['errors_handle']['not_unique'] === true ) {
-                                    $site_name .= $i;
-                                    $new_organization = $this->_add_new_organization( $site_name, $subdomain );
+                                while ( $new_organization['errors_handle']['not_unique'] === true ) {
+                                    $new_subdomain = $subdomain . $i;
+                                    $new_organization = $this->_add_new_organization( $site_name, $new_subdomain );
                                     $i++;
                                     //just for security
                                     if ( $i == 30 ) {
@@ -358,7 +363,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             }
                         }
                         
-                        $this->_data['organizations'] = $this->_make_organizations_array( $new_organization['organizations'] );
+                        $this->_data['organizations'] = array_merge( $organizations, $this->_make_organizations_array( $new_organization['organizations'], true ) );
                         
                         if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
                             $keys = array_keys( $this->_data['organizations']['organizations'] );
@@ -507,7 +512,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
             
-            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['events'], 'events' );
+            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
         }
 
         /**

@@ -60,8 +60,21 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             return false;
         }
         
-        public static function object_to_array( $data ) {
-            return json_decode( json_encode( $data ) );
+        public static function object_to_array( $obj ) {
+            if ( is_object( $obj ) ) {
+                $obj = (array) $obj;
+            }
+            
+            if ( is_array( $obj ) ) {
+                $new = array();
+                foreach( $obj as $key => $val ) {
+                    $new[$key] = self::object_to_array( $val );
+                }
+            } else {
+                $new = $obj;
+            }
+            
+            return $new;
         }
 
         public static function update_option( $option_name, $value ) {
