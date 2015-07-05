@@ -98,7 +98,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             if ( !empty( $events ) && is_array( $events ) ) {
                 $ret_array = array();
                 foreach ( $events as $event ) {
-                    $ret_array[$event->id] = (array) $event;
+                    $ret_array[$event['id']] = (array) $event;
                 }
                 
                 return $ret_array;
@@ -449,7 +449,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $current_events_ids = array_keys( $this->_data['events'][$organization_id] );
                     if ( !empty( $current_events_ids ) && is_array( $this->_data['events'][$organization_id] ) ) {
                         foreach ( $events as $event ) {
-                            if ( !in_array( $event->id, $current_events_ids ) ) {
+                            if ( !in_array( $event['id'], $current_events_ids ) ) {
                                 $ret_array[] = $event;
                             } else {
                                 $ret_array_exists[] = $event;

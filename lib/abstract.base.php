@@ -196,10 +196,10 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
                 $body = wp_remote_retrieve_body( $request );
-                $ret_array = (array) json_decode( $body );
+                $ret_array = json_decode( $body );
             }
             
-            return $ret_array;
+            return TimepadEvents_Helpers::object_to_array( $ret_array );
         }
         
         /**
