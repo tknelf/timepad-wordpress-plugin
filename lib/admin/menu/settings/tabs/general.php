@@ -220,6 +220,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                             wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
                         }
+                    } else {
+                        if ( is_array( $check_posts ) ) {
+                            foreach ( $check_posts as $update_post ) {
+                                $update_args = array(
+                                    'ID'           => $update_post->ID
+                                    ,'post_status' => 'publish'
+                                );
+                                wp_update_post( $update_args );
+                            }
+                        }
                     }
                 }
             }
