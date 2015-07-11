@@ -165,20 +165,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return object|array single post object or array of WP posts objects
          */
         protected function _get_posts_by_timepad_event_id( $event_id, $single = true, $status = 'publish', $organization_id = false ) {
+            global $wpdb;
+
             $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
             $meta_array = array(
                 'event_id'         => intval( $event_id )
                 ,'organization_id' => intval( $org_id )
             );
-            
-            $check_args = array(
-                'meta_key'        => 'timepad_meta'
-                ,'meta_value'     => $meta_array
-                ,'posts_per_page' => -1
-                ,'post_status'    => $status
-            );
-            $posts = get_posts( $check_args );
-            
+
+            $meta_str = serialize( $meta_array );
+            $sql_prepare = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$wpdb->postmeta}.meta_value = %s";
+            $posts = $wpdb->get_results( $wpdb->prepare( $sql_prepare, $meta_str ) );
+
             return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
         }
 
