@@ -210,8 +210,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'post_modified_gmt' => $date['date_gmt']
                     );
                     
-                    $check_posts = $this->_get_posts_by_timepad_event_id( $event['id'] );
-                    if ( empty( $check_posts ) ) {
+                    $check_post = $this->_get_posts_by_timepad_event_id( $event['id'] );
+                    if ( empty( $check_post ) ) {
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
                             update_post_meta( $id, 'timepad_meta', $meta_array );
@@ -219,15 +219,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
                         }
                     } else {
-                        if ( is_array( $check_posts ) ) {
-                            foreach ( $check_posts as $update_post ) {
-                                $update_args = array(
-                                    'ID'           => $update_post->ID
-                                    ,'post_status' => 'publish'
-                                );
-                                wp_update_post( $update_args );
-                            }
-                        }
+                        $update_args = array(
+                            'ID'           => $check_post->ID
+                            ,'post_status' => 'publish'
+                        );
+                        wp_update_post( $update_args );
                     }
                 }
             }
@@ -240,7 +236,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @return wp_update_post function: id of updated post
          */
-        protected function _make_wp_event_invizible( $post_id ) {
+        protected function _make_wp_event_invisible( $post_id ) {
             $update_args = array(
                 'ID'           => $post_id
                 ,'post_status' => 'private'
@@ -555,7 +551,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     foreach ( $events['excluded'] as $org_id => $excl_event ) {
                         $excluded_post = $this->_get_posts_by_timepad_event_id( $excl_event['id'] );
                         if ( !empty( $excluded_post ) ) {
-                            $this->_make_wp_event_invizible( $excluded_post->ID );
+                            $this->_make_wp_event_invisible( $excluded_post->ID );
                         }
                     }
                 }
