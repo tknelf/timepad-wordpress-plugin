@@ -236,10 +236,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @return wp_update_post function: id of updated post
          */
-        protected function _make_wp_event_invisible( $post_id ) {
+        protected function _make_wp_event_status( $post_id, $status ) {
             $update_args = array(
                 'ID'           => $post_id
-                ,'post_status' => 'private'
+                ,'post_status' => $status
             );
             return wp_update_post( $update_args );
         }
@@ -485,6 +485,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $ret_array = array();
                 $ret_array_exists = array();
                 $ret_array_excluded = array();
+                $ret_array_exist_not_excluded = array();
                 $exist_events = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
                 if ( !empty( $exist_events ) && is_array( $exist_events ) ) {
                     $ret_array_excluded = array_diff( $exist_events, $events );
@@ -499,11 +500,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             }
                         }
                     }
+                    $ret_array_exist_not_excluded = array_diff( $ret_array_exists, $ret_array_excluded );
                 } else {
                     $ret_array = $events;
                 }
                 
-                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $ret_array_excluded, 'exist' => $ret_array_exists, 'all' => $events );
+                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $ret_array_excluded, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $events );
             }
             
             return array();
@@ -551,7 +553,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     foreach ( $events['excluded'] as $org_id => $excl_event ) {
                         $excluded_post = $this->_get_posts_by_timepad_event_id( $excl_event['id'] );
                         if ( !empty( $excluded_post ) ) {
-                            $this->_make_wp_event_invisible( $excluded_post->ID );
+                            $this->_make_wp_event_status( $excluded_post->ID, 'private' );
+                        }
+                    }
+                }
+                if ( !empty( $events['exist_not_excluded'] ) && is_array( $events['exist_not_excluded'] ) ) {
+                    foreach ( $events['exist_not_excluded'] as $org_id => $not_excl_event ) {
+                        $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event['id'] );
+                        if ( !empty( $exist_not_excluded_post ) ) {
+                            $this->_make_wp_event_status( $exist_not_excluded_post->ID, 'publish' );
                         }
                     }
                 }
