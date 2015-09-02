@@ -59,6 +59,23 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             
             return false;
         }
+        
+        public static function object_to_array( $obj ) {
+            if ( is_object( $obj ) ) {
+                $obj = (array) $obj;
+            }
+            
+            if ( is_array( $obj ) ) {
+                $new = array();
+                foreach( $obj as $key => $val ) {
+                    $new[$key] = self::object_to_array( $val );
+                }
+            } else {
+                $new = $obj;
+            }
+            
+            return $new;
+        }
 
         public static function update_option( $option_name, $value ) {
             return self::allowed_option( $option_name ) ? @update_option( $option_name, $value ) : false;
@@ -87,9 +104,9 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
 
 
         /**
-         * This function get NetMolis class handler by $classname
+         * This function get TimePadEvents class handler by $classname
          *
-         * @param  string $classname Needle NetMolis class name
+         * @param  string $classname Needle TimePadEvents class name
          * @return string Handler of needle class
          */
         public static function get_class_handler( $classname ) {

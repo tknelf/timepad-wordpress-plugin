@@ -63,6 +63,14 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                     }
                 }
             }
+            
+            //init TimePadEvents cron functionality
+            add_action( 'timepad_cron', function() {
+                if ( $this->_data['autoimport'] ) {
+                    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php');
+                    TimepadEvents_Admin_Settings_General::getInstance()->post_events($this->_data['current_organization_id']);
+                }
+            } );
 
         }
 
@@ -77,8 +85,9 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 return;
             }
             
-            setcookie( 'timepad_site_url', site_url(), 3600 * 24 * 5, '/' );
-
+            if ( !isset( $_COOKIE['timepad_site_url'] ) || empty( $_COOKIE['timepad_site_url'] ) ) {
+                setcookie( 'timepad_site_url', TIMEPADEVENTS_SITEURL, 3600 * 24 * 5, '/' );
+            }
         }
 
         /**
@@ -102,7 +111,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             }
             
             $timepad_posts = get_posts(array(
-                'post_type'       => parent::$post_type
+                'post_type'       => TIMEPADEVENTS_POST_TYPE
                 ,'posts_per_page' => -1
             ));
             if ( !empty( $timepad_posts ) && is_array( $timepad_posts ) ) {
@@ -111,14 +120,15 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 }
             }
             
-            $timepad_terms = get_terms( parent::$post_type . '_category', array( 'hide_empty' => false ) );
+            $timepad_terms = get_terms( TIMEPADEVENTS_POST_TYPE . '_category', array( 'hide_empty' => false ) );
             if ( !empty( $timepad_terms ) && is_array( $timepad_terms ) ) {
                 foreach ( $timepad_terms as $timepad_term ) {
-                    wp_delete_term( $timepad_term->term_id, parent::$post_type . '_category' );
+                    wp_delete_term( $timepad_term->term_id, TIMEPADEVENTS_POST_TYPE . '_category' );
                 }
             }
             
             delete_option( 'timepad_data' );
+            delete_option( 'timepad_flushed' );
             
             setcookie( 'timepad_site_url', null, -1, '/' );
             setcookie( 'timepad_token', null, -1, '/' );

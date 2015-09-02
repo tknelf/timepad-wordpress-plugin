@@ -7,14 +7,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
     
         public function __construct() {
             parent::__construct();
+
+            //add_action( 'init', array( $this, 'init_post_type' ) );
         }
         
         public function init() {
-            add_action( 'init',      array( $this, 'init_post_type' ) );
-            //add_action( 'save_post', array( $this, 'save' ) );
+            add_action( 'init', array( $this, 'init_post_type' ) );
             
             add_filter( 'post_row_actions', function( $actions, $post ) {
-                if ( $post->post_type == parent::$post_type ) {
+                if ( $post->post_type == TIMEPADEVENTS_POST_TYPE ) {
                     $post_meta         = get_post_meta( $post->ID, 'timepad_meta', true );
                     if ( !empty( $post_meta ) ) {
                         $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
@@ -47,7 +48,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 return $url;
             },0 ,3 );
             
-            add_filter( 'bulk_actions-edit-' . parent::$post_type, function( $actions ) {
+            add_filter( 'bulk_actions-edit-' . TIMEPADEVENTS_POST_TYPE, function( $actions ) {
                 unset($actions['trash']);
                 return $actions;
             } );
@@ -76,7 +77,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
              * @link http://codex.wordpress.org/Function_Reference/register_post_type#Arguments
              */
             $custom_post_type_labels =  apply_filters( 'timepadevents_labels', array(
-                'name' 		     => __( 'Timepad Events',               'timepad' ),
+                'name' 		     => __( 'Events',                 'timepad' ),
                 'singular_name'      => '%1$s',
                 'add_new'            => __( 'Add New',                'timepad' ),
                 'add_new_item' 	     => __( 'Add New %1$s',           'timepad' ),
@@ -88,7 +89,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'not_found' 	     => __( 'No %2$s found',          'timepad' ),
                 'not_found_in_trash' => __( 'No %2$s found in Trash', 'timepad' ),
                 'parent_item_colon'  => '',
-                'menu_name' 	     => __( 'Timepad Events',               'timepad' )
+                'menu_name' 	     => __( 'Events',                 'timepad' )
             ) );
             /**
              * @todo может и не надо так исхитряться, сделал на всякий случай, надо будет проверить
@@ -100,54 +101,65 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                     $this->_get_label_plural() );
             }
             $custom_post_type_labels = $custom_post_type_labels_tmp;
-            $custom_post_type_args = array(
+            $custom_post_type_args   = array(
                 'labels'             => $custom_post_type_labels,
                 'public'             => true,
                 'publicly_queryable' => true,
                 'show_ui'            => true,
                 'show_in_menu' 	     => true,
-                'query_var' 	     => true,
+                //'query_var' 	     => true,
                 'rewrite'            => array(
-                    'slug'           => 'events',
+                    'slug'           => TIMEPADEVENTS_POST_TYPE,
                     'with_front'     => true
                 ),
                 'capability_type'    => 'post',
-                'map_meta_cap'       => true,
+                /*'capabilities' => array(
+                    'create_posts' => false
+                ),*/
+                //'map_meta_cap'       => true,
                 'has_archive' 	     => true,
                 'hierarchical' 	     => false,
                 'supports'           => apply_filters(
                     'timepadevents_item_supports',
-                    array( 'title', 'editor', /*'thumbnail', */'excerpt' )
+                    array( 'title', 'editor', 'excerpt' )
                 )
             );
-            register_post_type( parent::$post_type, apply_filters(
+            register_post_type( TIMEPADEVENTS_POST_TYPE, apply_filters(
                 'timepadevents_item_post_type_args', $custom_post_type_args
             ) );
+            
+            
             $custom_post_type_category_labels = array(
-                'name' 		        => sprintf( _x( '%s Categories', 'taxonomy general name', 'timepad' ), $this->_get_label_singular() ),
-                'singular_name' 	=> _x( 'Category', 'taxonomy singular name',              'timepad' ),
+                'name'              => sprintf( _x( '%s Categories', 'taxonomy general name', 'timepad' ), $this->_get_label_singular() ),
+                'singular_name'     => _x( 'Category', 'taxonomy singular name',              'timepad' ),
                 'search_items' 	    => __( 'Search Categories',                               'timepad' ),
                 'all_items' 	    => __( 'All Categories',                                  'timepad' ),
                 'parent_item' 	    => __( 'Parent Category',                                 'timepad' ),
                 'parent_item_colon' => __( 'Parent Category:',                                'timepad' ),
                 'edit_item' 	    => __( 'Edit Category',                                   'timepad' ),
                 'update_item' 	    => __( 'Update Category',                                 'timepad' ),
-                'add_new_item'   	=> __( 'Add New Category',                                'timepad' ),
-                'new_item_name' 	=> __( 'New Category Name',                               'timepad' ),
+                'add_new_item'      => __( 'Add New Category',                                'timepad' ),
+                'new_item_name'     => __( 'New Category Name',                               'timepad' ),
                 'menu_name' 	    => __( 'Categories',                                      'timepad' )
             );
             $custom_post_type_category_args = apply_filters( 'timepadevents_item_category_args', array(
-                'hierarchical' => true,
-                'labels' 	   => apply_filters( 'timepadevents_item_category_labels', $custom_post_type_category_labels ),
-                'show_ui' 	   => true,
+                //'hierarchical' => true,
+                'labels'       => apply_filters( 'timepadevents_item_category_labels', $custom_post_type_category_labels ),
+                'show_ui'      => true,
                 'query_var'    => 'timepadevents_category',
-                'rewrite' 	   => array(
-                    'slug' => 'events/category',
-                    'with_front' => false,
+                'rewrite'      => array(
+                    'slug' => TIMEPADEVENTS_POST_TYPE_CATEGORY,
+                    'with_front'   => false,
                     'hierarchical' => true
                 )
             ));
-            register_taxonomy( parent::$post_type . '_category',  parent::$post_type, $custom_post_type_category_args );
+            register_taxonomy( TIMEPADEVENTS_POST_TYPE . '_category',  TIMEPADEVENTS_POST_TYPE, $custom_post_type_category_args );
+            
+            $is_flush = get_option( 'timepad_flushed', '' );
+            if ( empty( $is_flush ) ) {
+                flush_rewrite_rules();
+                update_option( 'timepad_flushed', 1 );
+            }
         }
     }
 endif;

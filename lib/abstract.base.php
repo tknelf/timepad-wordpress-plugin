@@ -15,52 +15,61 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
      * @abstract
      */
     abstract class TimepadEvents_Base {
-    
+        
+        /**
+         * TimePad Events plugin configs from config.ini
+         * @access protected
+         * @var array
+         */
         protected $_config = array();
 
         /**
-         * This array collect all local TimepadEvents Classes of some part of NetMolis
+         * This array collect all local TimepadEvents Classes of some part of the plugin
          *
          * @access protected
-         * @var    array
+         * @var array
          */
         protected $_classes = array();
+        
+        /**
+         * Arguments to make requests
+         * @access protected
+         * @var array
+         */
+        protected $_request_args = array();
 
         /**
          * Current class handler taken from current called class name,
-         * for example class name: NetMolis_Admin_Metaboxes; handler is 'metaboxes'
+         * for example class name: TimepadEvents_Admin_Metaboxes; handler is 'metaboxes'
          * This option will help to access class data
          * This variable is very useful for developers
          * By the $handler you can get access to Class Name and to Class instance
          *
          * @access public
-         * @var    string Handler of current class taken from class name
+         * @var string Handler of current class taken from class name
          */
         public $handler;
-
-        /**
-         * @var array|mixed Current item data
-         */
-        protected $_item_data = array();
         
-        protected $_events_request_url;
-
-        public static $post_type = 'timepad-events';
-
+        /**
+         * Singleton
+         */
         private static $_instances = array();
 
         public function __construct( $post = null ) {
             
-            $this->_events_request_url      = 'https://api.timepad.ru/v1/events.json';
+            if ( !isset( $_COOKIE['timepad_site_url'] ) || empty( $_COOKIE['timepad_site_url'] ) ) {
+                setcookie( 'timepad_site_url', TIMEPADEVENTS_SITEURL, 3600 * 24 * 5, '/' );
+            }
+            
+            //default request header to make correct json request
+            $this->_request_args = array(
+                'headers' => array( 'Content-type' => 'application/json' )
+            );
             
             $this->_config = self::_get_config();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
 
-        }
-
-        public function get_id() {
-            return $this->_id;
         }
 
         /**
@@ -83,12 +92,13 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             return self::$_instances[$class];
         }
         
+        /**
+         * This function parse config.ini file
+         * @access private
+         * @return array
+         */
         private static function _get_config() {
             return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'config.ini' );
-        }
-
-        public function get_item_options( $key ) {
-            return isset( $this->_item_data[$key]['options'] ) ? $this->_item_data[$key]['options'] : array();
         }
 
         /**
@@ -132,53 +142,12 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             
             if ( ! defined( 'TIMEPADEVENTS_VERSION' ) ) {
                 /**
-                 * NetMolis version
+                 * TimePadEvents version
                  *
                  * @var string
-                 * @return string NetMolis version
+                 * @return string TimePadEvents version
                  */
                 define( 'TIMEPADEVENTS_VERSION', $config['version'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_SITEURL' ) ) {
-                /**
-                 * Current WordPress site URL
-                 *
-                 * @var     string
-                 * @return  string Your site WordPress URL
-                 * @example https://wordpress.google.com
-                 */
-                define( 'TIMEPADEVENTS_SITEURL', site_url() );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_DOMAIN' ) ) {
-                /**
-                 * NetMolis domain
-                 *
-                 * @var    string
-                 * @return string NetMolis domain for locales
-                 */
-                define( 'TIMEPADEVENTS_DOMAIN', $config['domain'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_DATA_META' ) ) {
-                /**
-                 * The name of plugin database option
-                 *
-                 * @var    string
-                 * @return string The name of plugin database option/postmeta that stores item data
-                 */
-                define( 'TIMEPADEVENTS_DATA_META', $config['meta_data_item'] );
-            }
-
-            if ( ! defined( 'TIMEPADEVENTS_SETTINGS_DATA_META' ) ) {
-                /**
-                 * The name of plugin database option that stores plugin settings data
-                 *
-                 * @var    string
-                 * @return string The name of plugin database option that stores plugin settings data
-                 */
-                define( 'TIMEPADEVENTS_SETTINGS_DATA_META', $config['meta_data_settings'] );
             }
 
             if ( ! defined( 'TIMEPADEVENTS_BASENAME' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
@@ -214,21 +183,66 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             }
         }
         
+        /**
+         * This function make remote request to TimePad API and return response as an array
+         * 
+         * @param string $url request URI
+         * @param string $method request method, default is 'get'
+         * @access protected
+         * @return array Results of request
+         */
         protected function _get_request_array( $url, $method = 'get' ) {
             $ret_array = array();
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
                 $body = wp_remote_retrieve_body( $request );
-                $ret_array = (array) json_decode( $body );
+                $ret_array = json_decode( $body );
             }
             
-            return $ret_array;
+            return TimepadEvents_Helpers::object_to_array( $ret_array );
         }
         
-        public function add_request_body( array $body ) {
-            $this->_request_args['body'] = $body;
+        /**
+         * This function adds to request headers some params from $headers
+         * 
+         * @param array $headers params for request headers
+         * @access public
+         */
+        public function add_request_headers( array $headers ) {
+            if ( !empty( $headers ) && is_array( $headers ) ) {
+                $this->_request_args['headers'] = array_merge( $this->_request_args['headers'], $headers );
+            }
+        }
+
+        /**
+         * This function adds to request body some params from $body
+         * 
+         * @param array $body params for request body
+         * @access public
+         */
+        public function add_request_body( $body ) {
+            if ( !empty( $body ) ) {
+                $this->_request_args['body'] = $body;
+            }
         }
         
+        /**
+         * This function removes request headers by $key
+         * 
+         * @param $key
+         * @access public
+         */
+        public function remove_request_headers( $key ) {
+            if ( isset( $this->_request_args['headers'][$key] ) ) {
+                unset( $this->_request_args['headers'][$key] );
+            }
+        }
+        
+        /**
+         * This function removes request body
+         * 
+         * @access public
+         */
         public function remove_request_body() {
             if ( isset( $this->_request_args['body'] ) ) {
                 unset( $this->_request_args['body'] );
