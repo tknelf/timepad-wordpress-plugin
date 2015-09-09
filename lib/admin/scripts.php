@@ -49,6 +49,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
          * @param type $hook
          */
         public function admin_init_scripts( $hook ) {
+            
             foreach ( self::$_jsHandlesInsidePluginAdmin as $handle ) {
                 if ( $handle == 'media-upload' ) {
                     if ( function_exists( 'wp_enqueue_media' ) ) {
@@ -64,13 +65,19 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
             //TimePadEvents admin script
             wp_register_script( 'timepad-admin-js', plugins_url( 'assets/js/admin/admin.js', TIMEPADEVENTS_FILE ), self::$_jsHandlesInsidePluginAdmin, null/*, true*/ );
             wp_enqueue_script( 'timepad-admin-js' );
-            
+
             //JavaScript Array to transfer data from backend/php/wp to frontend
             $this->_timepadevents_js_array = array(
-                '_site_url' => TIMEPADEVENTS_SITEURL
+                '_site_url'   => TIMEPADEVENTS_SITEURL
+                ,'_admin_url' => TIMEPADEVENTS_ADMIN_URL
             );
-            
+
             wp_localize_script( 'timepad-admin-js', 'timepad', $this->_timepadevents_js_array );
+            
+            if ( $hook == 'tools_page_timepad-events-redirect' ) {
+                wp_register_script( 'timepad-redirect', plugins_url( 'assets/js/admin/redirect.js', TIMEPADEVENTS_FILE ), array( 'jquery', 'timepad-jquery-cookie' ), null );
+                wp_enqueue_script( 'timepad-redirect' );
+            }
         }
     }
 endif;

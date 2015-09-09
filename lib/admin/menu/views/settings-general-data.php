@@ -20,9 +20,11 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <th scope="row">
             <?php if ( isset( $data['organizations']['organizations'] ) ) : ?>
             <select name="organization">
-                <?php foreach ( $data['organizations']['organizations'] as $organization_id => $organization ) : ?>
-                <option value="<?php echo intval( $organization_id ); ?>"><?php echo esc_attr( $organization['name'] ); ?></option>
-                <?php endforeach; ?>
+                <?php foreach ( $data['organizations']['organizations'] as $organization_id => $organization ) : 
+                    if ( !empty( $organization ) && isset( $organization['name'] ) ) : ?>
+                    <option value="<?php echo intval( $organization_id ); ?>"><?php echo esc_attr( $organization['name'] ); ?></option>
+                <?php endif;
+                endforeach; ?>
             </select>
             <?php endif; ?>
         </th>
