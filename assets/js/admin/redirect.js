@@ -1,15 +1,15 @@
-<script type="text/javascript" src="../../../wp-includes/js/jquery/jquery.js"></script>
-<script type="text/javascript" src="assets/js/admin/jquery.cookie.js"></script>
-<script type="text/javascript">
-    if ( jQuery.cookie( 'timepad_site_url' ) != null ) {
-        
+jQuery(document).ready(function() {
+    'use strict';
+    
+    if ( jQuery.cookie( 'timepad_admin_url' ) != null ) {
+
         var getParameterByName = function(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(location.search);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         };
-    
+
         var explode = function( delimiter, string ) {
                 var emptyArray = { 0: '' };
 
@@ -44,15 +44,15 @@
 
         var _cookie_var = explode( '=', location.href ),
         _error_url = '';
-        if ( _cookie_var.length === 2 ) {
-            if ( _cookie_var[1] !== '' ) {
-                jQuery.cookie( 'timepad_token', _cookie_var[1], {
+        if ( _cookie_var.length === 3 ) {
+            if ( _cookie_var[2] !== '' ) {
+                jQuery.cookie( 'timepad_token', _cookie_var[2], {
                     expires: 5, path: '/'
                 } );
             } else jQuery.removeCookie('timepad_token');
         } else {
             jQuery.removeCookie('timepad_token');
-            if ( _cookie_var.length > 2 ) {
+            if ( _cookie_var.length > 3 ) {
                 var _error = getParameterByName('error'),
                         _error_description = getParameterByName('error_description');
                 if ( _error ) {
@@ -61,8 +61,8 @@
             }
         }
 
-        var _url_to_go = jQuery.cookie( 'timepad_site_url' ) + '/wp-admin/edit.php?post_type=timepad-events&page=timepad-events-options' + _error_url;
+        var _url_to_go = jQuery.cookie( 'timepad_admin_url' ) + 'edit.php?post_type=timepad-events&page=timepad-events-options' + _error_url;
         location.href = _url_to_go;
-        
+
     }
-</script>
+});
