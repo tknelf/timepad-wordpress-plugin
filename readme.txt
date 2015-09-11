@@ -34,5 +34,5 @@ You're done! Now the events that you publish on TimePad will automatically appea
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.0 =
 * Initial release
