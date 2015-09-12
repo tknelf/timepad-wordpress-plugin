@@ -1,11 +1,13 @@
 <?php
-require_once( '../../../../../../../wp-load.php' );
-
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-
-$additional_url = '';
 
 if ( isset( $_POST['_wpnonce'] ) ) {
+    
+    require_once( '../../../../../../../wp-load.php' );
+
+    if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+    $additional_url = '';
+
     if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) ) {
         if ( isset( $_POST['cancel_account'] ) && !empty( $_POST['cancel_account'] ) ) {
             $data = get_option( 'timepad_data' );
