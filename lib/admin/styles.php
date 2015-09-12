@@ -26,7 +26,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Styles' ) ) :
          */
         public function init() {
             add_action( 'admin_enqueue_scripts', array( $this, 'admin_init_styles' ) );
-            add_action( 'admin_head', function() {
+            add_action( 'admin_head', function() use ( $this ) {
                 if ( empty( $this->_data['events'] ) ) : ?>
                     <style>
                         #menu-posts-timepad-events ul li:nth-child(2) {display:none}
