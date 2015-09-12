@@ -65,10 +65,11 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             }
             
             //init TimePadEvents cron functionality
-            add_action( 'timepad_cron', function() use ( $this ) {
-                if ( $this->_data['autoimport'] ) {
+            $obj = $this;
+            add_action( 'timepad_cron', function() use ( $obj ) {
+                if ( $obj->_data['autoimport'] ) {
                     require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php');
-                    TimepadEvents_Admin_Settings_General::getInstance()->post_events($this->_data['current_organization_id']);
+                    TimepadEvents_Admin_Settings_General::getInstance()->post_events($obj->_data['current_organization_id']);
                 }
             } );
 
