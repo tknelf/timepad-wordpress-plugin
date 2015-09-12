@@ -84,6 +84,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
 
         }
     } else wp_die( __( 'Wrong security nonce value.', 'timepad' ) );
-} else wp_die( __( 'Security nonce value is empty.', 'timepad' ) );
+    
+    wp_safe_redirect( TIMEPADEVENTS_SITEURL . '/wp-admin/edit.php?post_type=timepad-events&page=timepad-events-options' . $additional_url );
+} else die( 'Security nonce value is empty.' );
 
-wp_safe_redirect( TIMEPADEVENTS_SITEURL . '/wp-admin/edit.php?post_type=timepad-events&page=timepad-events-options' . $additional_url );
