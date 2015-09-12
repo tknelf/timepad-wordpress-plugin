@@ -6,7 +6,6 @@ Tested up to: 4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Plugin URI: http://dev.timepad.ru/modules/worpress-events-about/
 
 TimePad Events for WordPress is the easiest way to start selling tickets on your site using the full stack of TimePad technologies.
 
@@ -30,9 +29,18 @@ Alternatively, manually unzip the file [timepad-events.zip](/files/timepad-event
 3. Navigate to "Events" > "Settings" section and link your WordPress installation to your TimePad account. If you don't have a TimePad account yet, you can easily create it right in this section.
 4. Configure the import settings in the same section. The TimePad Events plugin won't automatically import your events by default.
 
-You're done! Now the events that you publish on TimePad will automatically appear on your WordPress site.
+You're done! Now all events you publish on TimePad will automatically appear on your WordPress website.
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.0 =
 * Initial release
+
+= 1.0.1 =
+* readme.txt reformatted, installation instructions added
+
+= 1.0.2 =
+* oAuth authorisation mechanism changed to comply with WordPress guidelines
+
+= 1.0.3 =
+* Fixed installation problems on WordPress version WordPress 4.2.4
