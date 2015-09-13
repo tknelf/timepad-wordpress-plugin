@@ -33,14 +33,14 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
-= 1.0.0 =
-* Initial release
-
-= 1.0.1 =
-* readme.txt reformatted, installation instructions added
+= 1.0.3 =
+* Fixed installation problems on PHP version 5.4 or higher
 
 = 1.0.2 =
 * oAuth authorisation mechanism changed to comply with WordPress guidelines
 
-= 1.0.3 =
-* Fixed installation problems on WordPress version WordPress 4.2.4
+= 1.0.1 =
+* readme.txt reformatted, installation instructions added
+
+= 1.0.0 =
+* Initial release
