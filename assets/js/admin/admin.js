@@ -10,4 +10,14 @@ jQuery(document).ready(function() {
     if ( _tools_a_elem.length ) {
         _tools_a_elem.parent('li').hide();
     }
+    
+    if ( jQuery('.dismiss-requirements').length ) {
+        jQuery('.dismiss-requirements').click( function() {
+            jQuery.post( ajaxurl, { action: 'dismiss_requirements', security: timepad._security }, function( data ) {
+                if ( data == 1 ) {
+                    jQuery('.timepad-events-notice-requirements').remove();
+                }
+            }, 'json' );
+        } );
+    }
 });

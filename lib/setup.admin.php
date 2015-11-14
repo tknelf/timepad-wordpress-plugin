@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Main Frontend class that prepares all TimepadEvents frontend
  *
  * @class       TimepadEvents_Setup_Admin
- * @version     1.0.0
+ * @version     1.0.5
  * @package     TimepadEvents/Admin
  * @author      TimepadEvents Team
  * @extends     TimepadEvents_Admin_Base
@@ -18,6 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
     
     class TimepadEvents_Setup_Admin extends TimepadEvents_Admin_Base {
+        
+        /**
+         * @var string Name of user meta of requirements show 
+         */
+        protected static $_user_plugin_requirements_meta = 'timepadevents_requirements';
 
         public function __construct() {
             parent::__construct();
@@ -33,8 +38,10 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             );
 
             if ( is_admin() ) {
-                $this->_classes['TimepadEvents_Admin_Scripts']   = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php';
-                $this->_classes['TimepadEvents_Admin_Styles']    = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php';
+                $this->_classes['TimepadEvents_Admin_Scripts'] = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php';
+                $this->_classes['TimepadEvents_Admin_Styles']  = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php';
+                
+                add_action( 'wp_ajax_dismiss_requirements', array( $this, 'timepadevents_dismiss_requirements' ) );
             }
 
             //init core hooks
@@ -68,16 +75,28 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             $data = $this->_data;
             add_action( 'timepad_cron', function() use ( $data ) {
                 if ( $data['autoimport'] ) {
-                    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php');
+                    require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php' );
                     TimepadEvents_Admin_Settings_General::getInstance()->post_events( $data['current_organization_id'] );
                 }
             } );
+            
+            if ( $message = $this->_requirements_messages() ) :
+                if ( $this->_is_plugin_admin_page() ) :
+                    if ( get_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta, true ) == 1 ) :
+                        $tmp_this = $this;
+                        add_action( 'admin_notices', function() use ( $tmp_this, $message ) {
+                            $tmp_this->timepadevents_admin_requirements_notice( $message );
+                        } );
+                    endif;
+                endif;
+            endif;
 
         }
 
         /**
          * Register plugin activation hook
          * 
+         * @since  1.0.0
          * @access public
          * @return void
          */
@@ -89,11 +108,14 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             if ( !isset( $_COOKIE['timepad_admin_url'] ) || empty( $_COOKIE['timepad_admin_url'] ) ) {
                 setcookie( 'timepad_admin_url', TIMEPADEVENTS_ADMIN_URL, 3600 * 24 * 5, '/' );
             }
+            
+            self::_timepadevents_set_admin_requirements_meta();
         }
 
         /**
          * Register plugin deactivation hook
          * 
+         * @since  1.0.0
          * @access public
          * @return void
          */
@@ -104,8 +126,17 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
 
             $timestamp = wp_next_scheduled( 'timepad_cron' );
             wp_unschedule_event( $timestamp, 'timepad_cron' );
+            
+            self::_timepadevents_set_admin_requirements_meta( 'update' );
         }
-
+        
+        /**
+         * Uninstall plugin hook
+         * 
+         * @since  1.0.0
+         * @access public
+         * @return void
+         */
         public static function timepadevents_plugin_uninstall() {
             if ( ! current_user_can( 'activate_plugins' ) ) {
                 return;
@@ -135,6 +166,68 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             setcookie( 'timepad_token', null, -1, '/' );
 
             wp_clear_scheduled_hook( 'timepad_cron' );
+            
+            self::_timepadevents_set_admin_requirements_meta( 'delete' );
+        }
+        
+        /**
+         * This function add/update/delete user meta about show requirements
+         * 
+         * @since  1.0.5
+         * @access protected
+         * @param  string $action add/update/delete action of user meta
+         * @param  int    $meta_value Meta value
+         * @return boolean|void
+         */
+        protected static function _timepadevents_set_admin_requirements_meta( $action = 'add', $meta_value = 1 ) {
+            $users = get_users( array( 'role' => 'administrator' ) );
+            if ( !empty( $users ) && is_array( $users ) ) {
+                foreach ( $users as $user ) {
+                    switch ( $action ) {
+                        case 'add':
+                            add_user_meta( $user->ID, self::$_user_plugin_requirements_meta, $meta_value, true );
+                            break;
+                        case 'update':
+                            update_user_meta( $user->ID, self::$_user_plugin_requirements_meta, $meta_value );
+                            break;
+                        case 'delete':
+                            delete_user_meta( $user->ID, self::$_user_plugin_requirements_meta );
+                            break;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        /**
+         * The function returns output of the div with notice message
+         * 
+         * @since  1.0.5
+         * @access public
+         * @param  string $message Notice message to show
+         * @return void
+         */
+        public function timepadevents_admin_requirements_notice( $message = '' ) {
+            if ( $message ) :?>
+                <div class="timepad-events-notice timepad-events-notice-requirements error">
+                    <p><?php echo $message; ?></p>
+                    <a href="javascript:;" class="timepad-events-dismiss dismiss-requirements"></a>
+                </div>
+            <?php endif;
+        }
+        
+        /**
+         * AJAX handler function of dismiss user requirements notice
+         * 
+         * @since  1.0.5
+         * @access public
+         * @return void
+         */
+        public function timepadevents_dismiss_requirements() {
+            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            @delete_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta );
+            wp_die(1);
         }
 
     }

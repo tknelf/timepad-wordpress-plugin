@@ -1,32 +1,31 @@
 <?php
 
 /**
- * 
- * TimePadEvents is free software: you can redistribute it and/or modify 
+ * TimePad Events is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by 
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
  * 
  * @wordpress-plugin
- * Plugin Name: TimepadEvents
- * Plugin URI:  http://timepad.ru
- * Description: This plugin allows to integrate and synchronize your TimePad events as custom post types in your WordPress site
- * Version:     1.0.0
- * Author:      Igor Sazonov (@tigusigalpa)
- * Author URI:  http://wpspb.org
+ * Plugin Name: TimePad Events
+ * Plugin URI:  http://dev.timepad.ru/modules/wordpress-events-about/
+ * Description: TimePad Events for WordPress is the easiest way to start selling tickets on your site using the full stack of TimePad technologies.
+ * Version:     1.0.5
+ * Author:      TimePad
+ * Author URI:  https://timepad.ru
  * License:     GPL-2.0+
  * Text Domain: timepad
  * Domain Path: /languages
  *
-*
-* You should have received a copy of the GNU General Public License
-* along with Timepad Events. If not, see <http://www.gnu.org/licenses/>.
-*
-* @package  TimepadEvents
-* @category Core
-* @author   Igor Sazonov
-* @version  1.0.0
-*/
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Timepad Events. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package  TimepadEvents
+ * @category Core
+ * @author   Igor Sazonov
+ * @version  1.0.5
+ */
 
 //security check
 if ( ! defined( 'WPINC' ) ) {
