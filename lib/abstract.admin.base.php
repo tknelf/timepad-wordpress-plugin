@@ -97,11 +97,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
         protected function _requirements_messages() {
             $errors = array();
             if ( version_compare( phpversion(), $this->requirements['php'], '<' ) ) {
-                $errors[] = '- ' . sprintf( __( 'Your PHP version is less than %s', 'timepad' ), '<strong>' . $this->requirements['php'] . '</strong>' );
+                $errors[] = '- ' . sprintf( __( 'Your PHP version is less than %s. TimePad Events plugin requires at least PHP 5.4 and can work with errors on older versions. We recommed you update your PHP version - you can do this by contacting your system administrator or to your hosting support.', 'timepad' ), '<strong>' . $this->requirements['php'] . '</strong>' );
             }
             
             if ( version_compare( $this->_wp_version, $this->requirements['wp'], '<' ) ) {
-                $errors[] = '- ' . sprintf( __( 'Your website WordPress version is less than %s', 'timepad' ), '<strong>' . $this->requirements['wp'] . '</strong>' );
+                $errors[] = '- ' . sprintf( __( 'Your website WordPress version is less than %s. TimePad Events plugin requires at least WordPress 4.0 and can work with errors on older versions. We recommend you update your WordPress to the latest version.', 'timepad' ), '<strong>' . $this->requirements['wp'] . '</strong>' );
             }
             
             if ( !empty( $errors ) ) {
