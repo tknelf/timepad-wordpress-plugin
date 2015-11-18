@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-11-13 19:17+0300\n"
-"PO-Revision-Date: 2015-11-13 19:21+0300\n"
+"POT-Creation-Date: 2015-11-18 16:21+0300\n"
+"PO-Revision-Date: 2015-11-18 16:22+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -19,17 +19,31 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: lib/abstract.admin.base.php:93
+#: lib/abstract.admin.base.php:100
 #, php-format
-msgid "Your PHP version is less than %s"
-msgstr "Ваша версия PHP ниже чем %s"
+msgid ""
+"Your PHP version is less than %s. TimePad Events plugin requires at least "
+"PHP 5.4 and can work with errors on older versions. We recommed you update "
+"your PHP version - you can do this by contacting your system administrator "
+"or to your hosting support."
+msgstr ""
+"Ваша версия PHP ниже чем %s. Плагин TimePad может работать некорректно на "
+"версиях PHP ниже 5.4. Мы рекомендуем вам обновить PHP - сделать это вы "
+"можете обратившись к вашему систему администратору или в службу техподдержки "
+"хостинга."
 
-#: lib/abstract.admin.base.php:97
+#: lib/abstract.admin.base.php:104
 #, php-format
-msgid "Your website WordPress version is less than %s"
-msgstr "Версия WordPress Вашего сайта ниже чем %s"
+msgid ""
+"Your website WordPress version is less than %s. TimePad Events plugin "
+"requires at least WordPress 4.0 and can work with errors on older versions. "
+"We recommend you update your WordPress to the latest version."
+msgstr ""
+"Версия WordPress ниже чем %s. Плагин TimePad требует как минимум WordPress "
+"версии 4.0 и может работать с ошибками на более ранних версиях. Мы советуем "
+"Вам обновить WordPress до последней версии версии."
 
-#: lib/abstract.admin.base.php:101
+#: lib/abstract.admin.base.php:108
 msgid "TimePad Events error messages:"
 msgstr "Сообщения об ошибках плагина TimePad:"
 
@@ -65,7 +79,7 @@ msgstr "Неверное значение security nonce."
 msgid "General"
 msgstr "Основное"
 
-#: lib/admin/menu/settings/tabs/general.php:427
+#: lib/admin/menu/settings/tabs/general.php:477
 msgid "TimePad Events"
 msgstr "События TimePad"
 
@@ -168,109 +182,115 @@ msgstr "Участники"
 msgid "View on TimePad"
 msgstr "Смотреть на TimePad"
 
-#: lib/admin/post-type.php:59
+#: lib/admin/post-type.php:60
 msgid "Event"
 msgstr "Событие"
 
-#: lib/admin/post-type.php:60 lib/admin/post-type.php:80
-#: lib/admin/post-type.php:92
+#: lib/admin/post-type.php:61 lib/admin/post-type.php:81
+#: lib/admin/post-type.php:93
 msgid "Events"
 msgstr "События"
 
-#: lib/admin/post-type.php:82
+#: lib/admin/post-type.php:83
 msgid "Add New"
 msgstr "Добавить новое"
 
-#: lib/admin/post-type.php:83
+#: lib/admin/post-type.php:84
 #, php-format
 msgid "Add New %1$s"
 msgstr "Добавить новое %1$s"
 
-#: lib/admin/post-type.php:84
+#: lib/admin/post-type.php:85
 #, php-format
 msgid "Edit %1$s"
 msgstr "Редактировать %1$s"
 
-#: lib/admin/post-type.php:85
+#: lib/admin/post-type.php:86
 #, php-format
 msgid "New %1$s"
 msgstr "Новое %1$s"
 
-#: lib/admin/post-type.php:86
+#: lib/admin/post-type.php:87
 #, php-format
 msgid "All %2$s"
 msgstr "Все %2$s"
 
-#: lib/admin/post-type.php:87
+#: lib/admin/post-type.php:88
 #, php-format
 msgid "View %1$s"
 msgstr "Просмотр %1$s"
 
-#: lib/admin/post-type.php:88
+#: lib/admin/post-type.php:89
 #, php-format
 msgid "Search %2$s"
 msgstr "Поиск %2$s"
 
-#: lib/admin/post-type.php:89
+#: lib/admin/post-type.php:90
 #, php-format
 msgid "No %2$s found"
 msgstr "Ничего из %2$s не найдено"
 
-#: lib/admin/post-type.php:90
+#: lib/admin/post-type.php:91
 #, php-format
 msgid "No %2$s found in Trash"
 msgstr ""
 
-#: lib/admin/post-type.php:133
+#: lib/admin/post-type.php:134
 #, php-format
 msgctxt "taxonomy general name"
 msgid "%s Categories"
 msgstr "%s: Категории"
 
-#: lib/admin/post-type.php:134
+#: lib/admin/post-type.php:135
 msgctxt "taxonomy singular name"
 msgid "Category"
 msgstr ""
 
-#: lib/admin/post-type.php:135
+#: lib/admin/post-type.php:136
 msgid "Search Categories"
 msgstr "Искать категории"
 
-#: lib/admin/post-type.php:136
+#: lib/admin/post-type.php:137
 msgid "All Categories"
 msgstr "Все категории"
 
-#: lib/admin/post-type.php:137
+#: lib/admin/post-type.php:138
 msgid "Parent Category"
 msgstr "Родительская категория"
 
-#: lib/admin/post-type.php:138
+#: lib/admin/post-type.php:139
 msgid "Parent Category:"
 msgstr "Родительская категория:"
 
-#: lib/admin/post-type.php:139
+#: lib/admin/post-type.php:140
 msgid "Edit Category"
 msgstr "Изменить категорию"
 
-#: lib/admin/post-type.php:140
+#: lib/admin/post-type.php:141
 msgid "Update Category"
 msgstr "Обновить категорию"
 
-#: lib/admin/post-type.php:141
+#: lib/admin/post-type.php:142
 msgid "Add New Category"
 msgstr "Добавить новую категорию"
 
-#: lib/admin/post-type.php:142
+#: lib/admin/post-type.php:143
 msgid "New Category Name"
 msgstr "Новое название категории"
 
-#: lib/admin/post-type.php:143
+#: lib/admin/post-type.php:144
 msgid "Categories"
 msgstr "Категории"
 
 #: timepad-events.php:126
 msgid "Once in three minutes"
 msgstr "Один раз в три минуты"
+
+#~ msgid "Your PHP version is less than %s"
+#~ msgstr "Ваша версия PHP ниже чем %s"
+
+#~ msgid "Your website WordPress version is less than %s"
+#~ msgstr "Версия WordPress Вашего сайта ниже чем %s"
 
 #~ msgid "Security nonce value is empty."
 #~ msgstr "Обязательное значение Security nonce пустое."

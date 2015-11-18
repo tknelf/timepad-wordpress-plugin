@@ -34,13 +34,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 return $actions;
             }, 0 ,2 );
             
-            add_filter( 'get_edit_post_link', function( $url, $id, $context ) {
+            $tmp_this = $this;
+            add_filter( 'get_edit_post_link', function( $url, $id, $context ) use ( $tmp_this ) {
                 $post_meta       = get_post_meta( $id, 'timepad_meta', true );
                 $organization_id = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                 if ( $organization_id ) {
-                    if ( isset( $this->_data['current_organization_id'] ) && $organization_id == $this->_data['current_organization_id'] ) {
+                    if ( isset( $tmp_this->_data['current_organization_id'] ) && $organization_id == $tmp_this->_data['current_organization_id'] ) {
                         $event_id        = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
-                        $organization_info = $this->_data['organizations']['organizations'][$organization_id];
+                        $organization_info = $tmp_this->_data['organizations']['organizations'][$organization_id];
                         $url = esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/';
                     }
                 }
