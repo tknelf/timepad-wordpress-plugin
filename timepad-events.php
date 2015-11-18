@@ -10,11 +10,7 @@
  * Plugin Name: TimePad Events
  * Plugin URI:  http://dev.timepad.ru/modules/wordpress-events-about/
  * Description: TimePad Events for WordPress is the easiest way to start selling tickets on your site using the full stack of TimePad technologies.
-<<<<<<< HEAD
- * Version:     1.0.5
-=======
  * Version:     1.1
->>>>>>> master
  * Author:      TimePad
  * Author URI:  https://timepad.ru
  * License:     GPL-2.0+
@@ -28,11 +24,7 @@
  * @package  TimepadEvents
  * @category Core
  * @author   Igor Sazonov
-<<<<<<< HEAD
- * @version  1.0.5
-=======
  * @version  1.1
->>>>>>> master
  */
 
 //security check

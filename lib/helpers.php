@@ -141,15 +141,10 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
 
         /**
          * This function get TimePadEvents class handler by $classname
-<<<<<<< HEAD
-         *
-         * @param  string $classname Needle TimePadEvents class name
-=======
          * 
          * @since  1.0.0
          * @param  string $classname Needle TimePadEvents class name
          * @access public
->>>>>>> master
          * @return string Handler of needle class
          */
         public static function get_class_handler( $classname ) {
