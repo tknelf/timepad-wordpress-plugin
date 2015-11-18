@@ -40,11 +40,7 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
-<<<<<<< HEAD
-= 1.0.5 =
-=======
 = 1.1 =
->>>>>>> master
 
 = 1.0.4 =
 * Fixed security issues while activating plugin
