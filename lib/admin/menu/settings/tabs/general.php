@@ -64,12 +64,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function makes nice array with keys of [Organization ID] => Organization info at global key 'organizations'
          * 
-<<<<<<< HEAD
-         * @param array $organizations Organizations native array from TimePad response
-=======
          * @since  1.0.0
          * @param  array $organizations Organizations native array from TimePad response
->>>>>>> master
          * @access private
          * @return array Organizations array with meta info plus key 'organizations' with keys of organization ID
          */
@@ -95,12 +91,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function make a pretty key=>value array for events info
          * Every event item has an own key is an event id
          * 
-<<<<<<< HEAD
-         * @param array $events Events array from TimePad API
-=======
          * @since  1.0.0
          * @param  array $events Events array from TimePad API
->>>>>>> master
          * @access private
          * @return array
          */
@@ -120,12 +112,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function converts a given $date_array to pretty a date format to convert the one to time
          * 
-<<<<<<< HEAD
-         * @param array $date_array
-=======
          * @since  1.0.0
          * @param  array $date_array
->>>>>>> master
          * @access private
          * @return string
          */
@@ -144,12 +132,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * If event will be in the future - its own WPDB time will be as now time 
          * but with rand interval to make some time different to fix prev/next post navigation
          * 
-<<<<<<< HEAD
-         * @param string $time time string from TimePad API to be converted
-=======
          * @since  1.0.0
          * @param  string $time time string from TimePad API to be converted
->>>>>>> master
          * @access private
          * @return array Array with two keys for WordPress database: date and date_gmt
          */
@@ -177,10 +161,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function get post/posts by meta with interanal TimePad event ID
          * 
-<<<<<<< HEAD
-=======
          * @since  1.0.0
->>>>>>> master
          * @param  int $event_id Internal TimePad event ID
          * @param  boolean $single
          * @param  string $status
@@ -203,8 +184,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
             return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
         }
-<<<<<<< HEAD
-=======
         
         /**
          * Set post thumbnail from TimePad API response
@@ -238,15 +217,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             
             return false;
         }
->>>>>>> master
 
         /**
          * This function insert custom post types from Timpad events array
          * 
-<<<<<<< HEAD
-=======
          * @since  1.0.0
->>>>>>> master
          * @param  array $events Events array from TimePad response
          * @access private
          * @return void
@@ -309,9 +284,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             return wp_update_post( $update_args );
         }
 
-<<<<<<< HEAD
-                            wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
-=======
         /**
          * This function make update for all exist events. Part of syncronize scope
          * 
@@ -417,141 +389,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         $errors_message_array[] = '[' . $error_array['field_name'] . ': ' . $error_array['message'] . ']';
                         if ( $error_array['field_name'] == 'subdomain' && $error_array['error_code'] == 'not_unique' ) {
                             $not_unique = true;
->>>>>>> master
-                        }
-                    } else {
-                        $update_args = array(
-                            'ID'           => $check_post->ID
-                            ,'post_status' => 'publish'
-                        );
-                        wp_update_post( $update_args );
-                    }
-                    $message .= join( ', ', $errors_message_array );
-                }
-                
-                return array(
-                    'message'     => $message
-                    ,'response'   => $response
-                    ,'not_unique' => $not_unique
-                );
-            }
-            
-            return false;
-        }
-        
-        /**
-         * This function makes unvisible events in WordPress as private
-         * 
-         * @param  int $post_id
-         * @access protected
-         * @return wp_update_post function: id of updated post
-         */
-        protected function _make_wp_event_status( $post_id, $status ) {
-            $update_args = array(
-                'ID'           => $post_id
-                ,'post_status' => $status
-            );
-            return wp_update_post( $update_args );
-        }
-
-        /**
-<<<<<<< HEAD
-         * This function make update for all exist events. Part of syncronize scope
-         * 
-         * @param  array $events Prepared array of exist events in WP DB
-         * @access private
-         * @return void
-         */
-        private function _update_events_content( array $events ) {
-            global $wpdb;
-            
-            foreach ( $events as $event ) {
-                $meta_array = array(
-                    'event_id'         => intval( $event['id'] )
-                    ,'organization_id' => intval( $this->_data['current_organization_id'] )
-                );
-                $sql = "SELECT * FROM `{$wpdb->posts}` LEFT JOIN `{$wpdb->postmeta}` ON `{$wpdb->posts}`.`ID` = `{$wpdb->postmeta}`.`post_id` WHERE 1=1 AND `{$wpdb->postmeta}`.`meta_value` LIKE '%s'";
-                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
-                if ( !empty( $event_post ) ) {
-                    $content = $event['description_html'] . '<br />[timepadregistration eventid="' . $event['id'] . '"]';
-                    $date = $this->_make_post_time( $event['starts_at'] );
-                    $update_args = array(
-                        'ID'             => $event_post->ID
-                        ,'post_title'    => sanitize_text_field( $event['name'] )
-                        ,'post_content'  => $content
-                        ,'post_date'     => $date['date']
-                        ,'post_date_gmt' => $date['date_gmt']
-                        ,'post_modified' => $date['date']
-                        ,'post_modified_gmt' => $date['date_gmt']
-                    );
-                    wp_update_post( $update_args );
-                }
-            }
-        }
-        
-        /**
-         * This function checks possible subdomain errors
-         * 
-         * @param  string $subdomain
-         * @access protected
-         * @return string Sanitized subdomain string
-         */
-        protected function _sanitize_new_organization( $subdomain ) {
-            $subdomain = substr( sanitize_title( str_ireplace( '.' , '', trim( $subdomain, '-' ) ) ), 0, $this->_subdomain_maxlength );
-            if ( is_numeric( $subdomain ) ) {
-                $subdomain = 'ip' . $subdomain;
-            }
-            
-            return $subdomain;
-        }
-        
-        /**
-         * This function adds new organization by Site name as Organization name and subdomain as TimePad subdomain
-         * 
-         * @param  string $site_name Organization name
-         * @param  string $subdomain Subdomain name
-         * @access protected
-         * @return array with keys 'organizations' with API response and 'errors_handle' width possible errors
-         */
-        protected function _add_new_organization( $site_name, $subdomain ) {
-            $this->add_request_body( json_encode (
-                array( 
-                    'name'       => $site_name
-                    ,'subdomain' => $subdomain
-                    ,'phone'     => '0000000000'
-                ) )
-            );
-
-            $organizations = array(
-                'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
-            );
-            $organizations = TimepadEvents_Helpers::object_to_array( $organizations );
-            $errors_handle = $this->_errors_handle( $organizations['organizations'] );
-            
-            return array(
-                'organizations'  => $organizations
-                ,'errors_handle' => $errors_handle
-            );
-        }
-        
-        /**
-         * This function handles possible errors at $response
-         * 
-         * @param  array $response
-         * @access protected
-         * @return array|boolean If errors exists returns array, if all OK returns false
-         */
-        protected function _errors_handle( array $response ) {
-            if ( isset( $response['response_status']['error_code'] ) && $response['response_status']['error_code'] === 422 ) {
-                $message = '[' . $response['response_status']['error_code'] . '] ' . $response['response_status']['message'];
-                if ( !empty( $response['response_status']['errors'] ) && is_array( $response['response_status']['errors'] ) ) {
-                    $message .= ': ';
-                    $not_unique = false;
-                    $errors_message_array = array();
-                    foreach ( $response['response_status']['errors'] as $error_array ) {
-                        $errors_message_array[] = '[' . $error_array['field_name'] . ': ' . $error_array['message'] . ']';
-                        if ( $error_array['field_name'] == 'subdomain' && $error_array['error_code'] == 'not_unique' ) {
-                            $not_unique = true;
                         }
                     }
                     $message .= join( ', ', $errors_message_array );
@@ -568,16 +405,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         }
 
         /**
-         * This function makes some prepare job before settings page loads
-         * 
-         * @access private
-=======
          * This function makes some prepare job before settings page loads
          * 
          * @since  1.0.0
          * @access private
          * @return void
->>>>>>> master
          */
         private function _prepare() {
             /**
@@ -693,10 +525,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function checks for exist posts/events in WPDB against given array $events
          * If some of array items are not exists in WPDB - it will be returns in result array of the function
          * 
-<<<<<<< HEAD
-=======
          * @since  1.0.0
->>>>>>> master
          * @param  array $events Events array from TimePad API
          * @access private
          * @return array
@@ -737,12 +566,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function insterts in WPDB events that need to be inserted 
          * for given organization: all of prepare job is given
          * 
-<<<<<<< HEAD
-         * @param type $organization_id ID of needle organization
-=======
          * @since  1.0.0
          * @param  type $organization_id ID of needle organization
->>>>>>> master
          * @access public
          * @return array|boolean
          */
@@ -806,13 +631,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function make a display control for settings page
          * 
-<<<<<<< HEAD
-         * @access public
-=======
          * @since  1.0.0
          * @access public
          * @return void
->>>>>>> master
          */
         public function display() {
             $this->_prepare();
