@@ -1,12 +1,14 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-require_once( '../../../../../../../wp-load.php' );
-
 if ( isset( $_POST['_wpnonce'] ) ) {
-    if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) ) {
+    
+    require_once( '../../../../../../../wp-load.php' );
+
+    if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+    $additional_url = '';
+
+    if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) && current_user_can( 'activate_plugins' ) ) {
         if ( isset( $_POST['cancel_account'] ) && !empty( $_POST['cancel_account'] ) ) {
             $data = get_option( 'timepad_data' );
             unset($data['organizations']);
@@ -33,11 +35,12 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         if ( isset( $_POST['select_organization'] ) && !empty( $_POST['select_organization'] ) && isset( $_POST['organization'] ) && !empty( $_POST['organization'] ) ) {
             $data = get_option( 'timepad_data' );
             $data['current_organization_id'] = intval( $_POST['organization'] );
+            $additional_url = '&syncronize=1';
             update_option( 'timepad_data', $data );
         }
         
         if ( isset( $_POST['syncronize'] ) && !empty( $_POST['syncronize'] ) ) {
-            wp_safe_redirect( TIMEPADEVENTS_SITEURL . '/wp-admin/edit.php?post_type=timepad-events&page=timepad-events-options&syncronize=1' );
+            wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=timepad-events&page=timepad-events-options&syncronize=1' );
             exit;
         }
 
@@ -46,7 +49,9 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             if (isset($_POST['timepad_autoimport']) && !empty($_POST['timepad_autoimport'])) {
                 $data = get_option('timepad_data');
                 $data['autoimport'] = 1;
-                wp_schedule_event( time(), 'once_three_mins', 'timepad_cron' );
+                if ( !wp_next_scheduled( 'timepad_cron' ) ) {
+                    wp_schedule_event( time(), 'once_three_mins', 'timepad_cron' );
+                }
                 update_option('timepad_data', $data);
             } else {
                 $data = get_option('timepad_data');
@@ -79,6 +84,8 @@ if ( isset( $_POST['_wpnonce'] ) ) {
 
         }
     } else wp_die( __( 'Wrong security nonce value.', 'timepad' ) );
-} else wp_die( __( 'Security nonce value is empty.', 'timepad' ) );
+    
+    wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=timepad-events&page=timepad-events-options' . $additional_url );
+    
+} else die( 'Security nonce value is empty.' );
 
-wp_safe_redirect( TIMEPADEVENTS_SITEURL . '/wp-admin/edit.php?post_type=timepad-events&page=timepad-events-options' );

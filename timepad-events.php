@@ -1,32 +1,31 @@
 <?php
 
 /**
- * 
- * Timepad Events is free software: you can redistribute it and/or modify 
+ * TimePad Events is free software: you can redistribute it and/or modify 
  * it under the terms of the GNU General Public License as published by 
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
  * 
  * @wordpress-plugin
- * Plugin Name: TimepadEvents
- * Plugin URI:  http://timepad.ru
- * Description: Timepad events plugin
- * Version:     1.0.0
- * Author:      Igor Sazonov (@tigusigalpa)
- * Author URI:  http://wpspb.org
+ * Plugin Name: TimePad Events
+ * Plugin URI:  http://dev.timepad.ru/modules/wordpress-events-about/
+ * Description: TimePad Events for WordPress is the easiest way to start selling tickets on your site using the full stack of TimePad technologies.
+ * Version:     1.1
+ * Author:      TimePad
+ * Author URI:  https://timepad.ru
  * License:     GPL-2.0+
  * Text Domain: timepad
  * Domain Path: /languages
  *
-*
-* You should have received a copy of the GNU General Public License
-* along with Timepad Events. If not, see <http://www.gnu.org/licenses/>.
-*
-* @package  TimepadEvents
-* @category Core
-* @author   Igor Sazonov
-* @version  1.0.0
-*/
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Timepad Events. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package  TimepadEvents
+ * @category Core
+ * @author   Igor Sazonov
+ * @version  1.1
+ */
 
 //security check
 if ( ! defined( 'WPINC' ) ) {
@@ -44,6 +43,48 @@ if ( ! defined ( 'TIMEPADEVENTS_FILE' ) ) {
      * @return string plugin basename
      */
     define( 'TIMEPADEVENTS_FILE',  __FILE__ );
+}
+
+if ( ! defined( 'TIMEPADEVENTS_SITEURL' ) ) {
+    /**
+     * Current WordPress site URL
+     *
+     * @var     string
+     * @return  string Your site WordPress URL
+     * @example https://wordpress.google.com
+     */
+    define( 'TIMEPADEVENTS_SITEURL', site_url() );
+}
+
+if ( !defined( 'TIMEPADEVENTS_ADMIN_URL' ) ) {
+    /**
+     * Admin folder URL
+     *
+     * @var     string
+     * @return  string Your site WordPress admin URL
+     * @example https://yoursite.com/wp-admin/
+     */
+    define( 'TIMEPADEVENTS_ADMIN_URL', get_admin_url() );
+}
+
+if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
+    /**
+     * Post type slug for TimePad Events plugin
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_POST_TYPE',  'timepad-events' );
+}
+
+if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
+    /**
+     * Post type category slug for TimePad Events plugin
+     *
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_POST_TYPE_CATEGORY',  'timepad-events-category' );
 }
 
 if ( ! defined( 'TIMEPADEVENTS_PLUGIN_ABS_PATH' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
@@ -71,11 +112,14 @@ if ( ! defined( 'TIMEPADEVENTS_FOLDER' ) && defined( 'TIMEPADEVENTS_PLUGIN_ABS_P
 require_once( 'lib/helpers.php' );
 
 /**
- * Base TimepadEvents Class
+ * Base TimepadEvents Abstract Class
  */
 require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.base.php' );
 TimepadEvents_Base::define_constants();
 
+/**
+ * Adding new cron schedule hook to do cron once in three minutes
+ */
 add_filter( 'cron_schedules', function( $intervals ) {
     $intervals['once_three_mins'] = array(
         'interval' => HOUR_IN_SECONDS / 20
@@ -85,34 +129,40 @@ add_filter( 'cron_schedules', function( $intervals ) {
     return $intervals;
 } );
 
-if ( is_admin() ) {
-    /**
-     * Base Admin Class
-     */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php');
+/**
+ * Base Admin Class
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php');
+
+/**
+ * Admin Settings Base class
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php');
+
+/**
+ * Admin Setup File
+ */
+require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php');
+add_action('plugins_loaded', array('TimepadEvents_Setup_Admin', 'getInstance'), 9999);
+
+if ( ! is_admin() ) {
     
     /**
-     * Admin Settings Base class
+     * Hack to display events at general posts stock
      */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php');
-
-    /**
-     * Admin Setup File
-     */
-    require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php');
-    add_action('plugins_loaded', array('TimepadEvents_Setup_Admin', 'getInstance'), 9999);
-
-} else {
-    
     add_filter( 'pre_get_posts', function( $query ) {
-        if ( is_home() && $query->is_main_query() )
-		$query->set( 'post_type', array( 'post', 'timepad-events' ) );
+        if ( is_home() && $query->is_main_query() ) {
+            $query->set( 'post_type', array( 'post', TIMEPADEVENTS_POST_TYPE ) );
+        }
 
 	return $query;
     } );
     
-    add_shortcode( 'timepadevent' , function( array $atts ) {
-        return "<script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['id'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script>";
+    /**
+     * Enable new shortcode to display the one at site posts and pages
+     */
+    add_shortcode( 'timepadregistration' , function( array $atts ) {
+        return "<script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script>";
     } );
     
 }

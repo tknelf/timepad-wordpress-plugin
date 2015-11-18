@@ -1,0 +1,41 @@
+#menu-posts-timepad-events ul li:nth-child(3) {display:none}
+#menu-posts-timepad-events ul li:nth-child(4) {display:none}
+.tools_page_timepad-events-redirect{display:none}
+.post-type-timepad-events .wrap h2:nth-child(1) a{display:none}
+
+.timepad-events-notice{position: relative}
+
+/*--------DISMISS--------*/
+.timepad-events-dismiss {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    right: 1px;
+    margin: 0;
+    border: none;
+    color: #b4b9be;
+    background: none;
+    color: #b4b9be;
+    font: normal 16px/1 "dashicons";
+    text-align: center;
+    outline: none;
+    text-decoration: none !important;
+}
+
+.timepad-events-dismiss:before {
+    display: block !important;
+    position: relative;
+    content: "\f153";
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    padding: 9px;
+    
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.timepad-events-dismiss:hover:before,
+.timepad-events-dismiss:active:before,
+.timepad-events-dismiss:focus:before {
+    color: #c00;
+}
