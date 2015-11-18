@@ -64,7 +64,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function makes nice array with keys of [Organization ID] => Organization info at global key 'organizations'
          * 
-         * @param array $organizations Organizations native array from TimePad response
+         * @since  1.0.0
+         * @param  array $organizations Organizations native array from TimePad response
          * @access private
          * @return array Organizations array with meta info plus key 'organizations' with keys of organization ID
          */
@@ -90,7 +91,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function make a pretty key=>value array for events info
          * Every event item has an own key is an event id
          * 
-         * @param array $events Events array from TimePad API
+         * @since  1.0.0
+         * @param  array $events Events array from TimePad API
          * @access private
          * @return array
          */
@@ -110,7 +112,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function converts a given $date_array to pretty a date format to convert the one to time
          * 
-         * @param array $date_array
+         * @since  1.0.0
+         * @param  array $date_array
          * @access private
          * @return string
          */
@@ -129,7 +132,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * If event will be in the future - its own WPDB time will be as now time 
          * but with rand interval to make some time different to fix prev/next post navigation
          * 
-         * @param string $time time string from TimePad API to be converted
+         * @since  1.0.0
+         * @param  string $time time string from TimePad API to be converted
          * @access private
          * @return array Array with two keys for WordPress database: date and date_gmt
          */
@@ -157,6 +161,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function get post/posts by meta with interanal TimePad event ID
          * 
+         * @since  1.0.0
          * @param  int $event_id Internal TimePad event ID
          * @param  boolean $single
          * @param  string $status
@@ -179,10 +184,44 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
             return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
         }
+        
+        /**
+         * Set post thumbnail from TimePad API response
+         * 
+         * @since  1.1
+         * @param  int $post_id
+         * @param  array $timepad_data
+         * @access protected
+         * @return boolean
+         */
+        protected function _set_post_thumbnail( $post_id, $timepad_data ) {
+            if ( isset( $timepad_data['poster_image']['uploadcare_url'] ) && !empty( $timepad_data['poster_image']['uploadcare_url'] ) ) {
+                if ( $file_arr = TimepadEvents_Helpers::copy_file_to_wp_dir( $timepad_data['poster_image']['uploadcare_url'] ) ) {
+                    $attachment = array(
+                        'post_mime_type' => $file_arr['type']
+                        ,'guid'          => $file_arr['url']
+                        ,'post_parent'   => $post_id
+                        ,'post_title'    => $timepad_data['name']
+                        ,'post_content'  => wp_trim_words( $timepad_data['description_html'], 20 )
+                    );
+                    $id = wp_insert_attachment( $attachment, $file_arr['file'], $post_id );
+                    if ( !is_wp_error( $id ) ) {
+                        if ( wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) ) {
+                            if ( current_theme_supports( 'post-thumbnails' ) ) {
+                                return set_post_thumbnail( $post_id, $id );
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
 
         /**
          * This function insert custom post types from Timpad events array
          * 
+         * @since  1.0.0
          * @param  array $events Events array from TimePad response
          * @access private
          * @return void
@@ -215,7 +254,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
                             update_post_meta( $id, 'timepad_meta', $meta_array );
-
+                            $this->_set_post_thumbnail( $id, $event );
                             wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
                         }
                     } else {
@@ -232,6 +271,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function makes unvisible events in WordPress as private
          * 
+         * @since  1.0.0
          * @param  int $post_id
          * @access protected
          * @return wp_update_post function: id of updated post
@@ -247,6 +287,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function make update for all exist events. Part of syncronize scope
          * 
+         * @since  1.0.0
          * @param  array $events Prepared array of exist events in WP DB
          * @access private
          * @return void
@@ -274,6 +315,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'post_modified_gmt' => $date['date_gmt']
                     );
                     wp_update_post( $update_args );
+                    
+                    if ( !has_post_thumbnail( $event_post->ID ) ) {
+                        $this->_set_post_thumbnail( $event_post->ID, $event );
+                    }
                 }
             }
         }
@@ -281,6 +326,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function checks possible subdomain errors
          * 
+         * @since  1.0.0
          * @param  string $subdomain
          * @access protected
          * @return string Sanitized subdomain string
@@ -297,6 +343,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function adds new organization by Site name as Organization name and subdomain as TimePad subdomain
          * 
+         * @since  1.0.0
          * @param  string $site_name Organization name
          * @param  string $subdomain Subdomain name
          * @access protected
@@ -326,6 +373,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function handles possible errors at $response
          * 
+         * @since  1.0.0
          * @param  array $response
          * @access protected
          * @return array|boolean If errors exists returns array, if all OK returns false
@@ -359,7 +407,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function makes some prepare job before settings page loads
          * 
+         * @since  1.0.0
          * @access private
+         * @return void
          */
         private function _prepare() {
             /**
@@ -475,6 +525,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function checks for exist posts/events in WPDB against given array $events
          * If some of array items are not exists in WPDB - it will be returns in result array of the function
          * 
+         * @since  1.0.0
          * @param  array $events Events array from TimePad API
          * @access private
          * @return array
@@ -515,7 +566,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function insterts in WPDB events that need to be inserted 
          * for given organization: all of prepare job is given
          * 
-         * @param type $organization_id ID of needle organization
+         * @since  1.0.0
+         * @param  type $organization_id ID of needle organization
          * @access public
          * @return array|boolean
          */
@@ -579,7 +631,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * This function make a display control for settings page
          * 
+         * @since  1.0.0
          * @access public
+         * @return void
          */
         public function display() {
             $this->_prepare();

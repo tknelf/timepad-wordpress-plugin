@@ -52,7 +52,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         
         /**
          * 
-         * @since 1.0.5
+         * @since 1.1
          * @access public
          * @var array Minimal requirements of the plugin: PHP version, WP version
          */

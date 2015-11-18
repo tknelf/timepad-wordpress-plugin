@@ -63,7 +63,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
         
         /**
          * 
-         * @since  1.0.5
+         * @since  1.1
          * @global string $pagenow WordPress native global var about admin page now
          * @return boolean
          */
@@ -89,7 +89,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          * Check for base plugin requirements.
          * If errors found, the message(s) will be displayed
          * 
-         * @since  1.0.5
+         * @since  1.1
          * @author Igor Sazonov <sovletig@yandex.ru>
          * @access protected
          * @return string Plugin requirements errors string
