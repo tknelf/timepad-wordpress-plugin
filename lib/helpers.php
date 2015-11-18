@@ -15,6 +15,42 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             return strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
         }
         
+        /**
+         * Function to get extension from mime-type of file path
+         * 
+         * @since 1.0.0
+         * @param  string $path
+         * @access public
+         * @return string File extension from the $path
+         */
+        public static function get_file_extension_mime_by_path( $path ) {
+            $ext = '';
+            $mime = '';
+            if ( $path ) {
+                $image_info = getimagesize( $path );
+                if ( $image_info['mime'] ) {
+                    $mime = $image_info['mime'];
+                    switch ( $image_info['mime'] ) {
+                        case 'image/jpeg':
+                            $ext = 'jpg';
+                        case 'image/png':
+                            $ext = 'png';
+                        case 'image/gif':
+                            $ext = 'gif';
+                    }
+                }
+            }
+            
+            if ( !empty( $ext ) && !empty( $mime ) ) {
+                return array(
+                    'ext'   => $ext
+                    ,'mime' => $mime
+                );
+            }
+            
+            return array();
+        }
+
         public static function hash() {
             return substr( md5( microtime() . mt_rand( 10000, 9999999999 ) ), 3, 10 );
         }
@@ -105,8 +141,15 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
 
         /**
          * This function get TimePadEvents class handler by $classname
+<<<<<<< HEAD
          *
          * @param  string $classname Needle TimePadEvents class name
+=======
+         * 
+         * @since  1.0.0
+         * @param  string $classname Needle TimePadEvents class name
+         * @access public
+>>>>>>> master
          * @return string Handler of needle class
          */
         public static function get_class_handler( $classname ) {
@@ -122,6 +165,37 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             }
             
             return false;
+        }
+        
+        /**
+         * The function get TimePad API event banner link 
+         * and copy the one to WordPress native upload folder
+         * 
+         * @since  1.1
+         * @param  string $timepad_api_link
+         * @access public
+         * @return array
+         */
+        public static function copy_file_to_wp_dir( $timepad_api_link ) {
+            $timepad_api_link = !stripos( $timepad_api_link, 'http:' ) ? 'http:' . $timepad_api_link : $timepad_api_link;
+            $ext_mime = self::get_file_extension_mime_by_path( $timepad_api_link );
+            if ( !empty( $ext_mime['ext'] ) && !empty( $ext_mime['mime'] ) ) {
+                $path_arr = explode( '/', $timepad_api_link );
+                if ( !empty( $path_arr ) && is_array( $path_arr ) && isset( $path_arr[3] ) ) {
+                    $filename = $path_arr[3] . '.' . $ext_mime['ext'];
+                    $wp_upload_dir = wp_upload_dir();
+                    $abs_path = $wp_upload_dir['path'] . '/' . $filename;
+                    if ( copy( $timepad_api_link, $abs_path ) ) {
+                        return array(
+                            'file'  => $abs_path
+                            ,'url'  => $wp_upload_dir['url'] . '/' . $filename
+                            ,'type' => $ext_mime['mime']
+                        );
+                    }
+                }
+            }
+            
+            return array();
         }
     }
 endif;

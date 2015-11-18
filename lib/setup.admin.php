@@ -8,7 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Main Frontend class that prepares all TimepadEvents frontend
  *
  * @class       TimepadEvents_Setup_Admin
+<<<<<<< HEAD
  * @version     1.0.5
+=======
+ * @version     1.1
+>>>>>>> master
  * @package     TimepadEvents/Admin
  * @author      TimepadEvents Team
  * @extends     TimepadEvents_Admin_Base
@@ -173,7 +177,11 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
         /**
          * This function add/update/delete user meta about show requirements
          * 
+<<<<<<< HEAD
          * @since  1.0.5
+=======
+         * @since  1.1
+>>>>>>> master
          * @access protected
          * @param  string $action add/update/delete action of user meta
          * @param  int    $meta_value Meta value
@@ -203,7 +211,11 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
         /**
          * The function returns output of the div with notice message
          * 
+<<<<<<< HEAD
          * @since  1.0.5
+=======
+         * @since  1.1
+>>>>>>> master
          * @access public
          * @param  string $message Notice message to show
          * @return void
@@ -220,7 +232,11 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
         /**
          * AJAX handler function of dismiss user requirements notice
          * 
+<<<<<<< HEAD
          * @since  1.0.5
+=======
+         * @since  1.1
+>>>>>>> master
          * @access public
          * @return void
          */
