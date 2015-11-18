@@ -24,7 +24,11 @@
  * @package  TimepadEvents
  * @category Core
  * @author   Igor Sazonov
+<<<<<<< HEAD
  * @version  1.1
+=======
+ * @version  1.0.4
+>>>>>>> 9f59f87807b9537a019e7b2fac9371122e60dfdf
  */
 
 //security check
