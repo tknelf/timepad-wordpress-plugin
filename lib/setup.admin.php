@@ -41,7 +41,13 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 $this->_classes['TimepadEvents_Admin_Scripts'] = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php';
                 $this->_classes['TimepadEvents_Admin_Styles']  = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php';
                 
-                add_action( 'wp_ajax_dismiss_requirements', array( $this, 'timepadevents_dismiss_requirements' ) );
+                add_action( 'wp_ajax_timepad_dismiss_requirements', array( $this, 'timepadevents_dismiss_requirements' ) );
+                
+                add_action( 'wp_ajax_timepad_unbind_from_api', array( $this, 'unsyncronize_event_to_post_ajax' ) );
+                
+                add_action( 'delete_post', function( $post_id ) {
+                    TimepadEvents_Helpers::get_excluded_from_api_events( false, $post_id, 'delete' );
+                } );
             }
 
             //init core hooks
@@ -161,6 +167,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             
             delete_option( 'timepad_data' );
             delete_option( 'timepad_flushed' );
+            delete_option( 'timepad_excluded_from_api' );
             
             setcookie( 'timepad_admin_url', null, -1, '/' );
             setcookie( 'timepad_token', null, -1, '/' );

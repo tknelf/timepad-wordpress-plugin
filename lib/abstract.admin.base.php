@@ -111,6 +111,52 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
             
             return '';
         }
+        
+        /**
+         * Unsyncronize the event from TimePad API
+         * 
+         * @since  1.1
+         * @param  type $post_id Internal WordPress post ID
+         * @param  type $event_id Internal TimePad event ID
+         * @param  type $post_type Needle post type. Default is 'post'
+         * @access protected
+         * @return boolean
+         */
+        public static function unsyncronize_event_to_post( $post_id, $event_id, $post_type = 'post' ) {
+            $unsyncronized_events = TimepadEvents_Helpers::get_excluded_from_api_events();
+            if ( !isset( $unsyncronized_events[$post_id] ) ) {
+                $post = get_post( $post_id );
+                if ( $post->post_type == TIMEPADEVENTS_POST_TYPE && $post_type != TIMEPADEVENTS_POST_TYPE ) {
+                    $post->post_type = $post_type;
+                    if ( wp_update_post( $post ) ) {
+                        if ( delete_post_meta( $post_id, 'timepad_meta' ) ) {
+                            $unsyncronized_events[$post_id] = intval( $event_id );
+                            if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        /**
+         * AJAX version of function unsyncronize_event_to_post
+         * 
+         * @since 1.1
+         * @uses  unsyncronize_event_to_post
+         * return void
+         */
+        public function unsyncronize_event_to_post_ajax() {
+            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            $post_id  = intval( $_POST['post_id'] );
+            $event_id = intval( $_POST['event_id'] );
+            
+            self::unsyncronize_event_to_post( $post_id, $event_id );
+            wp_die(1);
+        }
 
     }
 

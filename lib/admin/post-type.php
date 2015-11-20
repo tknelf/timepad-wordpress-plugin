@@ -26,7 +26,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                         }
                         $organization_info = isset( $this->_data['organizations']['organizations'][$organization_id] ) ? $this->_data['organizations']['organizations'][$organization_id] : array();
                         if ( isset( $organization_info ) && !empty( $organization_info ) ) {
-                            array_unshift( $actions , '<a href="' . esc_url( $organization_info['url'] ) . 'event/manage/' . $event_id . '/" target="_blank">' . __( 'Edit events at TimePad', 'timepad' ) . '</a>', '<a href="' . esc_url( $organization_info['url'] ) . 'event/export/' . $event_id . '/html/" target="_blank">' . __( 'Members', 'timepad' ) . '</a>', '<a href="' . esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/" target="_blank">' . __( 'View on TimePad', 'timepad' ) . '</a>' );
+                            $actions = array_merge( $actions, 
+                                array(
+                                    'event_edit'                  => '<a href="' . esc_url( $organization_info['url'] ) . 'event/edit/' . $event_id . '/" target="_blank">' . __( 'Edit events at TimePad', 'timepad' ) . '</a>'
+                                    ,'event_members'              => '<a href="' . esc_url( $organization_info['url'] ) . 'event/export/' . $event_id . '/html/" target="_blank">' . __( 'Members', 'timepad' ) . '</a>'
+                                    ,'event_view'                 => '<a href="' . esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/" target="_blank">' . __( 'View on TimePad', 'timepad' ) . '</a>'
+                                    ,'trash timepad_event_unbind' => '<a href="javascript:;" data-postid="' . intval( $post->ID ) . '" data-eventid="' . $event_id . '">' . __( 'Unbind from API synzronize and make as post', 'timepad' ) . '</a>'
+                                )
+                            );
                         }
                     }
                     
@@ -40,9 +47,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 $organization_id = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                 if ( $organization_id ) {
                     if ( isset( $tmp_this->_data['current_organization_id'] ) && $organization_id == $tmp_this->_data['current_organization_id'] ) {
-                        $event_id        = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
+                        $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
                         $organization_info = $tmp_this->_data['organizations']['organizations'][$organization_id];
-                        $url = esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/';
+                        $url               = esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/';
                     }
                 }
                 
@@ -50,7 +57,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
             },0 ,3 );
             
             add_filter( 'bulk_actions-edit-' . TIMEPADEVENTS_POST_TYPE, function( $actions ) {
-                unset($actions['trash']);
+                unset( $actions['trash'] );
+                
                 return $actions;
             } );
         }
@@ -145,13 +153,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
             );
             $custom_post_type_category_args = apply_filters( 'timepadevents_item_category_args', array(
                 //'hierarchical' => true,
-                'labels'       => apply_filters( 'timepadevents_item_category_labels', $custom_post_type_category_labels ),
-                'show_ui'      => true,
-                'query_var'    => 'timepadevents_category',
-                'rewrite'      => array(
-                    'slug' => TIMEPADEVENTS_POST_TYPE_CATEGORY,
-                    'with_front'   => false,
-                    'hierarchical' => true
+                'labels'            => apply_filters( 'timepadevents_item_category_labels', $custom_post_type_category_labels )
+                ,'show_ui'          => true,
+                'query_var'         => 'timepadevents_category'
+                ,'rewrite'          => array(
+                    'slug'          => TIMEPADEVENTS_POST_TYPE_CATEGORY
+                    ,'with_front'   => false
+                    ,'hierarchical' => true
                 )
             ));
             register_taxonomy( TIMEPADEVENTS_POST_TYPE . '_category',  TIMEPADEVENTS_POST_TYPE, $custom_post_type_category_args );

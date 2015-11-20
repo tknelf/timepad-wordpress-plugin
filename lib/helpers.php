@@ -192,5 +192,48 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             
             return array();
         }
+        
+        /**
+         * Get excluded from syncronize TimePad events by post ID or event ID or just an array
+         * 
+         * @since  1.1
+         * @param  int $event_id TimePad event ID from syncronize to WordPress
+         * @param  int $post_id WordPress post ID
+         * @access public
+         * @return boolean|array|int
+         */
+        public static function get_excluded_from_api_events( $event_id = false, $post_id = false, $action = false ) {
+            $excluded_events = get_option( 'timepad_excluded_from_api' );
+            if ( empty( $action ) ) {
+                if ( !empty( $excluded_events ) && is_array( $excluded_events ) ) {
+                    if ( empty( $post_id ) && empty( $event_id ) ) {
+                        return $excluded_events;
+                    } else {
+                        if ( !empty( $post_id ) ) {
+                            if ( !empty( $event_id ) ) {
+                                return ( isset( $excluded_events[$event_id] ) && $excluded_events[$event_id] == $post_id );
+                            } else {
+                                return array_search( $post_id, $excluded_events );
+                            }
+                        } else {
+                            if ( !empty( $event_id ) ) {
+                                return isset( $excluded_events[$event_id] ) ? $excluded_events[$event_id] : false;
+                            }
+                        }
+                    }
+                }
+            } else {
+                switch ( $action ) {
+                    case 'delete':
+                        if ( !empty( $post_id ) ) {
+                            unset( $excluded_events[$post_id] );
+                            return update_option( 'timepad_excluded_from_api', $excluded_events );
+                        }
+                        break;
+                }
+            }
+            
+            return false;
+        }
     }
 endif;

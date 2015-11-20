@@ -118,9 +118,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return string
          */
         private function _make_time_format( array $date_array ) {
-            $months = ( $date_array['month'] < 10 ) ? '0' . $date_array['month'] : $date_array['month'];
-            $days = ( $date_array['day'] < 10 ) ? '0' . $date_array['day'] : $date_array['day'];
-            $hours = ( $date_array['hour'] < 10 ) ? '0' . $date_array['hour'] : $date_array['hour'];
+            $months  = ( $date_array['month'] < 10 )  ? '0' . $date_array['month']  : $date_array['month'];
+            $days    = ( $date_array['day'] < 10 )    ? '0' . $date_array['day']    : $date_array['day'];
+            $hours   = ( $date_array['hour'] < 10 )   ? '0' . $date_array['hour']   : $date_array['hour'];
             $minutes = ( $date_array['minute'] < 10 ) ? '0' . $date_array['minute'] : $date_array['minute'];
             $seconds = ( $date_array['second'] < 10 ) ? '0' . $date_array['second'] : $date_array['second'];
             return $date_array['year'] . '-' . $months . '-' . $days . ' ' . $hours . ':' . $minutes . ':' . $seconds;
@@ -543,11 +543,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     
                     $current_events_ids = array_keys( $exist_events );
                     if ( !empty( $events ) && !empty( $current_events_ids ) ) {
+                        $excluded_from_api = TimepadEvents_Helpers::get_excluded_from_api_events();
                         foreach ( $events as $event ) {
-                            if ( !in_array( $event['id'], $current_events_ids ) ) {
-                                $ret_array[] = $event;
-                            } else {
-                                $ret_array_exists[] = $event;
+                            if ( !isset( $excluded_from_api[$event['id']] ) ) {
+                                if ( !in_array( $event['id'], $current_events_ids ) ) {
+                                    $ret_array[] = $event;
+                                } else {
+                                    $ret_array_exists[] = $event;
+                                }
                             }
                         }
                     }
