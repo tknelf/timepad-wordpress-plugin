@@ -25,15 +25,18 @@ jQuery(document).ready(function() {
     
     if ( jQuery('.timepad_event_unbind').length ) {
         jQuery('.timepad_event_unbind a').click(function() {
-            var $_this      = jQuery(this)
-                ,$_post_id  = parseInt( $_this.data('postid') )
-                ,$_event_id = $_this.data('eventid');
-            
-            jQuery.post( ajaxurl, { action: 'timepad_unbind_from_api', post_id: $_post_id, event_id: $_event_id, security: timepad._security }, function( data ) {
-                if ( data == 1 ) {
-                    jQuery( '#post-'+$_post_id ).remove();
-                }
-            }, 'json' );
+            if ( confirm( timepad._confirm ) ) {
+                var $_this             = jQuery(this)
+                    ,$_post_id         = parseInt( $_this.data('postid') )
+                    ,$_event_id        = $_this.data('eventid')
+                    ,$_organization_id = $_this.data('organizationid');
+
+                jQuery.post( ajaxurl, { action: 'timepad_unbind_from_api', post_id: $_post_id, event_id: $_event_id, organization_id: $_organization_id, security: timepad._security }, function( data ) {
+                    if ( data == 1 ) {
+                        jQuery( '#post-' + $_post_id ).remove();
+                    }
+                }, 'json' );
+            }
             
             return false;
         });

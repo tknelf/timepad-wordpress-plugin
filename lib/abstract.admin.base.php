@@ -43,6 +43,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
             
             $this->_current_user_id = get_current_user_id();
             
+            $this->requirements = array(
+                'php' => $this->_config['php_min']
+                ,'wp' => $this->_config['wp_min']
+            );
+            
             global $wp_version;
             $this->_wp_version = $wp_version;
         }
@@ -122,7 +127,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          * @access protected
          * @return boolean
          */
-        public static function unsyncronize_event_to_post( $post_id, $event_id, $post_type = 'post' ) {
+        public function unsyncronize_event_to_post( $post_id, $event_id, $organization_id, $post_type = 'post' ) {
             $unsyncronized_events = TimepadEvents_Helpers::get_excluded_from_api_events();
             if ( !isset( $unsyncronized_events[$post_id] ) ) {
                 $post = get_post( $post_id );
@@ -130,9 +135,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
                     $post->post_type = $post_type;
                     if ( wp_update_post( $post ) ) {
                         if ( delete_post_meta( $post_id, 'timepad_meta' ) ) {
-                            $unsyncronized_events[$post_id] = intval( $event_id );
-                            if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
-                                return true;
+                            $unsyncronized_events[intval( $event_id )] = $post_id;
+                            unset( $this->_data['events'][$organization_id][$event_id] );
+                            if ( TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
+                                if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -151,10 +159,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          */
         public function unsyncronize_event_to_post_ajax() {
             check_ajax_referer( $this->_config['security_nonce'], 'security' );
-            $post_id  = intval( $_POST['post_id'] );
-            $event_id = intval( $_POST['event_id'] );
+            $post_id         = intval( $_POST['post_id'] );
+            $event_id        = intval( $_POST['event_id'] );
+            $organization_id = intval( $_POST['organization_id'] );
             
-            self::unsyncronize_event_to_post( $post_id, $event_id );
+            $this->unsyncronize_event_to_post( $post_id, $event_id, $organization_id );
             wp_die(1);
         }
 

@@ -31,7 +31,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                                     'event_edit'                  => '<a href="' . esc_url( $organization_info['url'] ) . 'event/edit/' . $event_id . '/" target="_blank">' . __( 'Edit events at TimePad', 'timepad' ) . '</a>'
                                     ,'event_members'              => '<a href="' . esc_url( $organization_info['url'] ) . 'event/export/' . $event_id . '/html/" target="_blank">' . __( 'Members', 'timepad' ) . '</a>'
                                     ,'event_view'                 => '<a href="' . esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/" target="_blank">' . __( 'View on TimePad', 'timepad' ) . '</a>'
-                                    ,'trash timepad_event_unbind' => '<a href="javascript:;" data-postid="' . intval( $post->ID ) . '" data-eventid="' . $event_id . '">' . __( 'Unbind from API synzronize and make as post', 'timepad' ) . '</a>'
+                                    ,'trash timepad_event_unbind' => '<a href="javascript:;" data-postid="' . intval( $post->ID ) . '" data-eventid="' . $event_id . '" data-organizationid="' . intval( $organization_id ) . '">' . __( 'Unbind from API synzronize and make as post', 'timepad' ) . '</a>'
                                 )
                             );
                         }
