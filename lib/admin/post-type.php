@@ -14,17 +14,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
         public function init() {
             add_action( 'init', array( $this, 'init_post_type' ) );
             
-            add_filter( 'post_row_actions', function( $actions, $post ) {
+            $data = $this->_data;
+            add_filter( 'post_row_actions', function( $actions, $post ) use ( $data ) {
                 if ( $post->post_type == TIMEPADEVENTS_POST_TYPE ) {
                     $post_meta         = get_post_meta( $post->ID, 'timepad_meta', true );
                     if ( !empty( $post_meta ) ) {
                         $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
                         $organization_id   = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                         unset( $actions['edit'], $actions['inline hide-if-no-js'] );
-                        if ( isset( $this->_data['current_organization_id'] ) && $organization_id == $this->_data['current_organization_id'] ) {
+                        if ( isset( $data['current_organization_id'] ) && $organization_id == $data['current_organization_id'] ) {
                             unset( $actions['trash'] );
                         }
-                        $organization_info = isset( $this->_data['organizations']['organizations'][$organization_id] ) ? $this->_data['organizations']['organizations'][$organization_id] : array();
+                        $organization_info = isset( $data['organizations']['organizations'][$organization_id] ) ? $data['organizations']['organizations'][$organization_id] : array();
                         if ( isset( $organization_info ) && !empty( $organization_info ) ) {
                             $actions = array_merge( $actions, 
                                 array(
@@ -41,14 +42,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 return $actions;
             }, 0 ,2 );
             
-            $tmp_this = $this;
-            add_filter( 'get_edit_post_link', function( $url, $id, $context ) use ( $tmp_this ) {
+            $data = $this->_data;
+            add_filter( 'get_edit_post_link', function( $url, $id, $context ) use ( $data ) {
                 $post_meta       = get_post_meta( $id, 'timepad_meta', true );
                 $organization_id = isset( $post_meta['organization_id'] ) ? intval( $post_meta['organization_id'] ) : 0;
                 if ( $organization_id ) {
-                    if ( isset( $tmp_this->_data['current_organization_id'] ) && $organization_id == $tmp_this->_data['current_organization_id'] ) {
+                    if ( isset( $data['current_organization_id'] ) && $organization_id == $data['current_organization_id'] ) {
                         $event_id          = isset( $post_meta['event_id'] ) ? intval( $post_meta['event_id'] ) : 0;
-                        $organization_info = $tmp_this->_data['organizations']['organizations'][$organization_id];
+                        $organization_info = $data['organizations']['organizations'][$organization_id];
                         $url               = esc_url( $organization_info['url'] ) . 'event/' . $event_id . '/';
                     }
                 }
