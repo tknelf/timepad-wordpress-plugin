@@ -65,18 +65,19 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
              * Action about post trash.
              * If plugin data exist the TimePad event - the one need to be deleted from the option
              */
-            add_action( 'wp_trash_post', function( $id ) {
+            $tmp_this = $this;
+            add_action( 'wp_trash_post', function( $id ) use ( $tmp_this ) {
                 $post_data = get_post_meta( $id, 'timepad_meta', true );
-                $tmp_events = isset( $this->_data['events'] ) ? $this->_data['events'] : array();
+                $tmp_events = isset( $tmp_this->_data['events'] ) ? $tmp_this->_data['events'] : array();
                 if ( !empty( $tmp_events ) && is_array( $tmp_events ) && !empty( $post_data ) && is_array( $post_data ) ) {
                     foreach ( $tmp_events as $org_id => $event_array ) {
                         if ( isset( $event_array[$post_data['event_id']] ) ) {
-                            unset( $this->_data['events'][$org_id][$post_data['event_id']] );
+                            unset( $tmp_this->_data['events'][$org_id][$post_data['event_id']] );
                         }
-                        if ( empty( $this->_data['events'][$org_id] ) ) unset( $this->_data['events'][$org_id] );
+                        if ( empty( $tmp_this->_data['events'][$org_id] ) ) unset( $tmp_this->_data['events'][$org_id] );
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'] , $this->_data['events'], 'events' );
+                    TimepadEvents_Helpers::update_option_key( $tmp_this->_config['optionkey'] , $tmp_this->_data['events'], 'events' );
                 }
             } );
         }
