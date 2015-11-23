@@ -56,10 +56,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * @access public
          * @var array Minimal requirements of the plugin: PHP version, WP version
          */
-        public $requirements = array(
-            'php' => 5.4
-            ,'wp' => 4.0
-        );
+        public $requirements = array();
         
         /**
          * Singleton
@@ -206,7 +203,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $ret_array = array();
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
-                $body = wp_remote_retrieve_body( $request );
+                $body      = wp_remote_retrieve_body( $request );
                 $ret_array = json_decode( $body );
             }
             
