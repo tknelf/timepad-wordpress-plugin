@@ -188,6 +188,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         /**
          * Set post thumbnail from TimePad API response
          * 
+         * @todo   Add extensions
          * @since  1.1
          * @param  int $post_id
          * @param  array $timepad_data
@@ -199,7 +200,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $new_thumb = false;
                 $timepad_api_thumbnail = $timepad_data['poster_image']['uploadcare_url'];
                 $timepad_api_thumbnail = !stripos( $timepad_api_thumbnail, 'http:' ) ? 'http:' . $timepad_api_thumbnail : $timepad_api_thumbnail;
-                $thumb_data = TimepadEvents_Helpers::get_api_cover_data( $timepad_api_thumbnail );
+                $thumb_data = TimepadEvents_Helpers::get_api_cover_data( $timepad_api_thumbnail, true );
                 $post_thumb_id = get_post_thumbnail_id( $post_id );
                 if ( $post_thumb_id ) {
                     $thumb_meta = wp_get_attachment_metadata( $post_thumb_id, true );

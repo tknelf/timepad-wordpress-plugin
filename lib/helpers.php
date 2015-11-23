@@ -187,15 +187,21 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
          * @access public
          * @return array Array of file data basename => filename without ext, ext => extension, mime => file mime-type
          */
-        public static function get_api_cover_data( $timepad_api_link ) {
-            $ext_mime     = self::get_file_extension_mime_by_path( $timepad_api_link );
-            if ( !empty( $ext_mime['ext'] ) && !empty( $ext_mime['mime'] ) ) {
-                $path_arr = explode( '/', $timepad_api_link );
-                if ( !empty( $path_arr ) && is_array( $path_arr ) && isset( $path_arr[3] ) ) {
+        public static function get_api_cover_data( $timepad_api_link, $http = false ) {
+            $path_arr = explode( '/', $timepad_api_link );
+            if ( !empty( $path_arr ) && is_array( $path_arr ) && isset( $path_arr[3] ) ) {
+                if ( !$http ) {
+                    $ext_mime     = self::get_file_extension_mime_by_path( $timepad_api_link );
+                    if ( !empty( $ext_mime['ext'] ) && !empty( $ext_mime['mime'] ) ) {
+                        return array(
+                            'basename' => $path_arr[3]
+                            ,'ext'     => $ext_mime['ext']
+                            ,'mime'    => $ext_mime['mime']
+                        );
+                    }
+                } else {
                     return array(
                         'basename' => $path_arr[3]
-                        ,'ext'     => $ext_mime['ext']
-                        ,'mime'    => $ext_mime['mime']
                     );
                 }
             }
