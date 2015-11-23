@@ -207,9 +207,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         $thumb_filename = TimepadEvents_Helpers::get_filename( $thumb_meta['file'] );
                         if ( $thumb_filename != $thumb_data['basename'] ) {
                             if ( wp_delete_attachment( $post_thumb_id ) ) {
-                                if ( delete_post_meta( $post_id, '_thumbnail_id' ) ) {
-                                    $new_thumb = true;
-                                }
+                                @delete_post_meta( $post_id, '_thumbnail_id' );
+                                $new_thumb = true;
                             }
                         }
                     }
@@ -286,6 +285,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             ,'post_status' => 'publish'
                         );
                         wp_update_post( $update_args );
+                        $this->_set_post_thumbnail( $check_post->ID, $event );
                     }
                 }
             }
@@ -339,9 +339,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     );
                     wp_update_post( $update_args );
                     
-                    if ( !has_post_thumbnail( $event_post->ID ) ) {
-                        $this->_set_post_thumbnail( $event_post->ID, $event );
-                    }
+                    $this->_set_post_thumbnail( $event_post->ID, $event );
                 }
             }
         }
@@ -597,7 +595,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access public
          * @return array|boolean
          */
-        public function post_events( $organization_id, $fullsynchronize = false ) {
+        public function post_events( $organization_id, $redirect_sub_str = '' ) {
             //get all events for current organization
             $query_args = array(
                 'organization_ids'     => $organization_id
