@@ -183,7 +183,7 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
          * Get data from the TimePad API cover image path
          * 
          * @since  1.1
-         * @param  string $timepad_api_link
+         * @param  string $timepad_api_link URI from TimePad API with the cover image
          * @access public
          * @return array Array of file data basename => filename without ext, ext => extension, mime => file mime-type
          */
@@ -200,9 +200,17 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
                         );
                     }
                 } else {
-                    return array(
-                        'basename' => $path_arr[3]
-                    );
+                    $buffer = file_get_contents( $timepad_api_link );
+                    $finfo  = new finfo( FILEINFO_MIME_TYPE );
+                    $ext    = self::get_file_extension( $timepad_api_link );
+                    $mime   = $finfo->buffer( $buffer );
+                    if ( !empty( $ext ) && !empty( $mime ) ) {
+                        return array(
+                            'basename' => $path_arr[3]
+                            ,'ext'     => $ext
+                            ,'mime'    => $mime
+                        );
+                    }
                 }
             }
             
