@@ -327,7 +327,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $sql = "SELECT * FROM `{$wpdb->posts}` LEFT JOIN `{$wpdb->postmeta}` ON `{$wpdb->posts}`.`ID` = `{$wpdb->postmeta}`.`post_id` WHERE 1=1 AND `{$wpdb->postmeta}`.`meta_value` LIKE '%s'";
                 $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
                 if ( !empty( $event_post ) ) {
-                    $content = $event['description_html'] . '<br />[timepadregistration eventid="' . $event['id'] . '"]';
+                    $content = $event['description_html'] . '<br /><div id="timepad-event-widget-' . intval( $event_post->ID ) . '" class="' . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . '">[timepadregistration eventid="' . $event['id'] . '"]</div>';
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $update_args = array(
                         'ID'                 => $event_post->ID
