@@ -36,7 +36,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @var    string
          */
-        protected $_fields = 'description_html';
+        protected $_fields = 'description_html,location';
         
         /**
          * Max Length of event name/title
@@ -257,6 +257,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $meta_array = array(
                         'event_id'           => intval( $event['id'] )
                         ,'organization_id'   => intval( $this->_data['current_organization_id'] )
+                        ,'location'          => $event['location']
                     );
                     $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadregistration eventid="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
