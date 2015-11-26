@@ -16,28 +16,42 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         }
         
         /**
+         * Returns web image extension by MIME
+         * 
+         * @since  1.1
+         * @param  string $mime Given MIME-type
+         * @access public
+         * @return boolean|string
+         */
+        public static function get_file_extension_by_mime( $mime ) {
+            switch ( $mime ) {
+                case 'image/jpeg':
+                    return 'jpg';
+                case 'image/png':
+                    return 'png';
+                case 'image/gif':
+                    return 'gif';
+            }
+            
+            return false;
+        }
+
+        /**
          * Function to get extension from mime-type of file path
          * 
-         * @since 1.0.0
+         * @since  1.0.0
          * @param  string $path
          * @access public
          * @return string File extension from the $path
          */
         public static function get_file_extension_mime_by_path( $path ) {
-            $ext = '';
+            $ext  = '';
             $mime = '';
             if ( $path ) {
                 $image_info = getimagesize( $path );
                 if ( $image_info['mime'] ) {
                     $mime = $image_info['mime'];
-                    switch ( $image_info['mime'] ) {
-                        case 'image/jpeg':
-                            $ext = 'jpg';
-                        case 'image/png':
-                            $ext = 'png';
-                        case 'image/gif':
-                            $ext = 'gif';
-                    }
+                    $ext  = self::get_file_extension_by_mime( $mime );
                 }
             }
             
@@ -202,8 +216,8 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
                 } else {
                     $buffer = file_get_contents( $timepad_api_link );
                     $finfo  = new finfo( FILEINFO_MIME_TYPE );
-                    $ext    = self::get_file_extension( $timepad_api_link );
                     $mime   = $finfo->buffer( $buffer );
+                    $ext    = self::get_file_extension_by_mime( $mime );
                     if ( !empty( $ext ) && !empty( $mime ) ) {
                         return array(
                             'basename' => $path_arr[3]
