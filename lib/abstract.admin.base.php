@@ -134,13 +134,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
                 if ( $post->post_type == TIMEPADEVENTS_POST_TYPE && $post_type != TIMEPADEVENTS_POST_TYPE ) {
                     $post->post_type = $post_type;
                     if ( wp_update_post( $post ) ) {
-                        if ( delete_post_meta( $post_id, 'timepad_meta' ) ) {
-                            $unsyncronized_events[intval( $event_id )] = $post_id;
-                            unset( $this->_data['events'][$organization_id][$event_id] );
-                            if ( TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
-                                if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
-                                    return true;
-                                }
+                        global $wpdb;
+                        $wpdb->query( $wpdb->prepare( "UPDATE $wpdb->postmeta SET meta_key = %s WHERE post_id = %d AND meta_key = %s", 'timepad_meta_post', $post_id, 'timepad_meta' ) );
+                        $unsyncronized_events[intval( $event_id )] = $post_id;
+                        unset( $this->_data['events'][$organization_id][$event_id] );
+                        if ( TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
+                            if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
+                                return true;
                             }
                         }
                     }
