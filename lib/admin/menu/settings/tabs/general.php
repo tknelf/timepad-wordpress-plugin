@@ -36,7 +36,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @var    string
          */
-        protected $_fields = 'description_html,location';
+        protected $_fields = 'description_html,location,ends_at';
         
         /**
          * Max Length of event name/title
@@ -169,13 +169,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @return object|array single post object or array of WP posts objects
          */
-        protected function _get_posts_by_timepad_event_id( $event_id, $single = true, $status = 'publish', $organization_id = false ) {
+        protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = false ) {
             global $wpdb;
 
             $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
             $meta_array = array(
-                'event_id'         => intval( $event_id )
+                'event_id'         => intval( $event['id'] )
                 ,'organization_id' => intval( $org_id )
+                ,'location'        => $event['location']
+                ,'starts_at'       => strtotime( $event['starts_at'] )
+                ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
             );
 
             $meta_str    = serialize( $meta_array );
@@ -258,6 +261,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         'event_id'           => intval( $event['id'] )
                         ,'organization_id'   => intval( $this->_data['current_organization_id'] )
                         ,'location'          => $event['location']
+                        ,'starts_at'         => strtotime( $event['starts_at'] )
+                        ,'ends_at'           => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
                     );
                     $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadregistration eventid="' . $event['id'] . '"]';
                     $date = $this->_make_post_time( $event['starts_at'] );
@@ -273,7 +278,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'post_modified_gmt' => $date['date_gmt']
                     );
                     
-                    $check_post = $this->_get_posts_by_timepad_event_id( $event['id'] );
+                    $check_post = $this->_get_posts_by_timepad_event_id( $event );
                     if ( empty( $check_post ) ) {
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
@@ -324,8 +329,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $meta_array = array(
                     'event_id'         => intval( $event['id'] )
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
+                    ,'location'        => $event['location']
+                    ,'starts_at'       => strtotime( $event['starts_at'] )
+                    ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
                 );
-                $sql = "SELECT * FROM `{$wpdb->posts}` LEFT JOIN `{$wpdb->postmeta}` ON `{$wpdb->posts}`.`ID` = `{$wpdb->postmeta}`.`post_id` WHERE 1=1 AND `{$wpdb->postmeta}`.`meta_value` LIKE '%s'";
+                $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
                 $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
                 if ( !empty( $event_post ) ) {
                     $content = $event['description_html'] . '<br /><div id="timepad-event-widget-' . intval( $event_post->ID ) . '" class="' . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . '">[timepadregistration eventid="' . $event['id'] . '"]</div>';
@@ -629,7 +637,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
                 if ( !empty( $events['excluded'] ) && is_array( $events['excluded'] ) ) {
                     foreach ( $events['excluded'] as $org_id => $excl_event ) {
-                        $excluded_post = $this->_get_posts_by_timepad_event_id( $excl_event['id'] );
+                        $excluded_post = $this->_get_posts_by_timepad_event_id( $excl_event );
                         if ( !empty( $excluded_post ) ) {
                             $this->_make_wp_event_status( $excluded_post->ID, 'private' );
                         }
@@ -637,7 +645,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
                 if ( !empty( $events['exist_not_excluded'] ) && is_array( $events['exist_not_excluded'] ) ) {
                     foreach ( $events['exist_not_excluded'] as $org_id => $not_excl_event ) {
-                        $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event['id'] );
+                        $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event );
                         if ( !empty( $exist_not_excluded_post ) ) {
                             $this->_make_wp_event_status( $exist_not_excluded_post->ID, 'publish' );
                         }
