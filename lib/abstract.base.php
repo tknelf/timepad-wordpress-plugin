@@ -7,11 +7,11 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
     /**
      * Base Admin abstract class
      *
-     * @class       TimepadEvents_Admin_Base
+     * @class       TimepadEvents_Base
      * @since       1.0.0
      * @package     TimepadEvents/Base
      * @author      Igor Sazonov <sovletig@yandex.ru>
-     * @category    Admin Base Abstract class
+     * @category    Base Abstract class
      * @abstract
      */
     abstract class TimepadEvents_Base {

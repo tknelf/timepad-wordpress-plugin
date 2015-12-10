@@ -162,7 +162,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * This function get post/posts by meta with interanal TimePad event ID
          * 
          * @since  1.0.0
-         * @param  int $event_id Internal TimePad event ID
+         * @param  int $event Internal TimePad event ID
          * @param  boolean $single
          * @param  string $status
          * @param  int $organization_id
@@ -176,14 +176,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $meta_array = array(
                 'event_id'         => intval( $event['id'] )
                 ,'organization_id' => intval( $org_id )
-                ,'location'        => $event['location']
+                /*,'location'        => $event['location']
                 ,'starts_at'       => strtotime( $event['starts_at'] )
-                ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
+                ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''*/
             );
-
-            $meta_str    = serialize( $meta_array );
+            
             $sql_prepare = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$wpdb->postmeta}.meta_value = %s";
-            $posts = $wpdb->get_results( $wpdb->prepare( $sql_prepare, $meta_str ) );
+            $posts = $wpdb->get_results( $wpdb->prepare( $sql_prepare, '%' . serialize( $meta_array ) . '%' ) );
 
             return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
         }
@@ -329,12 +328,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $meta_array = array(
                     'event_id'         => intval( $event['id'] )
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
-                    ,'location'        => $event['location']
+                    /*,'location'        => $event['location']
                     ,'starts_at'       => strtotime( $event['starts_at'] )
-                    ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
+                    ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''*/
                 );
                 $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
-                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, serialize( $meta_array ) ) );
+                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . serialize( $meta_array ) . '%' ) );
                 if ( !empty( $event_post ) ) {
                     $content = $event['description_html'] . '<br /><div id="timepad-event-widget-' . intval( $event_post->ID ) . '" class="' . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . '">[timepadregistration eventid="' . $event['id'] . '"]</div>';
                     $date = $this->_make_post_time( $event['starts_at'] );
@@ -678,6 +677,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 } else {
                     $data       = $this->_data;
                     $category   = isset( $this->_data['category_id'] ) ? $this->_get_category( $this->_data['category_id'] ) : array();
+                    $post_types = TimepadEvents_Helpers::get_post_types_array();
                     include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-data.php';
                 }
             } else {

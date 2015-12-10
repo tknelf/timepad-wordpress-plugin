@@ -79,6 +79,44 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
+    <tr>
+        <td colspan="3" width="60%">
+            <h3 class="title"><?php _e( 'Automatic unsyncronize events to posts/other post types', 'timepad' ); ?></h3>
+            <p><?php _e( 'All your organization events will be automatically unsyncronized from TimePad API', 'timepad' ); ?></p>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <th scope="row"><?php _e( 'Unsyncronize status', 'timepad' ) ?></th>
+        <th colspan="2">
+            <label for="timepad_auto_unsyncronize">
+                <?php $autounsync = isset( $data['autounsync'] ) ? 1 : 0; ?>
+                <input type="checkbox" name="timepad_auto_unsyncronize" id="timepad_auto_unsyncronize" value="1" <?php checked( 1, $autounsync ); ?> />
+                <?php _e( 'Automatically unsyncronize events to posts/post types', 'timepad' ); ?>
+            </label>
+        </th>
+        <td></td>
+    </tr>
+    <tr class="timepad_unsync_tr"<?php echo ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) ? ' style="display:none"' : ''; ?>>
+        <th scope="row"><label for="timepad_autounsync_to_post_type"><?php _e( 'To post type', 'timepad' ) ?>:</label></th>
+        <td colspan="2">
+            <select name="timepad_autounsync_to_post_type" id="timepad_autounsync_to_post_type">
+            <?php foreach ( $post_types as $post_type => $post_type_name ) : ?>
+                <option value="<?php echo $post_type; ?>"><?php echo $post_type_name; ?></option>
+            <?php endforeach; ?>
+            </select>
+        </td>
+        <td></td>
+    </tr>
+    <tr class="timepad_unsync_tr"<?php echo ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) ? ' style="display:none"' : ''; ?>>
+        <th scope="row"><label for="timepad_autounsync_to_post_category"><?php _e( 'To category', 'timepad' ) ?>:</label></th>
+        <td colspan="2">
+            <select name="timepad_autounsync_to_post_category" id="timepad_autounsync_to_post_category">
+                
+            </select>
+        </td>
+        <td></td>
+    </tr>
 </table>
 <input type="submit" class="button button-primary" name="save_changes" value="<?php _e( 'Save changes', 'timepad' ); ?>" />
 <?php else : ?>

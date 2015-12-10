@@ -41,4 +41,15 @@ jQuery(document).ready(function() {
             return false;
         });
     }
+    
+    if ( jQuery('#timepad_auto_unsyncronize').length ) {
+        jQuery('#timepad_auto_unsyncronize').change(function() {
+            var $_this = jQuery(this);
+            if ( $_this.is(':checked') ) {
+                jQuery('.timepad_unsync_tr').show();
+            } else {
+                jQuery('.timepad_unsync_tr').hide();
+            }
+        });
+    }
 });

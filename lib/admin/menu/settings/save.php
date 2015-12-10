@@ -11,11 +11,12 @@ if ( isset( $_POST['_wpnonce'] ) ) {
     if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) && current_user_can( 'activate_plugins' ) ) {
         if ( isset( $_POST['cancel_account'] ) && !empty( $_POST['cancel_account'] ) ) {
             $data = get_option( 'timepad_data' );
-            unset($data['organizations']);
-            unset($data['events']);
+            unset( $data['organizations'] );
+            unset( $data['events'] );
             
-            unset($data['autoimport']);
-            unset($data['current_organization_id']);
+            unset( $data['autoimport'] );
+            unset( $data['autounsync'] );
+            unset( $data['current_organization_id'] );
             
             unset( $data['token'] );
             unset( $_COOKIE['timepad_token'] );
@@ -27,7 +28,8 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         if ( isset( $_POST['cancel_organization'] ) && !empty( $_POST['cancel_organization'] ) ) {
             $data = get_option( 'timepad_data' );
             unset( $data['autoimport'] );
-            unset( $data['current_organization_id']);
+            unset( $data['autounsync'] );
+            unset( $data['current_organization_id'] );
             
             update_option( 'timepad_data', $data );
         }
@@ -45,20 +47,27 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         }
 
         if ( isset( $_POST['save_changes'] ) && !empty( $_POST['save_changes'] )/* && !isset( $_POST['cancel_account'] )*/ ) {
-
-            if (isset($_POST['timepad_autoimport']) && !empty($_POST['timepad_autoimport'])) {
-                $data = get_option('timepad_data');
+            $data = get_option( 'timepad_data' );
+            if ( isset( $_POST['timepad_autoimport'] ) && !empty( $_POST['timepad_autoimport'] ) ) {
                 $data['autoimport'] = 1;
                 if ( !wp_next_scheduled( 'timepad_cron' ) ) {
                     wp_schedule_event( time(), 'once_three_mins', 'timepad_cron' );
                 }
-                update_option('timepad_data', $data);
             } else {
-                $data = get_option('timepad_data');
                 $data['autoimport'] = 0;
-                unset($data['autoimport']);
-                update_option('timepad_data', $data);
+                unset( $data['autoimport'] );
             }
+            
+            if ( isset( $_POST['timepad_auto_unsyncronize'] ) && !empty( $_POST['timepad_auto_unsyncronize'] ) && isset( $_POST['timepad_autounsync_to_post_type'] ) && !empty( $_POST['timepad_autounsync_to_post_type'] ) ) {
+                $data['autounsync'] = 1;
+                $data['autounsync_to_post_type'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_type'] );
+                $data['autounsync_to_post_category'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_category'] );
+            } else {
+                $data['autounsync'] = 0;
+                unset( $data['autounsync'] );
+            }
+            
+            update_option( 'timepad_data', $data );
             
             $cat_args = array();
             if ( isset( $_POST['cat_name'] ) && !empty( $_POST['cat_name'] ) && strlen( esc_attr( $_POST['cat_name'] ) ) > 5 ) {

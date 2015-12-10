@@ -298,5 +298,26 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             
             return false;
         }
+        
+        /**
+         * This function get human array list with [post_type] => [name] array
+         * 
+         * @since  1.1
+         * @access public
+         * @return array
+         */
+        public static function get_post_types_array() {
+            $ret_array = array();
+            $post_types = get_post_types();
+            unset( $post_types['attachment'] );
+            unset( $post_types['revision'] );
+            unset( $post_types['nav_menu_item'] );
+            foreach ( $post_types as $post_type ) {
+                $post_type_obj = get_post_type_object( $post_type );
+                $ret_array[$post_type] = sanitize_text_field( $post_type_obj->labels->name );
+            }
+            
+            return $ret_array;
+        }
     }
 endif;
