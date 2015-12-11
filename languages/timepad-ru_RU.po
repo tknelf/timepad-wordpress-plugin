@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-12-08 13:52+0300\n"
-"PO-Revision-Date: 2015-12-08 13:53+0300\n"
+"POT-Creation-Date: 2015-12-11 12:31+0300\n"
+"PO-Revision-Date: 2015-12-11 12:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -79,7 +79,7 @@ msgstr "Неверное значение security nonce."
 msgid "General"
 msgstr "Основное"
 
-#: lib/admin/menu/settings/tabs/general.php:508
+#: lib/admin/menu/settings/tabs/general.php:507
 msgid "TimePad Events"
 msgstr "События TimePad"
 
@@ -173,6 +173,7 @@ msgstr ""
 "записей"
 
 #: lib/admin/menu/views/settings-general-data.php:101
+#: lib/admin/menu/views/settings-general-data.php:128
 msgid "To post type"
 msgstr "В тип записи"
 
@@ -180,7 +181,27 @@ msgstr "В тип записи"
 msgid "To category"
 msgstr "В категорию"
 
+#: lib/admin/menu/views/settings-general-data.php:122
+msgid "Event/post widget output regulation"
+msgstr "Настройка вывода виджета TimePad в событии/записи"
+
 #: lib/admin/menu/views/settings-general-data.php:123
+msgid ""
+"You can choose how to display the TimePad widget at the event/post or "
+"display the one singly"
+msgstr ""
+"Вы можете выбрать как выводить виджет TimePad: автоматически в событии/"
+"записи, либо самостоятельно отдельно в шорткоде"
+
+#: lib/admin/menu/views/settings-general-data.php:131
+msgid "Automatically after event description"
+msgstr "Автоматически после описания события (шорткод)"
+
+#: lib/admin/menu/views/settings-general-data.php:132
+msgid "Manually as shortcode/etc"
+msgstr "Вручную вставляя шорткод/итд"
+
+#: lib/admin/menu/views/settings-general-data.php:138
 msgid "Save changes"
 msgstr "Сохранить изменения"
 

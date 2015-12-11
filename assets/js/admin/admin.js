@@ -50,6 +50,29 @@ jQuery(document).ready(function() {
             } else {
                 jQuery('.timepad_unsync_tr').hide();
             }
+            
+            return false;
+        });
+    }
+    
+    if ( jQuery('#timepad_autounsync_to_post_type').length ) {
+        jQuery(document).on('change', '#timepad_autounsync_to_post_type', function (e) {
+            e.stopPropagation();
+            var $_this = jQuery(this)
+                ,$_loading_wrapper = $_this.parent('.timepad-ajaxloader-wrapper')
+                ,$_post_type = $_this.find(':selected').val();
+                $_loading_wrapper.addClass('loading');
+            
+            setTimeout(function () {
+                jQuery.post( ajaxurl, { action: 'timepad_get_post_type_categories', post_type: $_post_type, security: timepad._security }, function( data ) {
+                    if ( data.res ) {
+                        jQuery('#timepad_autounsync_to_post_categories').html( data.res );
+                    }
+                    $_loading_wrapper.removeClass('loading');
+                }, 'json' );
+            }, 300);
+            
+            return false;
         });
     }
 });

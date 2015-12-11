@@ -3,7 +3,16 @@
 .tools_page_timepad-events-redirect{display:none}
 .post-type-timepad-events .wrap h2:nth-child(1) a{display:none}
 
-.timepad-events-notice{position: relative}
+.timepad-events-notice{position:relative}
+
+.timepad-ajaxloader-wrapper{
+    display: inline-block;
+    padding-right: 30px;
+}
+
+.timepad-ajaxloader-wrapper.loading{
+    background: url(../../images/admin/ajaxloader.gif) 100% 50% no-repeat;
+}
 
 /*--------DISMISS--------*/
 .timepad-events-dismiss {

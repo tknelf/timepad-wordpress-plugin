@@ -45,6 +45,8 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 
                 add_action( 'wp_ajax_timepad_unbind_from_api', array( $this, 'unsyncronize_event_to_post_ajax' ) );
                 
+                add_action( 'wp_ajax_timepad_get_post_type_categories', array( $this, 'timepadevents_get_post_type_categories' ) );
+                
                 add_action( 'delete_post', function( $post_id ) {
                     TimepadEvents_Helpers::get_excluded_from_api_events( false, $post_id, 'delete' );
                 } );
@@ -233,8 +235,36 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
          */
         public function timepadevents_dismiss_requirements() {
             check_ajax_referer( $this->_config['security_nonce'], 'security' );
-            @delete_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta );
-            wp_die(1);
+            if ( @delete_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta ) ) {
+                wp_die(1);
+            } else {
+                wp_die(0);
+            }
+        }
+        
+        public function timepadevents_get_post_type_categories() {
+            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            $ret_array = array();
+            $post_type = sanitize_text_field( $_POST['post_type'] );
+            $categories = get_categories(
+                array(
+                    'hide_empty' => false
+                    ,'type'      => $post_type
+                )
+            );
+            $ret_array['res'] = '';
+            if ( $categories ) {
+                $ret_array['res'] .= '<select name="timepad_autounsync_to_post_category" id="timepad_autounsync_to_post_category">';
+                foreach ( $categories as $category ) {
+                    $cat_id = intval( $category->term_id );
+                    if ( $category->slug != TIMEPADEVENTS_POST_TYPE_CATEGORY ) {
+                        $ret_array['res'] .= '<option value="' . $cat_id . '">' . $category->name . '</option>';
+                    }
+                }
+                $ret_array['res'] .= '</select>';
+                wp_die( json_encode( $ret_array ) );
+            }
+            wp_die(0);
         }
 
     }

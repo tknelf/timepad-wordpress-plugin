@@ -312,6 +312,8 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             unset( $post_types['attachment'] );
             unset( $post_types['revision'] );
             unset( $post_types['nav_menu_item'] );
+            unset( $post_types['page'] );
+            unset( $post_types[TIMEPADEVENTS_POST_TYPE] );
             foreach ( $post_types as $post_type ) {
                 $post_type_obj = get_post_type_object( $post_type );
                 $ret_array[$post_type] = sanitize_text_field( $post_type_obj->labels->name );

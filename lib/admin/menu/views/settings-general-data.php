@@ -100,19 +100,57 @@ if ( !empty( $data['organizations'] ) ) : ?>
     <tr class="timepad_unsync_tr"<?php echo ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) ? ' style="display:none"' : ''; ?>>
         <th scope="row"><label for="timepad_autounsync_to_post_type"><?php _e( 'To post type', 'timepad' ) ?>:</label></th>
         <td colspan="2">
-            <select name="timepad_autounsync_to_post_type" id="timepad_autounsync_to_post_type">
-            <?php foreach ( $post_types as $post_type => $post_type_name ) : ?>
-                <option value="<?php echo $post_type; ?>"><?php echo $post_type_name; ?></option>
-            <?php endforeach; ?>
-            </select>
+            <div class="timepad-ajaxloader-wrapper">
+                <select name="timepad_autounsync_to_post_type" id="timepad_autounsync_to_post_type">
+                <?php foreach ( $post_types as $post_type => $post_type_name ) : ?>
+                    <option value="<?php echo $post_type; ?>"<?php selected( $post_type, isset( $data['autounsync_to_post_type'] ) ? $data['autounsync_to_post_type'] : '' ); ?>><?php echo $post_type_name; ?></option>
+                <?php endforeach; ?>
+                </select>
+            </div>
         </td>
         <td></td>
     </tr>
     <tr class="timepad_unsync_tr"<?php echo ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) ? ' style="display:none"' : ''; ?>>
         <th scope="row"><label for="timepad_autounsync_to_post_category"><?php _e( 'To category', 'timepad' ) ?>:</label></th>
         <td colspan="2">
-            <select name="timepad_autounsync_to_post_category" id="timepad_autounsync_to_post_category">
-                
+            <div id="timepad_autounsync_to_post_categories">
+                <?php
+                $categories = get_categories(
+                    array(
+                        'hide_empty' => false
+                        ,'type'      => ( isset( $data['autounsync_to_post_type'] ) && !empty( $data['autounsync_to_post_type'] ) ) ? $data['autounsync_to_post_type'] : 'post'
+                    )
+                );
+                if ( $categories ) :
+                ?>
+                <select name="timepad_autounsync_to_post_category" id="timepad_autounsync_to_post_category">
+                    <?php
+                    foreach( $categories as $category ) :
+                        $cat_id = intval( $category->term_id );
+                        if ( $category->slug != TIMEPADEVENTS_POST_TYPE_CATEGORY ) :
+                        ?>
+                        <option value="<?php echo $cat_id; ?>"<?php selected( $cat_id, isset( $data['autounsync_to_post_category'] ) ? $data['autounsync_to_post_category'] : '' ); ?>><?php echo $category->name; ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+                <?php endif; ?>
+            </div>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td colspan="3" width="60%">
+            <h3 class="title"><?php _e( 'Event/post widget output regulation', 'timepad' ); ?></h3>
+            <p><?php _e( 'You can choose how to display the TimePad widget at the event/post or display the one singly', 'timepad' ); ?></p>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="timepad_widget_regulation"><?php _e( 'To post type', 'timepad' ) ?>:</label></th>
+        <td colspan="2">
+            <select name="timepad_widget_regulation" id="timepad_widget_regulation">
+                <option value="auto_after_desc"<?php selected( 'auto_after_desc', isset( $data['widget_regulation'] ) ? $data['widget_regulation'] : '' ); ?>><?php _e( 'Automatically after event description', 'timepad' ); ?></option>
+                <option value="manually"<?php selected( 'manually', isset( $data['widget_regulation'] ) ? $data['widget_regulation'] : '' ); ?>><?php _e( 'Manually as shortcode/etc', 'timepad' ); ?></option>
             </select>
         </td>
         <td></td>

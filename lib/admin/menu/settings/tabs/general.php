@@ -53,12 +53,22 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @var int
          */
         protected $_subdomain_maxlength = 25;
+        
+        /**
+         * Default category id
+         * 
+         * @access protected
+         * @var int
+         */
+        protected $_default_category_id = 0;
 
         public function __construct() {
             parent::__construct();
             
             //set the tab title
             $this->tab_title = __( 'General', 'timepad' );
+            
+            $this->_default_category_id = get_option( 'default_category' );
         }
         
         /**
@@ -263,19 +273,32 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'starts_at'         => strtotime( $event['starts_at'] )
                         ,'ends_at'           => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
                     );
-                    $content = ( ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] . '<br />' : '' ) . '[timepadregistration eventid="' . $event['id'] . '"]';
+                    $content  = ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] : '';
+                    if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
+                        $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
+                    }
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $insert_args = array(
                         'post_title'         => sanitize_text_field( $event['name'] )
                         ,'post_content'      => $content
                         ,'post_status'       => 'publish'
-                        ,'post_category'     => array( $this->_data['category_id'] )
-                        ,'post_type'         => TIMEPADEVENTS_POST_TYPE
                         ,'post_date'         => $date['date']
                         ,'post_date_gmt'     => $date['date_gmt']
                         ,'post_modified'     => $date['date']
                         ,'post_modified_gmt' => $date['date_gmt']
                     );
+                    $category_id                  = intval( $this->_data['category_id'] );
+                    $insert_args['post_type']     = TIMEPADEVENTS_POST_TYPE;
+                    $insert_args['post_category'] = array( $category_id );
+                    $taxonomy                     = TIMEPADEVENTS_POST_TYPE . '_category';
+                    if ( isset( $this->_data['autounsync'] ) && !empty( $this->_data['autounsync'] ) ) {
+                        if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['autounsync_to_post_category'] ) && !empty( $this->_data['autounsync_to_post_category'] ) ) {
+                            $category_id                  = intval( $this->_data['autounsync_to_post_category'] );
+                            $insert_args['post_type']     = $this->_data['autounsync_to_post_type'];
+                            $insert_args['post_category'] = array( $category_id );
+                            $taxonomy                     = 'category';
+                        }
+                    }
                     
                     $check_post = $this->_get_posts_by_timepad_event_id( $event );
                     if ( empty( $check_post ) ) {
@@ -283,7 +306,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         if ( $id = wp_insert_post( $insert_args ) ) {
                             update_post_meta( $id, 'timepad_meta', $meta_array );
                             $this->_set_post_thumbnail( $id, $event );
-                            wp_set_post_terms( $id, array( $this->_data['category_id'] ), TIMEPADEVENTS_POST_TYPE . '_category', true );
+                            wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }
                     } else {
                         $update_args = array(
@@ -335,7 +358,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
                 $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . serialize( $meta_array ) . '%' ) );
                 if ( !empty( $event_post ) ) {
-                    $content = $event['description_html'] . '<br /><div id="timepad-event-widget-' . intval( $event_post->ID ) . '" class="' . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . '">[timepadregistration eventid="' . $event['id'] . '"]</div>';
+                    $content  = $event['description_html'];
+                    if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
+                        $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
+                    }
                     $date = $this->_make_post_time( $event['starts_at'] );
                     $update_args = array(
                         'ID'                 => $event_post->ID
@@ -507,6 +533,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $cat_name     = __( 'TimePad Events', 'timepad' );
                             $cat_nicename = TIMEPADEVENTS_POST_TYPE_CATEGORY;
                             $cat_taxonomy = TIMEPADEVENTS_POST_TYPE . '_category';
+                            if ( isset( $this->_data['autounsync'] ) && !empty( $this->_data['autounsync'] ) ) {
+                                if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['autounsync_to_post_category'] ) && !empty( $this->_data['autounsync_to_post_category'] ) ) {
+                                    $cat          = get_category( $this->_data['autounsync_to_post_category'] );
+                                    $cat_name     = $cat->name;
+                                    $cat_nicename = $cat->slug;
+                                    $cat_taxonomy = 'category';
+                                }
+                            }
                             $cat_i        = 1;
                             
                             /**

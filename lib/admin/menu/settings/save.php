@@ -61,10 +61,22 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             if ( isset( $_POST['timepad_auto_unsyncronize'] ) && !empty( $_POST['timepad_auto_unsyncronize'] ) && isset( $_POST['timepad_autounsync_to_post_type'] ) && !empty( $_POST['timepad_autounsync_to_post_type'] ) ) {
                 $data['autounsync'] = 1;
                 $data['autounsync_to_post_type'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_type'] );
-                $data['autounsync_to_post_category'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_category'] );
+                $data['autounsync_to_post_category'] = intval( $_POST['timepad_autounsync_to_post_category'] );
             } else {
                 $data['autounsync'] = 0;
                 unset( $data['autounsync'] );
+                
+                $data['autounsync_to_post_type'] = null;
+                unset( $data['autounsync_to_post_type'] );
+                
+                $data['autounsync_to_post_category'] = 0;
+                unset( $data['autounsync_to_post_category'] );
+            }
+            
+            if ( isset( $_POST['timepad_widget_regulation'] ) && !empty( $_POST['timepad_widget_regulation'] ) ) {
+                $data['widget_regulation'] = sanitize_text_field( $_POST['timepad_widget_regulation'] );
+            } else {
+                $data['widget_regulation'] = 'auto_after_desc';
             }
             
             update_option( 'timepad_data', $data );
