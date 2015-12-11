@@ -35,12 +35,12 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 ,'TimepadEvents_Admin_Settings'  => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings.php'
                 
                 ,'TimepadEvents_Admin_Menu'      => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu.php'
+                
+                ,'TimepadEvents_Admin_Scripts'   => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php'
+                ,'TimepadEvents_Admin_Styles'    => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php'
             );
 
             if ( is_admin() ) {
-                $this->_classes['TimepadEvents_Admin_Scripts'] = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/scripts.php';
-                $this->_classes['TimepadEvents_Admin_Styles']  = TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/styles.php';
-                
                 add_action( 'wp_ajax_timepad_dismiss_requirements', array( $this, 'timepadevents_dismiss_requirements' ) );
                 
                 add_action( 'wp_ajax_timepad_unbind_from_api', array( $this, 'unsyncronize_event_to_post_ajax' ) );

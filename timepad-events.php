@@ -162,7 +162,7 @@ if ( ! is_admin() ) {
      * Enable new shortcode to display the one at site posts and pages
      */
     add_shortcode( 'timepadregistration' , function( array $atts ) {
-        return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+        return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
     } );
     
 }
