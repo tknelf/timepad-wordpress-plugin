@@ -48,6 +48,12 @@ if ( isset( $_POST['_wpnonce'] ) ) {
 
         if ( isset( $_POST['save_changes'] ) && !empty( $_POST['save_changes'] )/* && !isset( $_POST['cancel_account'] )*/ ) {
             $data = get_option( 'timepad_data' );
+            if ( isset( $_POST['timepad_auto_js_include'] ) && !empty( $_POST['timepad_auto_js_include'] ) ) {
+                $data['auto_js_include'] = 1;
+            } else {
+                $data['auto_js_include'] = 0;
+            }
+            
             if ( isset( $_POST['timepad_autoimport'] ) && !empty( $_POST['timepad_autoimport'] ) ) {
                 $data['autoimport'] = 1;
                 if ( !wp_next_scheduled( 'timepad_cron' ) ) {
@@ -109,4 +115,3 @@ if ( isset( $_POST['_wpnonce'] ) ) {
     wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=timepad-events&page=timepad-events-options' . $additional_url );
     
 } else die( 'Security nonce value is empty.' );
-

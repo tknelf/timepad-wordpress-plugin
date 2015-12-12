@@ -108,6 +108,33 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         private static function _get_config() {
             return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'config.ini' );
         }
+        
+        /**
+         * Plugin config var
+         * 
+         * @since  1.1
+         * @access public
+         * @param  string $var Config maybe variable
+         * @return string
+         */
+        public function get_config_var( $var ) {
+            return isset( $this->_config[$var] ) ? $this->_config[$var] : '';
+        }
+        
+        /**
+         * Plugin data by key
+         * 
+         * @since  1.1
+         * @param  $var Data maybe variable
+         * @access public
+         * @return array|null
+         */
+        public function get_data_var( $var ) {
+            if ( $var == 'events' ) {
+                return;
+            }
+            return isset( $this->_data[$var] ) ? $this->_data[$var] : '';
+        }
 
         /**
          * This function returns current class name

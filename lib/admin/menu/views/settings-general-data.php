@@ -81,6 +81,24 @@ if ( !empty( $data['organizations'] ) ) : ?>
     </tr>
     <tr>
         <td colspan="3" width="60%">
+            <h3 class="title"><?php _e( 'Automatic TimePad javascript file include (recommended)', 'timepad' ); ?></h3>
+            <p><?php _e( 'External javascript file inits all TimePad scripts for widget output', 'timepad' ); ?></p>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <th scope="row"><?php _e( 'Include status', 'timepad' ) ?></th>
+        <th colspan="2">
+            <label for="timepad_auto_js_include">
+                <?php $autojsinclude = ( isset( $data['auto_js_include'] ) && !empty( $data['auto_js_include'] ) ) ? 1 : 0; ?>
+                <input type="checkbox" name="timepad_auto_js_include" id="timepad_auto_js_include" value="1" <?php checked( 1, $autojsinclude ); ?> />
+                <?php _e( 'Automatically include external js file', 'timepad' ); ?>
+            </label>
+        </th>
+        <td></td>
+    </tr>
+    <tr>
+        <td colspan="3" width="60%">
             <h3 class="title"><?php _e( 'Automatic unsyncronize events to posts/other post types', 'timepad' ); ?></h3>
             <p><?php _e( 'All your organization events will be automatically unsyncronized from TimePad API', 'timepad' ); ?></p>
         </td>
@@ -90,7 +108,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <th scope="row"><?php _e( 'Unsyncronize status', 'timepad' ) ?></th>
         <th colspan="2">
             <label for="timepad_auto_unsyncronize">
-                <?php $autounsync = isset( $data['autounsync'] ) ? 1 : 0; ?>
+                <?php $autounsync = ( isset( $data['autounsync'] ) && !empty( $data['autounsync'] ) ) ? 1 : 0; ?>
                 <input type="checkbox" name="timepad_auto_unsyncronize" id="timepad_auto_unsyncronize" value="1" <?php checked( 1, $autounsync ); ?> />
                 <?php _e( 'Automatically unsyncronize events to posts/post types', 'timepad' ); ?>
             </label>

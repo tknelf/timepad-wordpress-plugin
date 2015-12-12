@@ -242,6 +242,13 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             }
         }
         
+        /**
+         * AJAX get categories by given post type
+         * 
+         * @since  1.1
+         * @access public
+         * @return void
+         */
         public function timepadevents_get_post_type_categories() {
             check_ajax_referer( $this->_config['security_nonce'], 'security' );
             $ret_array = array();

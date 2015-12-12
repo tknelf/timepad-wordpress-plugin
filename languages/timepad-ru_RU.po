@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2015-12-11 12:31+0300\n"
-"PO-Revision-Date: 2015-12-11 12:32+0300\n"
+"POT-Creation-Date: 2015-12-12 16:29+0300\n"
+"PO-Revision-Date: 2015-12-12 16:30+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -63,23 +63,23 @@ msgstr "Редирект TimePad"
 msgid "Redirect"
 msgstr "Редирект"
 
-#: lib/admin/menu/settings/save.php:79
+#: lib/admin/menu/settings/save.php:91
 msgid "Category name must have string length more than 5 characters."
 msgstr "Наименование категории должно быть более 5 символов."
 
-#: lib/admin/menu/settings/save.php:87
+#: lib/admin/menu/settings/save.php:99
 msgid "Category slug must have string length more than 5 characters."
 msgstr "Ярлык категории должен быть более 5 символов"
 
-#: lib/admin/menu/settings/save.php:95
+#: lib/admin/menu/settings/save.php:107
 msgid "Wrong security nonce value."
 msgstr "Неверное значение security nonce."
 
-#: lib/admin/menu/settings/tabs/general.php:61
+#: lib/admin/menu/settings/tabs/general.php:69
 msgid "General"
 msgstr "Основное"
 
-#: lib/admin/menu/settings/tabs/general.php:507
+#: lib/admin/menu/settings/tabs/general.php:533
 msgid "TimePad Events"
 msgstr "События TimePad"
 
@@ -149,12 +149,30 @@ msgid "Events category label"
 msgstr "Ярлык категории событий"
 
 #: lib/admin/menu/views/settings-general-data.php:84
+msgid "Automatic TimePad javascript file include (recommended)"
+msgstr "Автоматическое включение яваскрипт файла TimePad (рекомендуется)"
+
+#: lib/admin/menu/views/settings-general-data.php:85
+msgid "External javascript file inits all TimePad scripts for widget output"
+msgstr ""
+"Внешний яваскрипт файл инициализирует все возможности TimePad для "
+"отображения виджетов"
+
+#: lib/admin/menu/views/settings-general-data.php:90
+msgid "Include status"
+msgstr "Статус встраивания"
+
+#: lib/admin/menu/views/settings-general-data.php:95
+msgid "Automatically include external js file"
+msgstr "Автоматически встраивать внешний js файл"
+
+#: lib/admin/menu/views/settings-general-data.php:102
 msgid "Automatic unsyncronize events to posts/other post types"
 msgstr ""
 "Автоматическое отвязывание всех импортируемых событий в записи/другие типы "
 "записей"
 
-#: lib/admin/menu/views/settings-general-data.php:85
+#: lib/admin/menu/views/settings-general-data.php:103
 msgid ""
 "All your organization events will be automatically unsyncronized from "
 "TimePad API"
@@ -162,30 +180,30 @@ msgstr ""
 "Все события вашей организации будут автоматически отвязываться от "
 "синхронизации с TimePad API"
 
-#: lib/admin/menu/views/settings-general-data.php:90
+#: lib/admin/menu/views/settings-general-data.php:108
 msgid "Unsyncronize status"
 msgstr "Статус отвязки"
 
-#: lib/admin/menu/views/settings-general-data.php:95
+#: lib/admin/menu/views/settings-general-data.php:113
 msgid "Automatically unsyncronize events to posts/post types"
 msgstr ""
 "Автоматически отвязывать все импортируемые события в записи/другие типы "
 "записей"
 
-#: lib/admin/menu/views/settings-general-data.php:101
-#: lib/admin/menu/views/settings-general-data.php:128
+#: lib/admin/menu/views/settings-general-data.php:119
+#: lib/admin/menu/views/settings-general-data.php:167
 msgid "To post type"
 msgstr "В тип записи"
 
-#: lib/admin/menu/views/settings-general-data.php:112
+#: lib/admin/menu/views/settings-general-data.php:132
 msgid "To category"
 msgstr "В категорию"
 
-#: lib/admin/menu/views/settings-general-data.php:122
+#: lib/admin/menu/views/settings-general-data.php:161
 msgid "Event/post widget output regulation"
 msgstr "Настройка вывода виджета TimePad в событии/записи"
 
-#: lib/admin/menu/views/settings-general-data.php:123
+#: lib/admin/menu/views/settings-general-data.php:162
 msgid ""
 "You can choose how to display the TimePad widget at the event/post or "
 "display the one singly"
@@ -193,15 +211,15 @@ msgstr ""
 "Вы можете выбрать как выводить виджет TimePad: автоматически в событии/"
 "записи, либо самостоятельно отдельно в шорткоде"
 
-#: lib/admin/menu/views/settings-general-data.php:131
+#: lib/admin/menu/views/settings-general-data.php:170
 msgid "Automatically after event description"
 msgstr "Автоматически после описания события (шорткод)"
 
-#: lib/admin/menu/views/settings-general-data.php:132
+#: lib/admin/menu/views/settings-general-data.php:171
 msgid "Manually as shortcode/etc"
 msgstr "Вручную вставляя шорткод/итд"
 
-#: lib/admin/menu/views/settings-general-data.php:138
+#: lib/admin/menu/views/settings-general-data.php:177
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
@@ -339,7 +357,7 @@ msgstr "Новое название категории"
 msgid "Categories"
 msgstr "Категории"
 
-#: lib/admin/scripts.php:74
+#: lib/admin/scripts.php:75
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 

@@ -106,7 +106,7 @@ if ( ! defined( 'TIMEPADEVENTS_FOLDER' ) && defined( 'TIMEPADEVENTS_PLUGIN_ABS_P
      * @return string Plugin folder name
      */
     $arr = explode( '/', TIMEPADEVENTS_PLUGIN_ABS_PATH );
-    define( 'TIMEPADEVENTS_FOLDER', $arr[count($arr) - 2] );
+    define( 'TIMEPADEVENTS_FOLDER', $arr[ count( $arr ) - 2 ] );
 }
 
 require_once( 'lib/helpers.php' );
@@ -132,18 +132,18 @@ add_filter( 'cron_schedules', function( $intervals ) {
 /**
  * Base Admin Class
  */
-require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php');
+require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.base.php' );
 
 /**
  * Admin Settings Base class
  */
-require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php');
+require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/abstract.admin.settings.base.php' );
 
 /**
  * Admin Setup File
  */
-require_once(TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php');
-add_action('plugins_loaded', array('TimepadEvents_Setup_Admin', 'getInstance'), 9999);
+require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php' );
+add_action( 'plugins_loaded', array( 'TimepadEvents_Setup_Admin', 'getInstance' ), 9999 );
 
 if ( ! is_admin() ) {
     
@@ -162,7 +162,14 @@ if ( ! is_admin() ) {
      * Enable new shortcode to display the one at site posts and pages
      */
     add_shortcode( 'timepadregistration' , function( array $atts ) {
-        return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+        $instance = TimepadEvents_Setup_Admin::getInstance();
+        $load_external_js = $instance->get_data_var( 'auto_js_include' );
+        if ( $load_external_js ) {
+            return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"org_subscribe\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+        } else {
+            //return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget=\"org_subscribe\" src=\"" . $instance->get_data_var( 'external_js_file' ) . "\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+            return "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"org_subscribe\" src=\"" . $instance->get_config_var( 'external_js_file' ) . "\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+        }
     } );
     
 }
