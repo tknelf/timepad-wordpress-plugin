@@ -127,18 +127,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          * @access protected
          * @return boolean
          */
-        public function unsyncronize_event_to_post( $post_id, $event_id, $organization_id, $post_type = 'post' ) {
+        public function unsyncronize_event_to_post( $post_id, $event_id, $organization_id ) {
+            $post_type = ( !isset( $this->_data['autounsync_to_post_type'] ) || empty( $this->_data['autounsync_to_post_type'] ) ) ? 'post' : $this->_data['autounsync_to_post_type'];
             $unsyncronized_events = TimepadEvents_Helpers::get_excluded_from_api_events();
             if ( !isset( $unsyncronized_events[$post_id] ) ) {
                 $post = get_post( $post_id );
                 if ( $post->post_type == TIMEPADEVENTS_POST_TYPE && $post_type != TIMEPADEVENTS_POST_TYPE ) {
                     $post->post_type = $post_type;
                     if ( wp_update_post( $post ) ) {
-                        /**
-                         * @why, need to be excluded, let be timepad_meta
-                         */
-                        //global $wpdb;
-                        //$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->postmeta SET meta_key = %s WHERE post_id = %d AND meta_key = %s", 'timepad_meta_post', $post_id, 'timepad_meta' ) );
                         $unsyncronized_events[intval( $event_id )] = $post_id;
                         unset( $this->_data['events'][$organization_id][$event_id] );
                         if ( TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
