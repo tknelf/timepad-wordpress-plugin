@@ -304,7 +304,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     if ( empty( $check_post ) ) {
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
-                            update_post_meta( $id, 'timepad_meta', $meta_array );
+                            update_post_meta( $id, TIMEPADEVENTS_META, $meta_array );
                             $this->_set_post_thumbnail( $id, $event );
                             wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }

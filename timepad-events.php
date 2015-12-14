@@ -87,6 +87,16 @@ if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
     define( 'TIMEPADEVENTS_POST_TYPE_CATEGORY',  'timepad-events-category' );
 }
 
+if ( ! defined ( 'TIMEPADEVENTS_META' ) ) {
+    /**
+     * Post meta key for TimePad Events plugin
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_META',  'timepad_meta' );
+}
+
 if ( ! defined( 'TIMEPADEVENTS_PLUGIN_ABS_PATH' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
     /**
      * Path to plugin absolute path
