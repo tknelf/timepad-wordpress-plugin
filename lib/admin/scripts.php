@@ -39,9 +39,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
          */
         public function init() {
             add_action( 'admin_enqueue_scripts', array( $this, 'admin_init_scripts' ), 9999 );
-            if ( isset( $this->_data['auto_js_include'] ) && !empty( $this->_data['auto_js_include'] ) ) {
-                add_action( 'wp_head', array( $this, 'frontend_init_wp_head' ), 9999 );
-            }
         }
         
         /**
@@ -83,18 +80,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
                 wp_register_script( 'timepad-redirect', plugins_url( 'assets/js/admin/redirect.js', TIMEPADEVENTS_FILE ), array( 'jquery', 'timepad-jquery-cookie' ), null );
                 wp_enqueue_script( 'timepad-redirect' );
             }
-        }
-        
-        /**
-         * Adds TimePad Widget script to the WordPress site automatically
-         * 
-         * @since  1.1
-         * @access public
-         * @return void
-         */
-        public function frontend_init_wp_head() {
-            //echo '<script type="text/javascript" defer="defer" charset="UTF-8" data-timepad-widget="org_subscribe" src="' . $this->_config['external_js_file'] . '"></script>';
-            echo '<script type="text/javascript" src="' . $this->_config['external_js_file'] . '"></script>';
         }
     }
 endif;
