@@ -351,12 +351,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $meta_array = array(
                     'event_id'         => intval( $event['id'] )
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
-                    /*,'location'        => $event['location']
-                    ,'starts_at'       => strtotime( $event['starts_at'] )
-                    ,'ends_at'         => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''*/
                 );
                 $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
                 $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . serialize( $meta_array ) . '%' ) );
+                if ( empty( $event_post ) ) {
+                    $meta_array['location']  = $event['location'];
+                    $meta_array['starts_at'] = strtotime( $event['starts_at'] );
+                    $meta_array['ends_at']   = !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : '';
+                    $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . serialize( $meta_array ) . '%' ) );
+                }
                 if ( !empty( $event_post ) ) {
                     $content  = $event['description_html'];
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
