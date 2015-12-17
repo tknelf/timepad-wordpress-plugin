@@ -188,7 +188,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 ,'organization_id' => intval( $org_id )
             );
             
-            $sql_prepare = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$wpdb->postmeta}.meta_value = %s";
+            $sql_prepare = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$wpdb->postmeta}.meta_value LIKE %s";
             $posts = $wpdb->get_results( $wpdb->prepare( $sql_prepare, '%' . serialize( $meta_array ) . '%' ) );
             if ( empty( $posts ) ) {
                 $meta_array['location']  = $event['location'];
