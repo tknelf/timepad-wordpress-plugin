@@ -155,6 +155,13 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
+    <tr>
+        <th scope="row"><label for="timepad_widget_customization_id"><?php _e( 'Customization ID', 'timepad' ) ?>:</label></th>
+        <td colspan="2">
+            <input type="text" id="timepad_widget_customization_id" name="timepad_widget_customization_id" value="<?php echo ( isset( $data['widget_customization_id'] ) && !empty( $data['widget_customization_id'] ) ) ? intval( $data['widget_customization_id'] ) : ''; ?>" />
+        </td>
+        <td></td>
+    </tr>
 </table>
 <input type="submit" class="button button-primary" name="save_changes" value="<?php _e( 'Save changes', 'timepad' ); ?>" />
 <?php else : ?>

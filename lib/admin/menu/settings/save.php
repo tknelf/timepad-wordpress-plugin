@@ -80,6 +80,13 @@ if ( isset( $_POST['_wpnonce'] ) ) {
                 $data['widget_regulation'] = 'auto_after_desc';
             }
             
+            if ( isset( $_POST['timepad_widget_customization_id'] ) && !empty( $_POST['timepad_widget_customization_id'] ) ) {
+                $data['widget_customization_id'] = intval( $_POST['timepad_widget_customization_id'] );
+            } else {
+                $data['widget_customization_id'] = 0;
+                unset( $data['widget_customization_id'] );
+            }
+            
             update_option( 'timepad_data', $data );
             
             $cat_args = array();
