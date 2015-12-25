@@ -43,7 +43,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
             }, 0 ,2 );
             
             add_filter( 'get_edit_post_link', array( $this, 'timepadevents_edit_post_link' ), 0 ,3 );
-            add_filter( 'edit_post_link', array( $this, 'timepadevents_edit_post_link' ), 0 ,3 );
             
             add_filter( 'bulk_actions-edit-' . TIMEPADEVENTS_POST_TYPE, function( $actions ) {
                 unset( $actions['trash'] );
