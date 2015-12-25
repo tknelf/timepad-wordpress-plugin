@@ -269,12 +269,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //if exist category and current organization - let work!
             if ( isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) && isset( $this->_data['current_organization_id'] ) && !empty( $this->_data['current_organization_id'] ) ) {
                 foreach ( $events as $event ) {
+                    $event_id = intval( $event['id'] );
+                    $organozation_id = intval( $this->_data['current_organization_id'] );
                     $meta_array = array(
-                        'event_id'           => intval( $event['id'] )
-                        ,'organization_id'   => intval( $this->_data['current_organization_id'] )
+                        'event_id'           => $event_id
+                        ,'organization_id'   => $organozation_id
                         ,'location'          => $event['location']
                         ,'starts_at'         => strtotime( $event['starts_at'] )
                         ,'ends_at'           => !empty( $event['ends_at'] ) ? strtotime( $event['ends_at'] ) : ''
+                        ,'tpindex'           => $this->_generate_event_meta_value( $organozation_id, $event_id )
                     );
                     $content  = ( isset( $event['description_html'] ) && !empty( $event['description_html'] ) ) ? $event['description_html'] : '';
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
@@ -355,8 +358,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     'event_id'         => intval( $event['id'] )
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
                 );
+                $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'], $meta_array['event_id'] );
                 $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
-                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . serialize( $meta_array ) . '%' ) );
+                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . $generated_meta_value . '%' ) );
                 if ( empty( $event_post ) ) {
                     $meta_array['location']  = $event['location'];
                     $meta_array['starts_at'] = strtotime( $event['starts_at'] );
@@ -379,10 +383,25 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         ,'post_modified_gmt' => $date['date_gmt']
                     );
                     wp_update_post( $update_args );
+                    $meta_array['tpindex'] = $generated_meta_value;
+                    update_post_meta( $event_post->ID, TIMEPADEVENTS_META, $meta_array );
                     
                     $this->_set_post_thumbnail( $event_post->ID, $event );
                 }
             }
+        }
+        
+        /**
+         * This function generate unique meta string
+         * 
+         * @since  1.1
+         * @param  int $organization_id Organization ID
+         * @param  int $event_id Event ID
+         * @access protected
+         * @return string
+         */
+        protected function _generate_event_meta_value( $organization_id, $event_id ) {
+            return 'org' . $organization_id . 'event' . $event_id;
         }
         
         /**
