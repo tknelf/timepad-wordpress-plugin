@@ -180,7 +180,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return object|array single post object or array of WP posts objects
          */
         protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = false ) {
-            global $wpdb;
 
             $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
             $meta_array = array(
@@ -188,9 +187,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 ,'organization_id' => intval( $org_id )
             );
             $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
-            $sql_prepare = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$wpdb->postmeta}.meta_value LIKE %s";
+            $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
             
-            $posts = $wpdb->get_results( $wpdb->prepare( $sql_prepare, '%' . $generated_meta_value . '%' ) );
+            $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, '%' . $generated_meta_value . '%' ) );
 
             return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
         }
@@ -210,9 +209,18 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 $new_thumb = false;
                 $timepad_api_thumbnail = $timepad_data['poster_image']['uploadcare_url'];
                 $timepad_api_thumbnail = !stripos( $timepad_api_thumbnail, 'http:' ) ? 'http:' . $timepad_api_thumbnail : $timepad_api_thumbnail;
+                if ( !class_exists( 'TimepadEvents_Helpers' ) ) {
+                    require_once( '../../../../helpers.php' );
+                }
                 $thumb_data = TimepadEvents_Helpers::get_api_cover_data( $timepad_api_thumbnail, true );
+                if ( !function_exists( 'get_post_thumbnail_id' ) ) {
+                    require_once( '../../../../../../../../wp-includes/post-thumbnail-template.php' );
+                }
                 $post_thumb_id = get_post_thumbnail_id( $post_id );
                 if ( $post_thumb_id ) {
+                    if ( !function_exists( 'wp_get_attachment_metadata' ) ) {
+                        require_once( '../../../../../../../../wp-includes/post.php' );
+                    }
                     $thumb_meta = wp_get_attachment_metadata( $post_thumb_id, true );
                     if ( isset( $thumb_meta['file'] ) ) {
                         $thumb_filename = TimepadEvents_Helpers::get_filename( $thumb_meta['file'] );
@@ -229,6 +237,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 
                 if ( $new_thumb ) {
                     if ( $file_arr = TimepadEvents_Helpers::copy_file_to_wp_dir( $timepad_api_thumbnail, $thumb_data ) ) {
+                        if ( !function_exists( 'wp_trim_words' ) ) {
+                            require_once( '../../../../../../../../wp-includes/formatting.php' );
+                        }
                         $attachment = array(
                             'post_mime_type' => $file_arr['type']
                             ,'guid'          => $file_arr['url']
@@ -238,7 +249,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         );
                         $id = wp_insert_attachment( $attachment, $file_arr['file'], $post_id );
                         if ( !is_wp_error( $id ) ) {
+                            if ( !function_exists( 'wp_update_attachment_metadata' ) ) {
+                                require_once( '../../../../../../../../wp-includes/post.php' );
+                            }
+                            if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
+                                require_once( '../../../../../../../../wp-admin/includes/image.php' );
+                            }
                             if ( wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) ) {
+                                if ( !function_exists( 'current_theme_supports' ) ) {
+                                    require_once( '../../../../../../../../wp-includes/theme.php' );
+                                }
                                 if ( current_theme_supports( 'post-thumbnails' ) ) {
                                     return set_post_thumbnail( $post_id, $id );
                                 }
@@ -346,7 +366,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return void
          */
         private function _update_events_content( array $events ) {
-            global $wpdb;
             
             foreach ( $events as $event ) {
                 $meta_array = array(
@@ -354,8 +373,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     ,'organization_id' => intval( $this->_data['current_organization_id'] )
                 );
                 $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'], $meta_array['event_id'] );
-                $sql = "SELECT * FROM {$wpdb->posts} LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id WHERE 1=1 AND {$wpdb->postmeta}.meta_value LIKE %s";
-                $event_post = $wpdb->get_row( $wpdb->prepare( $sql, '%' . $generated_meta_value . '%' ) );
+                $sql = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id WHERE 1=1 AND {$this->_db->postmeta}.meta_value LIKE %s";
+                $event_post = $this->_db->get_row( $this->_db->prepare( $sql, '%' . $generated_meta_value . '%' ) );
                 if ( !empty( $event_post ) ) {
                     $content  = $event['description_html'];
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {

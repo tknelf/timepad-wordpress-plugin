@@ -59,6 +59,15 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         public $requirements = array();
         
         /**
+         * WPDB global object
+         * 
+         * @since  1.1
+         * @access protected
+         * @var    object
+         */
+        protected $_db;
+        
+        /**
          * Singleton
          */
         private static $_instances = array();
