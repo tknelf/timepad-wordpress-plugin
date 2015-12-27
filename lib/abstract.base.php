@@ -86,7 +86,9 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $this->_config = self::_get_config();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
-
+            
+            global $wpdb;
+            $this->_db = $wpdb;
         }
 
         /**

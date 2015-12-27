@@ -187,7 +187,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 ,'organization_id' => intval( $org_id )
             );
             $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
-            $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$wpdb->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
+            $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
             
             $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, '%' . $generated_meta_value . '%' ) );
 
