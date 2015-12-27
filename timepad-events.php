@@ -77,6 +77,16 @@ if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
     define( 'TIMEPADEVENTS_POST_TYPE',  'timepad-events' );
 }
 
+if ( ! defined ( 'TIMEPADEVENTS_SECURITY_NONCE' ) ) {
+    /**
+     * Security nonce key for TimePad Events plugin
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_SECURITY_NONCE',  'timepadevents-security-nonce' );
+}
+
 if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
     /**
      * Post type category slug for TimePad Events plugin
@@ -85,6 +95,16 @@ if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
      * @return string
      */
     define( 'TIMEPADEVENTS_POST_TYPE_CATEGORY',  'timepad-events-category' );
+}
+
+if ( ! defined ( 'TIMEPADEVENTS_OPTION' ) ) {
+    /**
+     * Option data key for TimePad Events plugin
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_OPTION',  'timepad_data' );
 }
 
 if ( ! defined ( 'TIMEPADEVENTS_META' ) ) {
@@ -119,7 +139,7 @@ if ( ! defined( 'TIMEPADEVENTS_FOLDER' ) && defined( 'TIMEPADEVENTS_PLUGIN_ABS_P
     define( 'TIMEPADEVENTS_FOLDER', $arr[ count( $arr ) - 2 ] );
 }
 
-require_once( 'lib/helpers.php' );
+require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/helpers.php' );
 
 /**
  * Base TimepadEvents Abstract Class

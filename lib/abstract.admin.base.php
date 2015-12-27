@@ -39,7 +39,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
         public function __construct() {
             parent::__construct();
             
-            $this->_data = get_option( $this->_config['optionkey'] );
+            $this->_data = get_option( TIMEPADEVENTS_OPTION );
             
             $this->_current_user_id = get_current_user_id();
             
@@ -77,7 +77,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
                 global $pagenow;
                 
                 if ( $pagenow == 'post.php' ) {
-                    if ( $this->_get_post()->post_type == $this->_config['type'] ) {
+                    if ( $this->_get_post()->post_type == TIMEPADEVENTS_POST_TYPE ) {
                         return true;
                     }
                 }
@@ -137,7 +137,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
                     if ( wp_update_post( $post ) ) {
                         $unsyncronized_events[intval( $event_id )] = $post_id;
                         unset( $this->_data['events'][$organization_id][$event_id] );
-                        if ( TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
+                        if ( TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
                             if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
                                 return true;
                             }
@@ -157,7 +157,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          * return void
          */
         public function unsyncronize_event_to_post_ajax() {
-            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            check_ajax_referer( TIMEPADEVENTS_SECURITY_NONCE, 'security' );
             $post_id         = intval( $_POST['post_id'] );
             $event_id        = intval( $_POST['event_id'] );
             $organization_id = intval( $_POST['organization_id'] );

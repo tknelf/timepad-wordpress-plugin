@@ -206,16 +206,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
                  */
                 define( 'TIMEPADEVENTS_PLUGIN_HTTP_PATH', str_ireplace( ABSPATH, TIMEPADEVENTS_SITEURL . '/', TIMEPADEVENTS_PLUGIN_ABS_PATH ) );
             }
-
-            if ( ! defined( 'TIMEPADEVENTS_SECURITY_NONCE' ) ) {
-                /**
-                 * Handler for security WordPress-based nonce
-                 *
-                 * @var string
-                 * @return string Handler for security WordPress-based nonce
-                 */
-                define( 'TIMEPADEVENTS_SECURITY_NONCE', $config['security_nonce'] );
-            }
         }
         
         /**

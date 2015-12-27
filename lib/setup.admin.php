@@ -234,7 +234,8 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
          * @return void
          */
         public function timepadevents_dismiss_requirements() {
-            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            check_ajax_referer( TIMEPADEVENTS_SECURITY_NONCE, 'security' );
+            
             if ( @delete_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta ) ) {
                 wp_die(1);
             } else {
@@ -250,7 +251,8 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
          * @return void
          */
         public function timepadevents_get_post_type_categories() {
-            check_ajax_referer( $this->_config['security_nonce'], 'security' );
+            check_ajax_referer( TIMEPADEVENTS_SECURITY_NONCE, 'security' );
+            
             $ret_array = array();
             $post_type = sanitize_text_field( $_POST['post_type'] );
             $categories = get_categories(

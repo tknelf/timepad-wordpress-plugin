@@ -70,7 +70,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
             $this->_timepadevents_js_array = array(
                 '_site_url'   => TIMEPADEVENTS_SITEURL
                 ,'_admin_url' => TIMEPADEVENTS_ADMIN_URL
-                ,'_security'  => wp_create_nonce( $this->_config['security_nonce'] )
+                ,'_security'  => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
                 ,'_confirm'   => __( 'Are you sure?', 'timepad' )
             );
 

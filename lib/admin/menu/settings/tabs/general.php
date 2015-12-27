@@ -496,7 +496,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
                             $keys = array_keys( $this->_data['organizations']['organizations'] );
                             $this->_data['current_organization_id'] = intval( $keys[0] );
-                            TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                            TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['current_organization_id'], 'current_organization_id' );
                         }
                     } else {
                         //if we hasn't yet organizations - make the one!
@@ -527,14 +527,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
                             $keys = array_keys( $this->_data['organizations']['organizations'] );
                             $this->_data['current_organization_id'] = intval( $keys[0] );
-                            TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['current_organization_id'], 'current_organization_id' );
+                            TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['current_organization_id'], 'current_organization_id' );
                         }
                         $this->remove_request_headers( 'Authorization' );
                         $this->remove_request_body();
                         
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['organizations'], 'organizations' );
+                    TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['organizations'], 'organizations' );
                 }
                 
                 /**
@@ -564,7 +564,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 $category = get_term_by( 'name', $cat_name, $cat_taxonomy, ARRAY_A );
                                 if ( isset( $category['term_id'] ) ) {
                                     $this->_data['category_id'] = intval( $category['term_id'] );
-                                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['category_id'], 'category_id' );
+                                    TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['category_id'], 'category_id' );
                                     $this->post_events( $this->_data['current_organization_id'] );
                                 }
                             } else {
@@ -577,7 +577,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                         ,'taxonomy'          => $cat_taxonomy ) ) 
                                     ) {
                                         $this->_data['category_id'] = intval( $category_id );
-                                        TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_data['category_id'], 'category_id' );
+                                        TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['category_id'], 'category_id' );
                                         $this->post_events( $this->_data['current_organization_id'] );
                                     } else {
                                         //security for hacks with unlimited requests
@@ -706,7 +706,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 }
             }
             
-            return TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
+            return TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
         }
 
         /**
