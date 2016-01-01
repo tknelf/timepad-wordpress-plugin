@@ -214,16 +214,17 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
                         );
                     }
                 } else {
-                    $buffer = file_get_contents( $timepad_api_link );
-                    $finfo  = new finfo( FILEINFO_MIME_TYPE );
-                    $mime   = $finfo->buffer( $buffer );
-                    $ext    = self::get_file_extension_by_mime( $mime );
-                    if ( !empty( $ext ) && !empty( $mime ) ) {
-                        return array(
-                            'basename' => $path_arr[3]
-                            ,'ext'     => $ext
-                            ,'mime'    => $mime
-                        );
+                    if ( $buffer = file_get_contents( $timepad_api_link ) ) {
+                        $finfo  = new finfo( FILEINFO_MIME_TYPE );
+                        $mime   = $finfo->buffer( $buffer );
+                        $ext    = self::get_file_extension_by_mime( $mime );
+                        if ( !empty( $ext ) && !empty( $mime ) ) {
+                            return array(
+                                'basename' => $path_arr[3]
+                                ,'ext'     => $ext
+                                ,'mime'    => $mime
+                            );
+                        }
                     }
                 }
             }

@@ -19,7 +19,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         /**
          * TimePad Events plugin configs from config.ini
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_config = array();
 
@@ -27,14 +27,14 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * This array collect all local TimepadEvents Classes of some part of the plugin
          *
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_classes = array();
         
         /**
          * Arguments to make requests
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_request_args = array();
 
@@ -46,15 +46,15 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * By the $handler you can get access to Class Name and to Class instance
          *
          * @access public
-         * @var string Handler of current class taken from class name
+         * @var    string Handler of current class taken from class name
          */
         public $handler;
         
         /**
          * 
-         * @since 1.1
+         * @since  1.1
          * @access public
-         * @var array Minimal requirements of the plugin: PHP version, WP version
+         * @var    array Minimal requirements of the plugin: PHP version, WP version
          */
         public $requirements = array();
         
@@ -89,6 +89,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             
             global $wpdb;
             $this->_db = $wpdb;
+            
         }
 
         /**

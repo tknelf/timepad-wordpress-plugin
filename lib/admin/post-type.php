@@ -119,6 +119,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Post_Type' ) ) :
                 'publicly_queryable' => true,
                 'show_ui'            => true,
                 'show_in_menu' 	     => true,
+                'menu_icon'          => 'dashicons-tickets-alt',
                 //'query_var' 	     => true,
                 'rewrite'            => array(
                     'slug'           => TIMEPADEVENTS_POST_TYPE,
