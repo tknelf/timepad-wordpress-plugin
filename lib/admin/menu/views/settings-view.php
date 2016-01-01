@@ -7,14 +7,13 @@ if ( class_exists( $maybe_class ) ) : ?>
         <?php if ( !empty( $logo ) ) : ?>
             <div class="timepad-admin-settings-logo"><img src="<?php echo $logo; ?>" /></div>
         <?php endif; ?>
+        <h1 class="timepadevents-title"><?php _e( 'Timepad Settings', 'timepad' ); ?></h1>
         <?php if ( count( $tabs ) > 1 ) : ?>
         <h2 class="nav-tab-wrapper">
             <?php foreach ( $tabs as $tab_id => $tab_array ) : ?>
                 <a href="<?php echo add_query_arg( array( 'tab' => $tab_array['handler']), remove_query_arg( array( 'settings-updated', 'handler', 'action', '_wpnonce' ) ) ); ?>" class="nav-tab <?php echo $active_tab == $tab_array['handler'] ? 'nav-tab-active' : ''; ?>"><?php echo $tab_array['title']; ?></a>
             <?php endforeach; ?>
         </h2>
-        <?php else : ?>
-        <h1 class="timepadevents-title"><?php _e( 'Timepad Settings', 'timepad' ); ?></h1>
         <?php endif; ?>
         <div id="tab_container">
             <form method="post" action="<?php echo $maybe_class::getInstance()->action; ?>">
