@@ -36,7 +36,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
          * @var string
          */
         public $action;
-
+        
+        /**
+         * Settings tab logo
+         * @access public
+         * @var    string
+         */
+        public $logo;
 
         public function __construct() {
             parent::__construct();

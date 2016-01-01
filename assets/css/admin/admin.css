@@ -14,6 +14,12 @@
     background: url(../../images/admin/ajaxloader.gif) 100% 50% no-repeat;
 }
 
+.timepad-admin-settings-logo{
+    position: absolute;
+    top: 10px;
+    right: 30px;
+}
+
 /*--------DISMISS--------*/
 .timepad-events-dismiss {
     display: block !important;

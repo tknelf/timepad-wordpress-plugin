@@ -83,7 +83,6 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             $data = $this->_data;
             add_action( 'timepad_cron', function() use ( $data ) {
                 if ( $data['autoimport'] ) {
-                    //require_once '../../../../wp-load.php';
                     require_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php';
                     TimepadEvents_Admin_Settings_General::getInstance()->post_events( $data['current_organization_id'] );
                 }

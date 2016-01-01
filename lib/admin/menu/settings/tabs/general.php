@@ -69,6 +69,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $this->tab_title = __( 'General', 'timepad' );
             
             $this->_default_category_id = get_option( 'default_category' );
+            
+            $this->logo = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'assets/images/admin/timepad-logo.png';
         }
         
         /**
