@@ -16,7 +16,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Menu' ) ) :
         }
         
         public function admin_menu_add() {
-            add_submenu_page( 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE, __( 'TimePad Settings', 'timepad' ), __( 'Settings', 'timepad' ), 'activate_plugins', 'timepad-events-options', array( $this, 'timepadevents_settings_page' ) );
+            add_submenu_page( 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE, __( 'TimePad Settings', 'timepad' ), __( 'Settings', 'timepad' ), 'activate_plugins', TIMEPADEVENTS_ADMIN_OPTIONS_PAGE, array( $this, 'timepadevents_settings_page' ) );
             add_management_page( __( 'TimePad Redirect', 'timepad' ) , __( 'Redirect', 'timepad' ), 'activate_plugins', 'timepad-events-redirect', array( $this, 'timepadevents_redirect_page' ) );
         }
 

@@ -68,10 +68,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
 
             //JavaScript Array to transfer data from backend/php/wp to frontend
             $this->_timepadevents_js_array = array(
-                '_site_url'   => TIMEPADEVENTS_SITEURL
-                ,'_admin_url' => TIMEPADEVENTS_ADMIN_URL
-                ,'_security'  => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
-                ,'_confirm'   => __( 'Are you sure?', 'timepad' )
+                '_site_url'            => TIMEPADEVENTS_SITEURL
+                ,'_admin_url'          => TIMEPADEVENTS_ADMIN_URL
+                ,'_security'           => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
+                ,'_confirm'            => __( 'Are you sure?', 'timepad' )
+                ,'_admin_options_page' => TIMEPADEVENTS_ADMIN_OPTIONS_PAGE
+                ,'_post_type'          => TIMEPADEVENTS_POST_TYPE
             );
 
             wp_localize_script( 'timepad-admin-js', 'timepad', $this->_timepadevents_js_array );

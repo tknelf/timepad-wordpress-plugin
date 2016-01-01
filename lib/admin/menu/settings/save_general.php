@@ -8,7 +8,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
 
     $additional_url = '&tab=general';
 
-    if ( wp_verify_nonce( $_POST['_wpnonce'], 'timepadevents-settings' ) && current_user_can( 'activate_plugins' ) ) {
+    if ( wp_verify_nonce( $_POST['_wpnonce'], TIMEPADEVENTS_SETTINGS ) && current_user_can( 'activate_plugins' ) ) {
         if ( isset( $_POST['cancel_account'] ) && !empty( $_POST['cancel_account'] ) ) {
             $data = get_option( 'timepad_data' );
             unset( $data['organizations'] );
@@ -42,7 +42,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         }
         
         if ( isset( $_POST['syncronize'] ) && !empty( $_POST['syncronize'] ) ) {
-            wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=timepad-events-options&syncronize=1' );
+            wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=' . TIMEPADEVENTS_ADMIN_OPTIONS_PAGE . '&syncronize=1' );
             exit;
         }
 
@@ -101,6 +101,6 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         }
     } else wp_die( __( 'Wrong security nonce value.', 'timepad' ) );
     
-    wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=timepad-events-options' . $additional_url );
+    wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=' . TIMEPADEVENTS_ADMIN_OPTIONS_PAGE . $additional_url );
     
 } else die( 'Security nonce value is empty.' );

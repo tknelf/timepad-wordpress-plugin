@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 $maybe_class = 'TimepadEvents_Admin_Settings_' . ucfirst( $active_tab );
 if ( class_exists( $maybe_class ) ) : ?>
-    <div class="wrap timepadevents-settings">
+    <div class="wrap <?php echo TIMEPADEVENTS_SETTINGS; ?>">
         <?php if ( !empty( $logo ) ) : ?>
             <div class="timepad-admin-settings-logo"><img src="<?php echo $logo; ?>" /></div>
         <?php endif; ?>
@@ -42,7 +42,7 @@ if ( class_exists( $maybe_class ) ) : ?>
                 endif;
                 ?>
                 <input type="hidden" name="timepad_post_type" value="<?php echo esc_attr( TIMEPADEVENTS_POST_TYPE ); ?>" />
-                <?php wp_nonce_field( 'timepadevents-settings' ); ?>
+                <?php wp_nonce_field( TIMEPADEVENTS_SETTINGS ); ?>
             </form>
         </div>
     </div>

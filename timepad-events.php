@@ -117,6 +117,26 @@ if ( ! defined ( 'TIMEPADEVENTS_META' ) ) {
     define( 'TIMEPADEVENTS_META',  'timepad_meta' );
 }
 
+if ( ! defined ( 'TIMEPADEVENTS_SETTINGS' ) ) {
+    /**
+     * TimePad settings key
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_SETTINGS',  'timepadevents-settings' );
+}
+
+if ( ! defined ( 'TIMEPADEVENTS_ADMIN_OPTIONS_PAGE' ) ) {
+    /**
+     * TimePad settings key
+     * 
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_ADMIN_OPTIONS_PAGE',  'timepad-events-options' );
+}
+
 if ( ! defined( 'TIMEPADEVENTS_PLUGIN_ABS_PATH' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
     /**
      * Path to plugin absolute path
