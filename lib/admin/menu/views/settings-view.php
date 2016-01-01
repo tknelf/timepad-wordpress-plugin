@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $maybe_class = 'TimepadEvents_Admin_Settings_' . ucfirst( $active_tab );
 if ( class_exists( $maybe_class ) ) : ?>
     <div class="wrap timepadevents-settings">
-        <?php if ( property_exists( $maybe_class, 'logo' ) ) : ?>
-            <div class="timepad-admin-settings-logo"><img src="<?php echo $maybe_class::getInstance()->logo; ?>" /></div>
+        <?php if ( !empty( $logo ) ) : ?>
+            <div class="timepad-admin-settings-logo"><img src="<?php echo $logo; ?>" /></div>
         <?php endif; ?>
         <?php if ( count( $tabs ) > 1 ) : ?>
         <h2 class="nav-tab-wrapper">

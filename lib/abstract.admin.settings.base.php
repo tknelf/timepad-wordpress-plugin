@@ -64,8 +64,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                 }
             }
             
-            //default settings page tab action url
-            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save.php';
+            $this->logo = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'assets/images/admin/timepad-logo.png';
             
             /**
              * Action about post trash.

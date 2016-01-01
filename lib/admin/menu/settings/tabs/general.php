@@ -70,6 +70,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             
             $this->_default_category_id = get_option( 'default_category' );
             
+            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_general.php';
+            
             $this->logo = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'assets/images/admin/timepad-logo.png';
         }
         
