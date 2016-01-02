@@ -74,10 +74,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
 
         public function __construct( $post = null ) {
             
-            if ( !isset( $_COOKIE['timepad_admin_url'] ) || empty( $_COOKIE['timepad_admin_url'] ) ) {
-                setcookie( 'timepad_admin_url', TIMEPADEVENTS_ADMIN_URL, 3600 * 24 * 5, '/' );
-            }
-            
             //default request header to make correct json request
             $this->_request_args = array(
                 'headers' => array( 'Content-type' => 'application/json' )

@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
     'use strict';
     
-    if ( jQuery.cookie( 'timepad_admin_url' ) != null ) {
+    if ( timepad._admin_url != null ) {
 
         var getParameterByName = function(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -61,7 +61,7 @@ jQuery(document).ready(function() {
             }
         }
 
-        var _url_to_go = jQuery.cookie( 'timepad_admin_url' ) + 'edit.php?post_type=' + timepad._post_type + '&page=' + timepad._admin_options_page + _error_url;
+        var _url_to_go = timepad._admin_url + 'edit.php?post_type=' + timepad._post_type + '&page=' + timepad._admin_options_page + _error_url;
         location.href = _url_to_go;
 
     }

@@ -113,10 +113,6 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 return;
             }
             
-            if ( !isset( $_COOKIE['timepad_admin_url'] ) || empty( $_COOKIE['timepad_admin_url'] ) ) {
-                setcookie( 'timepad_admin_url', TIMEPADEVENTS_ADMIN_URL, 3600 * 24 * 5, '/' );
-            }
-            
             self::_timepadevents_set_admin_requirements_meta();
         }
 
@@ -171,7 +167,6 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             delete_option( 'timepad_flushed' );
             delete_option( 'timepad_excluded_from_api' );
             
-            setcookie( 'timepad_admin_url', null, -1, '/' );
             setcookie( 'timepad_token', null, -1, '/' );
 
             wp_clear_scheduled_hook( 'timepad_cron' );
