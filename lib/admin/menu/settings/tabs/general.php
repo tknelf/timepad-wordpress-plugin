@@ -168,7 +168,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             //if future events
             if ( time() < $strtime ) {
                 if ( !isset( $this->_data['future_event_date'] ) || $this->_data['future_event_date'] == 'current' ) {
-                    $this->_time_increment += 1;
+                    $this->_time_increment += 60;
                     $strtime    = time() - $this->_time_increment;
                 }
                 $format     = date( 'Y-m-d H:i:s', $strtime );
@@ -379,10 +379,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         'ID'                 => $event_post->ID
                         ,'post_title'        => sanitize_text_field( $event['name'] )
                         ,'post_content'      => $content
-                        ,'post_date'         => $date['date']
-                        ,'post_date_gmt'     => $date['date_gmt']
-                        ,'post_modified'     => $date['date']
-                        ,'post_modified_gmt' => $date['date_gmt']
+                        //,'post_date'         => $date['date']
+                        //,'post_date_gmt'     => $date['date_gmt']
+                        //,'post_modified'     => $date['date']
+                        //,'post_modified_gmt' => $date['date_gmt']
                     );
                     wp_update_post( $update_args );
                     $meta_array['tpindex'] = $generated_meta_value;
