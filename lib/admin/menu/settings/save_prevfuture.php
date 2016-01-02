@@ -6,7 +6,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
 
     if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-    $additional_url = '&tab=previous';
+    $additional_url = '&tab=prevfuture';
 
     if ( wp_verify_nonce( $_POST['_wpnonce'], TIMEPADEVENTS_SETTINGS ) && current_user_can( 'activate_plugins' ) ) {
         
@@ -19,10 +19,10 @@ if ( isset( $_POST['_wpnonce'] ) ) {
                 $data['previous_events'] = 'ignore';
             }
             
-            if ( isset( $_POST['timepad_event_date'] ) && !empty( $_POST['timepad_event_date'] ) ) {
-                $data['event_date'] = sanitize_text_field( $_POST['timepad_event_date'] );
+            if ( isset( $_POST['timepad_future_event_date'] ) && !empty( $_POST['timepad_future_event_date'] ) ) {
+                $data['future_event_date'] = sanitize_text_field( $_POST['timepad_future_event_date'] );
             } else {
-                $data['event_date'] = 'natural';
+                $data['future_event_date'] = 'current';
             }
             
             update_option( 'timepad_data', $data );

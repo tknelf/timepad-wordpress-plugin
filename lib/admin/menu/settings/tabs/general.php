@@ -61,6 +61,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @var int
          */
         protected $_default_category_id = 0;
+        
+        /**
+         * Make time increment for future events if current time in settings
+         * 
+         * @access protected
+         * @var    int
+         */
+        protected $_time_increment = 0;
 
         public function __construct() {
             parent::__construct();
@@ -157,12 +165,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $strtime        = strtotime( $format );
             
             $gmt_format     = get_gmt_from_date( $format );
+            //if future events
             if ( time() < $strtime ) {
-                $rand       = mt_rand( 5, 300 );
-                
-                $strtime    = time() - $rand;
+                if ( !isset( $this->_data['future_event_date'] ) || $this->_data['future_event_date'] == 'current' ) {
+                    $this->_time_increment += 1;
+                    $strtime    = time() - $this->_time_increment;
+                }
                 $format     = date( 'Y-m-d H:i:s', $strtime );
-                
                 $gmt_format = get_gmt_from_date( $format );
             }
             

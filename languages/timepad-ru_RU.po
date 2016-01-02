@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2016-01-02 13:14+0300\n"
-"PO-Revision-Date: 2016-01-02 13:15+0300\n"
+"POT-Creation-Date: 2016-01-02 14:40+0300\n"
+"PO-Revision-Date: 2016-01-02 14:40+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -72,7 +72,7 @@ msgid "Category slug must have string length more than 5 characters."
 msgstr "Ярлык категории должен быть более 5 символов"
 
 #: lib/admin/menu/settings/save_general.php:102
-#: lib/admin/menu/settings/save_previous.php:31
+#: lib/admin/menu/settings/save_prevfuture.php:31
 #: lib/admin/menu/settings/save_widget.php:32
 msgid "Wrong security nonce value."
 msgstr "Неверное значение security nonce."
@@ -85,9 +85,9 @@ msgstr "Основное"
 msgid "TimePad Events"
 msgstr "События TimePad"
 
-#: lib/admin/menu/settings/tabs/previous.php:13
-msgid "Previous Events"
-msgstr "Прошедшие события"
+#: lib/admin/menu/settings/tabs/prevfuture.php:13
+msgid "Previous and future events"
+msgstr "Прошедшие и предстоящие события"
 
 #: lib/admin/menu/settings/tabs/widget.php:13
 msgid "Widget"
@@ -192,7 +192,7 @@ msgid "To category"
 msgstr "В категорию"
 
 #: lib/admin/menu/views/settings-general-data.php:142
-#: lib/admin/menu/views/settings-previous-data.php:27
+#: lib/admin/menu/views/settings-prevfuture-data.php:27
 #: lib/admin/menu/views/settings-widget-data.php:31
 msgid "Save changes"
 msgstr "Сохранить изменения"
@@ -219,27 +219,27 @@ msgstr ""
 msgid "Prepare the system for TimePad events organization"
 msgstr "Подготовить систему для организации событий TimePad"
 
-#: lib/admin/menu/views/settings-previous-data.php:7
+#: lib/admin/menu/views/settings-prevfuture-data.php:7
 msgid "Previous events"
 msgstr "Прошедшие события"
 
-#: lib/admin/menu/views/settings-previous-data.php:10
+#: lib/admin/menu/views/settings-prevfuture-data.php:10
 msgid "Ignore previous events"
 msgstr "Игнорировать прошедшие события"
 
-#: lib/admin/menu/views/settings-previous-data.php:11
+#: lib/admin/menu/views/settings-prevfuture-data.php:11
 msgid "Import previous events"
 msgstr "Импортировать прошедшие события"
 
-#: lib/admin/menu/views/settings-previous-data.php:17
-msgid "Event date and time"
-msgstr "Дата и время события"
+#: lib/admin/menu/views/settings-prevfuture-data.php:17
+msgid "Future event date and time"
+msgstr "Дата и время будущих событий"
 
-#: lib/admin/menu/views/settings-previous-data.php:20
+#: lib/admin/menu/views/settings-prevfuture-data.php:20
 msgid "Natural TimePad event date and time"
 msgstr "Натуральные дата события и время из TimePad"
 
-#: lib/admin/menu/views/settings-previous-data.php:21
+#: lib/admin/menu/views/settings-prevfuture-data.php:21
 msgid "Current time"
 msgstr "Текущее время"
 
@@ -410,6 +410,9 @@ msgstr "Вы уверены?"
 #: timepad-events.php:176
 msgid "Once in three minutes"
 msgstr "Один раз в три минуты"
+
+#~ msgid "Previous Events"
+#~ msgstr "Прошедшие события"
 
 #~ msgid "Automatic TimePad javascript file include (recommended)"
 #~ msgstr "Автоматическое включение яваскрипт файла TimePad (рекомендуется)"

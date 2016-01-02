@@ -14,11 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         <td></td>
     </tr>
     <tr>
-        <th scope="row"><label for="timepad_event_date"><?php _e( 'Event date and time', 'timepad' ) ?>:</label></th>
+        <th scope="row"><label for="timepad_future_event_date"><?php _e( 'Future event date and time', 'timepad' ) ?>:</label></th>
         <td colspan="2">
-            <select name="timepad_event_date" id="timepad_event_date">
-                <option value="natural"<?php selected( 'natural', isset( $data['event_date'] ) ? $data['event_date'] : '' ); ?>><?php _e( 'Natural TimePad event date and time', 'timepad' ); ?></option>
-                <option value="current"<?php selected( 'current', isset( $data['event_date'] ) ? $data['event_date'] : '' ); ?>><?php _e( 'Current time', 'timepad' ); ?></option>
+            <select name="timepad_future_event_date" id="timepad_future_event_date">
+                <option value="current"<?php selected( 'current', isset( $data['future_event_date'] ) ? $data['future_event_date'] : '' ); ?>><?php _e( 'Current time', 'timepad' ); ?></option>
+                <option value="natural"<?php selected( 'natural', isset( $data['future_event_date'] ) ? $data['future_event_date'] : '' ); ?>><?php _e( 'Natural TimePad event date and time', 'timepad' ); ?></option>
             </select>
         </td>
         <td></td>

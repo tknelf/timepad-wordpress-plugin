@@ -14,9 +14,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings' ) ) :
             if ( ! $this->_classes ) {
                 if ( is_admin() ) {
                     $this->_classes = array(
-                        'TimepadEvents_Admin_Settings_General'   => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php'
-                        ,'TimepadEvents_Admin_Settings_Previous' => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/previous.php'
-                        ,'TimepadEvents_Admin_Settings_Widget'   => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/widget.php'
+                        'TimepadEvents_Admin_Settings_General'     => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php'
+                        ,'TimepadEvents_Admin_Settings_PrevFuture' => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/prevfuture.php'
+                        ,'TimepadEvents_Admin_Settings_Widget'     => TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/widget.php'
                     );
                 }
             }
