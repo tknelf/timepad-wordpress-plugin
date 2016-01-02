@@ -604,6 +604,37 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         }
         
         /**
+         * Get excluded from integration events
+         * 
+         * @since  1.1
+         * @param  array $events Input events array
+         * @access protected
+         * @return array
+         */
+        protected function _get_excluded_events( array $events, $exist_events = false ) {
+            $ret_array = array();
+            if ( !$exist_events ) {
+                $exist_events = isset( $this->_data['events'][$this->_data['current_organization_id']] ) ? $this->_data['events'][$this->_data['current_organization_id']] : array();
+            }
+            $current_excluded_events  = @array_diff( $events, $exist_events );
+            $excluded_from_api_events = TimepadEvents_Helpers::get_excluded_from_api_events();
+            if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
+                if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
+                    foreach ( $current_excluded_events as $current_excluded_event ) {
+                        $current_event_starts_at = strtotime( $current_excluded_event['starts_at'] );
+                        if ( time() > $current_event_starts_at || isset( $excluded_from_api_events[$current_excluded_event['id']] ) ) {
+                            $ret_array[$current_excluded_event['id']] = $current_excluded_event;
+                        }
+                    }
+                    
+                    return $ret_array;
+                }
+            }
+            
+            return $current_excluded_events;
+        }
+
+        /**
          * This function checks for exist posts/events in WPDB against given array $events
          * If some of array items are not exists in WPDB - it will be returns in result array of the function
          * 
@@ -614,34 +645,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          */
         private function _prepare_events( array $events, $organization_id, $return_exists = false ) {
             if ( is_array( $events ) && !empty( $organization_id ) ) {
-                $current_events_ids           = array();
-                $ret_array                    = array();
-                $ret_array_exists             = array();
-                $ret_array_excluded           = array();
-                $ret_array_exist_not_excluded = array();
-                $exist_events                 = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
-                if ( !empty( $exist_events ) && is_array( $exist_events ) ) {
-                    $ret_array_excluded       = @array_diff( $exist_events, $events );
+                if ( !empty( $events ) ) {
+                    $ret_array             = array();
+                    $ret_array_exists      = array();
+                    $exist_events          = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
+                    $current_events_ids    = array_keys( $exist_events );
+                    $excluded_events_array = $this->_get_excluded_events( $events, $exist_events );
                     
-                    $current_events_ids       = array_keys( $exist_events );
-                    if ( !empty( $events ) && !empty( $current_events_ids ) ) {
-                        $excluded_from_api    = TimepadEvents_Helpers::get_excluded_from_api_events();
-                        foreach ( $events as $event ) {
-                            if ( !isset( $excluded_from_api[$event['id']] ) ) {
-                                if ( !in_array( $event['id'], $current_events_ids ) ) {
-                                    $ret_array[] = $event;
-                                } else {
-                                    $ret_array_exists[] = $event;
-                                }
+                    foreach ( $events as $event ) {
+                        if ( !isset( $excluded_events_array[$event['id']] ) ) {
+                            if ( !in_array( $event['id'], $current_events_ids ) ) {
+                                $ret_array[] = $event;
+                            } else {
+                                $ret_array_exists[] = $event;
                             }
                         }
                     }
-                    $ret_array_exist_not_excluded = @array_diff( $ret_array_exists, $ret_array_excluded );
-                } else {
-                    $ret_array = $events;
                 }
+                $ret_array_exist_not_excluded = @array_diff( $ret_array_exists, $excluded_events_array );
                 
-                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $ret_array_excluded, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $events );
+                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $events );
             }
             
             return array();
@@ -723,7 +746,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         public function display() {
             $this->_prepare();
             if ( $this->_data ) {
-                if ( is_array( $this->_data ) && count( $this->_data ) == 1 && isset( $this->_data['category_id'] ) ) {
+                if ( is_array( $this->_data ) && !isset( $this->_data['organizations'] ) ) {
                     $config     = $this->_config;
                     include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general.php';
                 } else {

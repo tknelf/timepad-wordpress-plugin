@@ -11,13 +11,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Previous' ) ) :
             
             //set the tab title
             $this->tab_title = __( 'Previous Events', 'timepad' );
+            
+            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_previous.php';
+            
         }
         
         public function display() {
-            if ( $this->_data ) {
-                $data = $this->_data;
-                include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-previous-data.php';
-            }
+            $data = !empty( $this->_data ) ? $this->_data : array();
+            include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-previous-data.php';
         }
         
     }

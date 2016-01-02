@@ -16,10 +16,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Widget' ) ) :
         }
         
         public function display() {
-            if ( $this->_data ) {
-                $data = $this->_data;
-                include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-widget-data.php';
-            }
+            $data = !empty( $this->_data ) ? $this->_data : array();
+            include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-widget-data.php';
         }
         
     }

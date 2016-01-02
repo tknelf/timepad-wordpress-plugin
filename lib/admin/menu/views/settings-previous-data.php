@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
         <th scope="row"><label for="timepad_previous_events"><?php _e( 'Previous events', 'timepad' ) ?>:</label></th>
         <td colspan="2">
             <select name="timepad_previous_events" id="timepad_previous_events">
-                <option value="previous_ignore"<?php selected( 'previous_ignore', isset( $data['previous_events'] ) ? $data['previous_events'] : '' ); ?>><?php _e( 'Ignore previous events', 'timepad' ); ?></option>
-                <option value="previous_accept"<?php selected( 'previous_accept', isset( $data['previous_events'] ) ? $data['previous_events'] : '' ); ?>><?php _e( 'Import previous events', 'timepad' ); ?></option>
+                <option value="ignore"<?php selected( 'ignore', isset( $data['previous_events'] ) ? $data['previous_events'] : '' ); ?>><?php _e( 'Ignore previous events', 'timepad' ); ?></option>
+                <option value="accept"<?php selected( 'accept', isset( $data['previous_events'] ) ? $data['previous_events'] : '' ); ?>><?php _e( 'Import previous events', 'timepad' ); ?></option>
             </select>
         </td>
         <td></td>

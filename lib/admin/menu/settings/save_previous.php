@@ -13,7 +13,17 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         if ( isset( $_POST['save_changes'] ) && !empty( $_POST['save_changes'] )/* && !isset( $_POST['cancel_account'] )*/ ) {
             $data = get_option( 'timepad_data' );
             
+            if ( isset( $_POST['timepad_previous_events'] ) && !empty( $_POST['timepad_previous_events'] ) ) {
+                $data['previous_events'] = sanitize_text_field( $_POST['timepad_previous_events'] );
+            } else {
+                $data['previous_events'] = 'ignore';
+            }
             
+            if ( isset( $_POST['timepad_event_date'] ) && !empty( $_POST['timepad_event_date'] ) ) {
+                $data['event_date'] = sanitize_text_field( $_POST['timepad_event_date'] );
+            } else {
+                $data['event_date'] = 'natural';
+            }
             
             update_option( 'timepad_data', $data );
         }
