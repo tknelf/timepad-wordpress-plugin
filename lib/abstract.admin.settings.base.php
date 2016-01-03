@@ -64,6 +64,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                 }
             }
             
+            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_' . $this->handler . '.php';
+            
             $this->logo = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'assets/images/admin/timepad-logo.png';
             
             /**

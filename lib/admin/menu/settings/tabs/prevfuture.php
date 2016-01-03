@@ -12,8 +12,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_PrevFuture' ) ) :
             //set the tab title
             $this->tab_title = __( 'Previous and future events', 'timepad' );
             
-            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_prevfuture.php';
-            
         }
         
         public function display() {

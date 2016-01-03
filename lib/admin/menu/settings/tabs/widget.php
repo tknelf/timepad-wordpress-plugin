@@ -11,8 +11,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Widget' ) ) :
             
             //set the tab title
             $this->tab_title = __( 'Widget', 'timepad' );
-            
-            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_widget.php';
         }
         
         public function display() {
