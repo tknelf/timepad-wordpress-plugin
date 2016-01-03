@@ -159,6 +159,16 @@ if ( ! defined( 'TIMEPADEVENTS_FOLDER' ) && defined( 'TIMEPADEVENTS_PLUGIN_ABS_P
     define( 'TIMEPADEVENTS_FOLDER', $arr[ count( $arr ) - 2 ] );
 }
 
+if ( ! defined( 'TIMEPADEVENTS_SETTINGS_HTTP_URL' ) && defined( 'TIMEPADEVENTS_POST_TYPE' ) && defined( 'TIMEPADEVENTS_ADMIN_OPTIONS_PAGE' ) ) {
+    /**
+     * Plugin settings HTTP url
+     *
+     * @var    string
+     * @return string admin settings url
+     */
+    define( 'TIMEPADEVENTS_SETTINGS_HTTP_URL', admin_url( 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=' . TIMEPADEVENTS_ADMIN_OPTIONS_PAGE ) );
+}
+
 require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/helpers.php' );
 
 /**

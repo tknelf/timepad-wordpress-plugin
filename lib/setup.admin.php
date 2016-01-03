@@ -88,6 +88,17 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 }
             } );
             
+            add_action( 'admin_bar_menu', function( $wp_admin_bar ) {
+                $wp_admin_bar->add_menu(
+                    array(
+                        'parent' => 'appearance'
+                        ,'id'    => 'timepad'
+                        ,'title' => __( 'TimePad Settings', 'timepad' )
+                        ,'href'  => TIMEPADEVENTS_SETTINGS_HTTP_URL
+                    )
+                );
+            }, 999 );
+            
             if ( $message = $this->_requirements_messages() ) :
                 if ( $this->_is_plugin_admin_page() ) :
                     if ( get_user_meta( $this->_current_user_id, self::$_user_plugin_requirements_meta, true ) == 1 ) :

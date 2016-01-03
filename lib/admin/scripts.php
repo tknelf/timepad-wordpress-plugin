@@ -68,9 +68,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
 
             //JavaScript Array to transfer data from backend/php/wp to frontend
             $this->_timepadevents_js_array = array(
-                '_site_url'            => TIMEPADEVENTS_SITEURL
-                ,'_admin_url'          => TIMEPADEVENTS_ADMIN_URL
-                ,'_security'           => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
+                '_security'           => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
                 ,'_confirm'            => __( 'Are you sure?', 'timepad' )
             );
 
@@ -81,11 +79,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
                 wp_enqueue_script( 'timepad-redirect' );
                 
                 $redirect_js_array = array(
-                    '_admin_url'           => TIMEPADEVENTS_ADMIN_URL
-                    ,'_admin_options_page' => TIMEPADEVENTS_ADMIN_OPTIONS_PAGE
-                    ,'_post_type'          => TIMEPADEVENTS_POST_TYPE
+                    '_settings_url' => TIMEPADEVENTS_SETTINGS_HTTP_URL
                 );
-                wp_localize_script( 'timepad-redirect', 'timepad', $redirect_js_array );
+                wp_localize_script( 'timepad-redirect', 'timepad_redirect', $redirect_js_array );
             }
         }
     }

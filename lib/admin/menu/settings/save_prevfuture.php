@@ -30,6 +30,6 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         
     } else wp_die( __( 'Wrong security nonce value.', 'timepad' ) );
     
-    wp_safe_redirect( TIMEPADEVENTS_ADMIN_URL . 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=' . TIMEPADEVENTS_ADMIN_OPTIONS_PAGE . $additional_url );
+    wp_safe_redirect( TIMEPADEVENTS_SETTINGS_HTTP_URL . $additional_url );
     
 } else die( 'Security nonce value is empty.' );
