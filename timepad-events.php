@@ -169,6 +169,16 @@ if ( ! defined( 'TIMEPADEVENTS_SETTINGS_HTTP_URL' ) && defined( 'TIMEPADEVENTS_P
     define( 'TIMEPADEVENTS_SETTINGS_HTTP_URL', admin_url( 'edit.php?post_type=' . TIMEPADEVENTS_POST_TYPE . '&page=' . TIMEPADEVENTS_ADMIN_OPTIONS_PAGE ) );
 }
 
+if ( ! defined ( 'TIMEPADEVENTS_ADMIN_ABS_PATH' ) ) {
+    /**
+     * Admin folder absolute path
+     *
+     * @var    string
+     * @return string admin absolute path
+     */
+    define( 'TIMEPADEVENTS_ADMIN_ABS_PATH', str_ireplace( get_site_url() . '/', ABSPATH, admin_url() ) );
+}
+
 require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/helpers.php' );
 
 /**

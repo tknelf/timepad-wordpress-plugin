@@ -249,7 +249,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $id = wp_insert_attachment( $attachment, $file_arr['file'], $post_id );
                             if ( !is_wp_error( $id ) ) {
                                 //WordPress cron is not ideal =)
-                                include ABSPATH . 'wp-admin/includes/image.php';
+                                include TIMEPADEVENTS_ADMIN_ABS_PATH . 'includes/image.php';
                                 if ( wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) ) {
                                     if ( current_theme_supports( 'post-thumbnails' ) ) {
                                         return set_post_thumbnail( $post_id, $id );
