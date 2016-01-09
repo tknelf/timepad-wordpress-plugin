@@ -68,8 +68,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Scripts' ) ) :
 
             //JavaScript Array to transfer data from backend/php/wp to frontend
             $this->_timepadevents_js_array = array(
-                '_security'           => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
-                ,'_confirm'            => __( 'Are you sure?', 'timepad' )
+                '_security' => wp_create_nonce( TIMEPADEVENTS_SECURITY_NONCE )
+                ,'_confirm' => __( 'Are you sure?', 'timepad' )
             );
 
             wp_localize_script( 'timepad-admin-js', 'timepad', $this->_timepadevents_js_array );

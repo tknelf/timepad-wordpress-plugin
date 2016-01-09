@@ -156,24 +156,24 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return array Array with two keys for WordPress database: date and date_gmt
          */
         private function _make_post_time( $time ) {
-            $date_parse     = date_parse( $time );
-            $format         = $this->_make_time_format( $date_parse );
-            $strtime        = strtotime( $format );
+            $date_parse      = date_parse( $time );
+            $format          = $this->_make_time_format( $date_parse );
+            $strtime         = strtotime( $format );
             
-            $gmt_format     = get_gmt_from_date( $format );
+            $gmt_format      = get_gmt_from_date( $format );
             //if future events
             if ( time() < $strtime ) {
                 if ( !isset( $this->_data['future_event_date'] ) || $this->_data['future_event_date'] == 'current' ) {
                     $this->_time_increment += 60;
-                    $strtime    = time() - $this->_time_increment;
+                    $strtime = time() - $this->_time_increment;
                 }
-                $format     = date( 'Y-m-d H:i:s', $strtime );
-                $gmt_format = get_gmt_from_date( $format );
+                $format      = date( 'Y-m-d H:i:s', $strtime );
+                $gmt_format  = get_gmt_from_date( $format );
             }
             
             return array(
-                'date'      => $format
-                ,'date_gmt' => $gmt_format
+                'date'       => $format
+                ,'date_gmt'  => $gmt_format
             );
         }
         
@@ -209,7 +209,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @todo   Add extensions
          * @since  1.1
          * @param  int $post_id
-         * @param  array $timepad_data
+         * @param  array $timepad_data Event TimePad data from API
          * @access protected
          * @return boolean
          */
@@ -248,6 +248,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             );
                             $id = wp_insert_attachment( $attachment, $file_arr['file'], $post_id );
                             if ( !is_wp_error( $id ) ) {
+                                //WordPress cron is not ideal =)
+                                include ABSPATH . 'wp-admin/includes/image.php';
                                 if ( wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) ) {
                                     if ( current_theme_supports( 'post-thumbnails' ) ) {
                                         return set_post_thumbnail( $post_id, $id );
@@ -353,10 +355,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * 
          * @since  1.0.0
          * @param  array $events Prepared array of exist events in WP DB
-         * @access private
+         * @access protected
          * @return void
          */
-        private function _update_events_content( array $events ) {
+        protected function _update_events_content( array $events ) {
             foreach ( $events as $event ) {
                 $meta_array = array(
                     'event_id'         => intval( $event['id'] )
@@ -370,15 +372,10 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     if ( !isset( $this->_data['widget_regulation'] ) || $this->_data['widget_regulation'] == 'auto_after_desc' ) {
                         $content .= '[timepadregistration eventid="' . $event['id'] . '"]';
                     }
-                    $date = $this->_make_post_time( $event['starts_at'] );
                     $update_args = array(
-                        'ID'                 => $event_post->ID
-                        ,'post_title'        => sanitize_text_field( $event['name'] )
-                        ,'post_content'      => $content
-                        //,'post_date'         => $date['date']
-                        //,'post_date_gmt'     => $date['date_gmt']
-                        //,'post_modified'     => $date['date']
-                        //,'post_modified_gmt' => $date['date_gmt']
+                        'ID'            => $event_post->ID
+                        ,'post_title'   => sanitize_text_field( $event['name'] )
+                        ,'post_content' => $content
                     );
                     wp_update_post( $update_args );
                     $meta_array['tpindex'] = $generated_meta_value;
@@ -564,7 +561,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                     $cat_taxonomy = 'category';
                                 }
                             }
-                            $cat_i        = 1;
+                            $cat_i = 1;
                             
                             /**
                              * Check for category exists, maybe user enter the one by himself...
