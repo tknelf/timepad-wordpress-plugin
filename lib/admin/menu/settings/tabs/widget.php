@@ -10,7 +10,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Widget' ) ) :
             parent::__construct();
             
             //set the tab title
-            $this->tab_title = __( 'Widget', 'timepad' );
+            $this->tab_title = __( 'Виджет', 'timepad' );
         }
         
         public function display() {

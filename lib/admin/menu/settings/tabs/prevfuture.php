@@ -10,7 +10,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_PrevFuture' ) ) :
             parent::__construct();
             
             //set the tab title
-            $this->tab_title = __( 'Previous and future events', 'timepad' );
+            $this->tab_title = __( 'Прошедшие и будущие события', 'timepad' );
             
         }
         

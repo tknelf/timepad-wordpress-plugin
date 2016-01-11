@@ -24,6 +24,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
         protected $_settings_tabs = array();
         
         /**
+         * Settings tab title
+         * 
+         * @access public
+         * @var    string
+         */
+        public $tab_title;
+        
+        /**
          * Active settings page tab
          * @access protected
          * @var string
