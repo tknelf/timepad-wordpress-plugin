@@ -658,10 +658,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     
                     foreach ( $events as $event ) {
                         if ( !isset( $excluded_events_array[$event['id']] ) ) {
-                            if ( !in_array( $event['id'], $current_events_ids ) || $this->_data['previous_events'] == 'accept' ) {
+                            if ( $this->_data['previous_events'] == 'accept' ) {
                                 $ret_array[] = $event;
                             } else {
-                                $ret_array_exists[] = $event;
+                                if ( !in_array( $event['id'], $current_events_ids ) ) {
+                                    $ret_array[] = $event;
+                                } else {
+                                    $ret_array_exists[] = $event;
+                                }
                             }
                         }
                     }
