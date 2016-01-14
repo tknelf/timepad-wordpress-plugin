@@ -233,11 +233,12 @@ if ( ! is_admin() ) {
      */
     add_shortcode( 'timepadregistration' , function( array $atts ) {
         $customizeid = TimepadEvents_Setup_Admin::getInstance()->get_data_var( 'widget_customization_id' );
-        $return  = "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\"";
+        $return  = "<div id=\"timepad-event-widget-" . intval( $atts['eventid'] ) . "\" class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\">";
+        $return .= "<script type=\"text/javascript\" defer=\"defer\"";
         if ( $customizeid ) {
             $return .= " data-timepad-customized=\"" . intval( $customizeid ) . "\"";
         }
-        $return .= " class=\"" . join( ' ', apply_filters( 'timepad-widget-classes', array( 'timepad-event-widget' ) ) ) . "\"><script type=\"text/javascript\" defer=\"defer\" charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
+        $return .= " charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
         
         return $return;
     } );
