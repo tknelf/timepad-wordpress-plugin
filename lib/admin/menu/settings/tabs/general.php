@@ -312,6 +312,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $category_id                  = intval( $this->_data['autounsync_to_post_category'] );
                             $insert_args['post_type']     = $this->_data['autounsync_to_post_type'];
                             $insert_args['post_category'] = array( $category_id );
+                            $insert_args['post_status']   = $this->_data['timepad_autounsync_to_status'];
                             $taxonomy                     = 'category';
                         }
                     }
@@ -327,7 +328,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     } else {
                         $update_args = array(
                             'ID'           => $check_post->ID
-                            ,'post_status' => 'publish'
+                            ,'post_status' => ( isset( $this->_data['timepad_autounsync_to_status'] ) && !empty( $this->_data['timepad_autounsync_to_status'] ) ) ? $this->_data['timepad_autounsync_to_status'] : 'publish'
                         );
                         wp_update_post( $update_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
@@ -729,7 +730,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     foreach ( $events['exist_not_excluded'] as $org_id => $not_excl_event ) {
                         $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event );
                         if ( !empty( $exist_not_excluded_post ) ) {
-                            $this->_make_wp_event_status( $exist_not_excluded_post->ID, 'publish' );
+                            $this->_make_wp_event_status( $exist_not_excluded_post->ID, ( isset( $this->_data['timepad_autounsync_to_status'] ) && !empty( $this->_data['timepad_autounsync_to_status'] ) ) ? $this->_data['timepad_autounsync_to_status'] : 'publish' );
                         }
                     }
                 }

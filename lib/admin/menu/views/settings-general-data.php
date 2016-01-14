@@ -138,6 +138,15 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
+    <tr class="timepad_unsync_tr"<?php echo ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) ? ' style="display:none"' : ''; ?>>
+        <th scope="row"><label for="timepad_autounsync_to_status"><?php _e( 'To status', 'timepad' ) ?>:</label></th>
+        <td colspan="2">
+            <select name="timepad_autounsync_to_status" id="timepad_autounsync_to_status">
+                <option value="publish"<?php selected( 'publish', isset( $data['timepad_autounsync_to_status'] ) ? $data['timepad_autounsync_to_status'] : '' ); ?>><?php _e( 'Published' ); ?></option>
+                <option value="draft"<?php selected( 'draft', isset( $data['timepad_autounsync_to_status'] ) ? $data['timepad_autounsync_to_status'] : '' ); ?>><?php _e( 'Draft' ); ?></option>
+            </select>
+        </td>
+    </tr>
 </table>
 <input type="submit" class="button button-primary" name="save_changes" value="<?php _e( 'Save changes', 'timepad' ); ?>" />
 <?php else : ?>

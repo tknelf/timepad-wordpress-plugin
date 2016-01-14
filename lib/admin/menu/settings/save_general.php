@@ -63,6 +63,7 @@ if ( isset( $_POST['_wpnonce'] ) ) {
                 $data['autounsync'] = 1;
                 $data['autounsync_to_post_type'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_type'] );
                 $data['autounsync_to_post_category'] = intval( $_POST['timepad_autounsync_to_post_category'] );
+                $data['timepad_autounsync_to_status'] = sanitize_text_field( $_POST['timepad_autounsync_to_status'] );
             } else {
                 $data['autounsync'] = 0;
                 unset( $data['autounsync'] );
@@ -72,6 +73,9 @@ if ( isset( $_POST['_wpnonce'] ) ) {
                 
                 $data['autounsync_to_post_category'] = 0;
                 unset( $data['autounsync_to_post_category'] );
+                
+                $data['timepad_autounsync_to_status'] = null;
+                unset( $data['timepad_autounsync_to_status'] );
             }
             
             update_option( 'timepad_data', $data );
