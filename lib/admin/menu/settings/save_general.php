@@ -9,6 +9,32 @@ if ( isset( $_POST['_wpnonce'] ) ) {
     $additional_url = '&tab=general';
 
     if ( wp_verify_nonce( $_POST['_wpnonce'], TIMEPADEVENTS_SETTINGS ) && current_user_can( 'activate_plugins' ) ) {
+        
+        function timepad_save_autounsync( $post ) {
+            $data = array();
+            
+            if ( isset( $post['timepad_auto_unsyncronize'] ) && !empty( $post['timepad_auto_unsyncronize'] ) && isset( $post['timepad_autounsync_to_post_type'] ) && !empty( $post['timepad_autounsync_to_post_type'] ) ) {
+                $data['autounsync'] = 1;
+                $data['autounsync_to_post_type'] = sanitize_text_field( $post['timepad_autounsync_to_post_type'] );
+                $data['autounsync_to_post_category'] = intval( $post['timepad_autounsync_to_post_category'] );
+                $data['timepad_autounsync_to_status'] = sanitize_text_field( $post['timepad_autounsync_to_status'] );
+            } else {
+                $data['autounsync'] = 0;
+                unset( $data['autounsync'] );
+                
+                $data['autounsync_to_post_type'] = null;
+                unset( $data['autounsync_to_post_type'] );
+                
+                $data['autounsync_to_post_category'] = 0;
+                unset( $data['autounsync_to_post_category'] );
+                
+                $data['timepad_autounsync_to_status'] = null;
+                unset( $data['timepad_autounsync_to_status'] );
+            }
+            
+            return $data;
+        }
+        
         if ( isset( $_POST['cancel_account'] ) && !empty( $_POST['cancel_account'] ) ) {
             $data = get_option( 'timepad_data' );
             unset( $data['organizations'] );
@@ -37,6 +63,8 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         if ( isset( $_POST['select_organization'] ) && !empty( $_POST['select_organization'] ) && isset( $_POST['organization'] ) && !empty( $_POST['organization'] ) ) {
             $data = get_option( 'timepad_data' );
             $data['current_organization_id'] = intval( $_POST['organization'] );
+            $unsync_data = timepad_save_autounsync( $_POST );
+            $data = array_merge( $data, $unsync_data );
             $additional_url = '&syncronize=1';
             update_option( 'timepad_data', $data );
         }
@@ -59,24 +87,8 @@ if ( isset( $_POST['_wpnonce'] ) ) {
                 unset( $data['autoimport'] );
             }
             
-            if ( isset( $_POST['timepad_auto_unsyncronize'] ) && !empty( $_POST['timepad_auto_unsyncronize'] ) && isset( $_POST['timepad_autounsync_to_post_type'] ) && !empty( $_POST['timepad_autounsync_to_post_type'] ) ) {
-                $data['autounsync'] = 1;
-                $data['autounsync_to_post_type'] = sanitize_text_field( $_POST['timepad_autounsync_to_post_type'] );
-                $data['autounsync_to_post_category'] = intval( $_POST['timepad_autounsync_to_post_category'] );
-                $data['timepad_autounsync_to_status'] = sanitize_text_field( $_POST['timepad_autounsync_to_status'] );
-            } else {
-                $data['autounsync'] = 0;
-                unset( $data['autounsync'] );
-                
-                $data['autounsync_to_post_type'] = null;
-                unset( $data['autounsync_to_post_type'] );
-                
-                $data['autounsync_to_post_category'] = 0;
-                unset( $data['autounsync_to_post_category'] );
-                
-                $data['timepad_autounsync_to_status'] = null;
-                unset( $data['timepad_autounsync_to_status'] );
-            }
+            $unsync_data = timepad_save_autounsync( $_POST );
+            $data = array_merge( $data, $unsync_data );
             
             update_option( 'timepad_data', $data );
             

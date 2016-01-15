@@ -138,7 +138,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * @return array|null
          */
         public function get_data_var( $var ) {
-            if ( $var == 'events' ) {
+            if ( in_array( $var, array( 'events', 'token' ) ) ) {
                 return;
             }
             return isset( $this->_data[$var] ) ? $this->_data[$var] : '';
