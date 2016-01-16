@@ -326,11 +326,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }
                     } else {
-                        $update_args = array(
-                            'ID'           => $check_post->ID
-                            ,'post_status' => ( isset( $this->_data['timepad_autounsync_to_status'] ) && !empty( $this->_data['timepad_autounsync_to_status'] ) ) ? $this->_data['timepad_autounsync_to_status'] : 'publish'
-                        );
-                        wp_update_post( $update_args );
+                        $insert_args['ID'] = $check_post->ID;
+                        wp_update_post( $insert_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
                     }
                 }

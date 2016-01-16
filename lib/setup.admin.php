@@ -44,7 +44,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
                 
                 add_filter( 'display_post_states', function( $post_states, $post ) {
                     $post_meta = get_post_meta( $post->ID, TIMEPADEVENTS_META, true );
-                    if ( !empty( $post_meta ) ) {
+                    if ( !empty( $post_meta ) && $post->post_type != TIMEPADEVENTS_POST_TYPE ) {
                         $post_states['timepad_event'] = __( 'Event from TimePad', 'timepad' );
                     }
 
