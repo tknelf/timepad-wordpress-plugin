@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TimepadEvents\n"
-"POT-Creation-Date: 2016-01-02 14:40+0300\n"
-"PO-Revision-Date: 2016-01-02 14:40+0300\n"
+"POT-Creation-Date: 2016-01-16 13:29+0300\n"
+"PO-Revision-Date: 2016-01-16 13:29+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -47,7 +47,7 @@ msgstr ""
 msgid "TimePad Events error messages:"
 msgstr "Сообщения об ошибках плагина TimePad:"
 
-#: lib/admin/menu.php:19
+#: lib/admin/menu.php:19 lib/setup.admin.php:106
 msgid "TimePad Settings"
 msgstr "Настройки TimePad"
 
@@ -63,35 +63,80 @@ msgstr "Редирект TimePad"
 msgid "Redirect"
 msgstr "Редирект"
 
-#: lib/admin/menu/settings/save_general.php:86
+#: lib/admin/menu/settings/save_general.php:102
 msgid "Category name must have string length more than 5 characters."
 msgstr "Наименование категории должно быть более 5 символов."
 
-#: lib/admin/menu/settings/save_general.php:94
+#: lib/admin/menu/settings/save_general.php:110
 msgid "Category slug must have string length more than 5 characters."
 msgstr "Ярлык категории должен быть более 5 символов"
 
-#: lib/admin/menu/settings/save_general.php:102
+#: lib/admin/menu/settings/save_general.php:118
 #: lib/admin/menu/settings/save_prevfuture.php:31
 #: lib/admin/menu/settings/save_widget.php:32
 msgid "Wrong security nonce value."
 msgstr "Неверное значение security nonce."
 
-#: lib/admin/menu/settings/tabs/general.php:69
-msgid "General"
-msgstr "Основное"
+#: lib/admin/menu/settings/tabs/general.php:77
+msgid "Основные"
+msgstr ""
 
-#: lib/admin/menu/settings/tabs/general.php:551
+#: lib/admin/menu/settings/tabs/general.php:556
 msgid "TimePad Events"
 msgstr "События TimePad"
 
 #: lib/admin/menu/settings/tabs/prevfuture.php:13
-msgid "Previous and future events"
-msgstr "Прошедшие и предстоящие события"
+msgid "Прошедшие и будущие события"
+msgstr ""
 
 #: lib/admin/menu/settings/tabs/widget.php:13
-msgid "Widget"
-msgstr "Виджет"
+msgid "Виджет"
+msgstr ""
+
+#: lib/admin/menu/views/settings-general-autounsync.php:3
+msgid "Automatic unsyncronize events to posts/other post types"
+msgstr ""
+"Автоматическое отвязывание всех импортируемых событий в записи/другие типы "
+"записей"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:4
+msgid ""
+"All your organization events will be automatically unsyncronized from "
+"TimePad API"
+msgstr ""
+"Все события вашей организации будут автоматически отвязываться от "
+"синхронизации с TimePad API"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:9
+msgid "Unsyncronize status"
+msgstr "Статус отвязки"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:14
+msgid "Automatically unsyncronize events to posts/post types"
+msgstr ""
+"Автоматически отвязывать все импортируемые события в записи/другие типы "
+"записей"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:20
+#: lib/admin/menu/views/settings-widget-data.php:14
+msgid "To post type"
+msgstr "В тип записи"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:33
+msgid "To category"
+msgstr "В категорию"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:61
+msgid "To status"
+msgstr "В статус"
+
+#: lib/admin/menu/views/settings-general-autounsync.php:64
+msgid "Published"
+msgstr ""
+
+#: lib/admin/menu/views/settings-general-autounsync.php:65
+msgid "Draft"
+msgstr ""
 
 #: lib/admin/menu/views/settings-general-data.php:7
 msgid "TimePad account"
@@ -105,32 +150,32 @@ msgstr "Отключить аккаунт"
 msgid "Are you sure about cancel account"
 msgstr "Вы уверены что хотите отключить аккаунт"
 
-#: lib/admin/menu/views/settings-general-data.php:15
+#: lib/admin/menu/views/settings-general-data.php:16
 msgid "To start work with events, select one of TimePad organizations"
 msgstr ""
 "Чтобы начать работать с событиями, выберите одну из организаций на TimePad"
 
-#: lib/admin/menu/views/settings-general-data.php:31
+#: lib/admin/menu/views/settings-general-data.php:32
 msgid "Select"
 msgstr "Выбрать"
 
-#: lib/admin/menu/views/settings-general-data.php:36
+#: lib/admin/menu/views/settings-general-data.php:37
 msgid "Organization"
 msgstr "Организация"
 
-#: lib/admin/menu/views/settings-general-data.php:38
+#: lib/admin/menu/views/settings-general-data.php:39
 msgid "Cancel organization"
 msgstr "Отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:38
+#: lib/admin/menu/views/settings-general-data.php:39
 msgid "Are you sure about cancel organization"
 msgstr "Вы уверены что хотите отключить организацию"
 
-#: lib/admin/menu/views/settings-general-data.php:45
+#: lib/admin/menu/views/settings-general-data.php:46
 msgid "Import TimePad events as custom post types"
 msgstr "Импортировать события из TimePad как кастомные типы записей"
 
-#: lib/admin/menu/views/settings-general-data.php:46
+#: lib/admin/menu/views/settings-general-data.php:47
 msgid ""
 "All your organization events will be automatically imported to this site in "
 "the form of pages with customizable categories"
@@ -138,60 +183,27 @@ msgstr ""
 "Все события вашей организации будут автоматически импортироваться на этот "
 "сайт в виде страниц с настраиваемой категорией"
 
-#: lib/admin/menu/views/settings-general-data.php:51
+#: lib/admin/menu/views/settings-general-data.php:52
 msgid "Import status"
 msgstr "Статус импорта"
 
-#: lib/admin/menu/views/settings-general-data.php:56
+#: lib/admin/menu/views/settings-general-data.php:57
 msgid "Automatically import events and create entries for the ones"
 msgstr "Автоматически импортировать события и создавать для них записи"
 
-#: lib/admin/menu/views/settings-general-data.php:63
+#: lib/admin/menu/views/settings-general-data.php:64
 msgid "Synchronize now"
 msgstr "Синхронизировать сейчас"
 
-#: lib/admin/menu/views/settings-general-data.php:67
+#: lib/admin/menu/views/settings-general-data.php:68
 msgid "The name of the event category"
 msgstr "Название категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:75
+#: lib/admin/menu/views/settings-general-data.php:76
 msgid "Events category label"
 msgstr "Ярлык категории событий"
 
-#: lib/admin/menu/views/settings-general-data.php:84
-msgid "Automatic unsyncronize events to posts/other post types"
-msgstr ""
-"Автоматическое отвязывание всех импортируемых событий в записи/другие типы "
-"записей"
-
 #: lib/admin/menu/views/settings-general-data.php:85
-msgid ""
-"All your organization events will be automatically unsyncronized from "
-"TimePad API"
-msgstr ""
-"Все события вашей организации будут автоматически отвязываться от "
-"синхронизации с TimePad API"
-
-#: lib/admin/menu/views/settings-general-data.php:90
-msgid "Unsyncronize status"
-msgstr "Статус отвязки"
-
-#: lib/admin/menu/views/settings-general-data.php:95
-msgid "Automatically unsyncronize events to posts/post types"
-msgstr ""
-"Автоматически отвязывать все импортируемые события в записи/другие типы "
-"записей"
-
-#: lib/admin/menu/views/settings-general-data.php:101
-#: lib/admin/menu/views/settings-widget-data.php:14
-msgid "To post type"
-msgstr "В тип записи"
-
-#: lib/admin/menu/views/settings-general-data.php:114
-msgid "To category"
-msgstr "В категорию"
-
-#: lib/admin/menu/views/settings-general-data.php:142
 #: lib/admin/menu/views/settings-prevfuture-data.php:27
 #: lib/admin/menu/views/settings-widget-data.php:31
 msgid "Save changes"
@@ -236,12 +248,12 @@ msgid "Future event date and time"
 msgstr "Дата и время будущих событий"
 
 #: lib/admin/menu/views/settings-prevfuture-data.php:20
-msgid "Natural TimePad event date and time"
-msgstr "Натуральные дата события и время из TimePad"
-
-#: lib/admin/menu/views/settings-prevfuture-data.php:21
 msgid "Current time"
 msgstr "Текущее время"
+
+#: lib/admin/menu/views/settings-prevfuture-data.php:21
+msgid "Natural TimePad event date and time"
+msgstr "Натуральные дата события и время из TimePad"
 
 #: lib/admin/menu/views/settings-view.php:10
 msgid "Timepad Settings"
@@ -403,13 +415,29 @@ msgstr "Новое название категории"
 msgid "Categories"
 msgstr "Категории"
 
-#: lib/admin/scripts.php:74
+#: lib/admin/scripts.php:72
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-#: timepad-events.php:176
+#: lib/setup.admin.php:48
+msgid "Event from TimePad"
+msgstr "Событие из TimePad"
+
+#: timepad-events.php:196
 msgid "Once in three minutes"
 msgstr "Один раз в три минуты"
+
+#~ msgid "TimePad event"
+#~ msgstr "Событие TimePad"
+
+#~ msgid "General"
+#~ msgstr "Основное"
+
+#~ msgid "Previous and future events"
+#~ msgstr "Прошедшие и предстоящие события"
+
+#~ msgid "Widget"
+#~ msgstr "Виджет"
 
 #~ msgid "Previous Events"
 #~ msgstr "Прошедшие события"

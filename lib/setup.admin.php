@@ -41,6 +41,16 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             );
 
             if ( is_admin() ) {
+                
+                add_filter( 'display_post_states', function( $post_states, $post ) {
+                    $post_meta = get_post_meta( $post->ID, TIMEPADEVENTS_META, true );
+                    if ( !empty( $post_meta ) ) {
+                        $post_states['timepad_event'] = __( 'Event from TimePad', 'timepad' );
+                    }
+
+                    return $post_states;
+                }, 999, 2 );
+                
                 add_action( 'wp_ajax_timepad_dismiss_requirements', array( $this, 'timepadevents_dismiss_requirements' ) );
                 
                 add_action( 'wp_ajax_timepad_unbind_from_api', array( $this, 'unsyncronize_event_to_post_ajax' ) );

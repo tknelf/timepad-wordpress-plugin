@@ -10,6 +10,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td></td>
     </tr>
     <?php if ( empty( $data['current_organization_id'] ) ) : ?>
+    <?php include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-autounsync.php'; ?>
     <tr>
         <td colspan="3">
             <p><?php _e( 'To start work with events, select one of TimePad organizations', 'timepad' ); ?></p>
@@ -31,7 +32,6 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td><input type="submit" name="select_organization" class="button button-primary" value="<?php _e( 'Select', 'timepad' ); ?>" /></td>
         <td colspan="2"></td>
     </tr>
-    <?php include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-autounsync.php'; ?>
     <?php else : ?>
     <tr>
         <th scope="row"><?php _e( 'Organization', 'timepad' ) ?></th>
