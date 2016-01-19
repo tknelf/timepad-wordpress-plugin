@@ -327,6 +327,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     } else {
                         $insert_args['ID'] = $check_post->ID;
+                        unset( $insert_args['post_title'] );
+                        unset( $insert_args['post_content'] );
                         wp_update_post( $insert_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
                     }

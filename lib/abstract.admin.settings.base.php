@@ -110,7 +110,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
             if ( !isset( $this->_data['autounsync_to_post_category'] ) || empty( $this->_data['autounsync_to_post_category'] ) ) {
                 $category = get_term( $id, TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
             } else {
-                $category = get_category( $id );
+                $category = get_category( $id, $output );
             }
             
             if ( is_wp_error( $category ) ) {
