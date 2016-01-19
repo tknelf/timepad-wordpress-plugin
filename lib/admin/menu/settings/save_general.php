@@ -13,23 +13,19 @@ if ( isset( $_POST['_wpnonce'] ) ) {
         function timepad_save_autounsync( $post ) {
             $data = array();
             
-            if ( isset( $post['timepad_auto_unsyncronize'] ) && !empty( $post['timepad_auto_unsyncronize'] ) && isset( $post['timepad_autounsync_to_post_type'] ) && !empty( $post['timepad_autounsync_to_post_type'] ) ) {
+            if ( isset( $post['timepad_auto_unsyncronize'] ) && !empty( $post['timepad_auto_unsyncronize'] ) ) {
                 $data['autounsync'] = 1;
                 $data['autounsync_to_post_type'] = sanitize_text_field( $post['timepad_autounsync_to_post_type'] );
-                $data['autounsync_to_post_category'] = intval( $post['timepad_autounsync_to_post_category'] );
-                $data['timepad_autounsync_to_status'] = sanitize_text_field( $post['timepad_autounsync_to_status'] );
+                $data['category_id'] = intval( $post['timepad_autounsync_to_post_category'] );
+                $data['autounsync_to_status'] = sanitize_text_field( $post['timepad_autounsync_to_status'] );
             } else {
                 $data['autounsync'] = 0;
-                unset( $data['autounsync'] );
                 
                 $data['autounsync_to_post_type'] = null;
-                unset( $data['autounsync_to_post_type'] );
                 
-                $data['autounsync_to_post_category'] = 0;
-                unset( $data['autounsync_to_post_category'] );
+                $data['category_id'] = 0;
                 
-                $data['timepad_autounsync_to_status'] = null;
-                unset( $data['timepad_autounsync_to_status'] );
+                $data['autounsync_to_status'] = null;
             }
             
             return $data;
@@ -92,26 +88,28 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             
             update_option( 'timepad_data', $data );
             
-            $cat_args = array();
-            if ( isset( $_POST['cat_name'] ) && !empty( $_POST['cat_name'] ) && strlen( esc_attr( $_POST['cat_name'] ) ) > 5 ) {
-                if ( isset( $_POST['cat_name_current'] ) && !empty( $_POST['cat_name_current'] ) && strlen( esc_attr( $_POST['cat_name_current'] ) ) > 5 ) {
-                    if ( esc_attr( $_POST['cat_name_current'] ) != esc_attr( $_POST['cat_name'] ) ) {
-                        $cat_args['name'] = esc_attr( $_POST['cat_name'] );
+            if ( !isset( $data['autounsync'] ) || empty( $data['autounsync'] ) ) {
+                $cat_args = array();
+                if ( isset( $_POST['cat_name'] ) && !empty( $_POST['cat_name'] ) && strlen( esc_attr( $_POST['cat_name'] ) ) > 5 ) {
+                    if ( isset( $_POST['cat_name_current'] ) && !empty( $_POST['cat_name_current'] ) && strlen( esc_attr( $_POST['cat_name_current'] ) ) > 5 ) {
+                        if ( esc_attr( $_POST['cat_name_current'] ) != esc_attr( $_POST['cat_name'] ) ) {
+                            $cat_args['name'] = esc_attr( $_POST['cat_name'] );
+                        }
                     }
-                }
-            } else wp_die( __( 'Category name must have string length more than 5 characters.', 'timepad' ) );
+                } else wp_die( __( 'Category name must have string length more than 5 characters.', 'timepad' ) );
 
-            if ( isset( $_POST['cat_slug'] ) && !empty( $_POST['cat_slug'] ) && strlen( esc_attr( $_POST['cat_slug'] ) ) > 5 ) {
-                if ( isset( $_POST['cat_slug_current'] ) && !empty( $_POST['cat_slug_current'] ) && strlen( esc_attr( $_POST['cat_slug_current'] ) ) > 5 ) {
-                    if ( esc_attr( $_POST['cat_slug_current'] ) != esc_attr( $_POST['cat_slug'] ) ) {
-                        $cat_args['slug'] = sanitize_title_for_query( esc_attr( $_POST['cat_slug'] ) );
+                if ( isset( $_POST['cat_slug'] ) && !empty( $_POST['cat_slug'] ) && strlen( esc_attr( $_POST['cat_slug'] ) ) > 5 ) {
+                    if ( isset( $_POST['cat_slug_current'] ) && !empty( $_POST['cat_slug_current'] ) && strlen( esc_attr( $_POST['cat_slug_current'] ) ) > 5 ) {
+                        if ( esc_attr( $_POST['cat_slug_current'] ) != esc_attr( $_POST['cat_slug'] ) ) {
+                            $cat_args['slug'] = sanitize_title_for_query( esc_attr( $_POST['cat_slug'] ) );
+                        }
                     }
+                } else wp_die( __( 'Category slug must have string length more than 5 characters.', 'timepad' ) );
+
+                if ( !empty( $cat_args ) ) {
+                    global $wpdb;
+                    $wpdb->update( 'wp_terms', $cat_args, array( 'term_id' => $data['category_id'] ) );
                 }
-            } else wp_die( __( 'Category slug must have string length more than 5 characters.', 'timepad' ) );
-            
-            if ( !empty( $cat_args ) ) {
-                global $wpdb;
-                $wpdb->update( 'wp_terms', $cat_args, array( 'term_id' => $data['category_id'] ) );
             }
 
         }

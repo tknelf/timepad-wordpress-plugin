@@ -61,8 +61,8 @@
         <th scope="row"><label for="timepad_autounsync_to_status"><?php _e( 'To status', 'timepad' ) ?>:</label></th>
         <td colspan="2">
             <select name="timepad_autounsync_to_status" id="timepad_autounsync_to_status">
-                <option value="publish"<?php selected( 'publish', isset( $data['timepad_autounsync_to_status'] ) ? $data['timepad_autounsync_to_status'] : '' ); ?>><?php _e( 'Published' ); ?></option>
-                <option value="draft"<?php selected( 'draft', isset( $data['timepad_autounsync_to_status'] ) ? $data['timepad_autounsync_to_status'] : '' ); ?>><?php _e( 'Draft' ); ?></option>
+                <option value="publish"<?php selected( 'publish', isset( $data['autounsync_to_status'] ) ? $data['autounsync_to_status'] : '' ); ?>><?php _e( 'Published' ); ?></option>
+                <option value="draft"<?php selected( 'draft', isset( $data['autounsync_to_status'] ) ? $data['autounsync_to_status'] : '' ); ?>><?php _e( 'Draft' ); ?></option>
             </select>
         </td>
     </tr>

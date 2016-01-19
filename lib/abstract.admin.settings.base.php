@@ -106,11 +106,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
          * @access protected
          * @return object|array
          */
-        protected function _get_category( $id, $output = OBJECT, $filter = 'raw' ) {
-            if ( !isset( $this->_data['autounsync_to_post_category'] ) || empty( $this->_data['autounsync_to_post_category'] ) ) {
-                $category = get_term( $id, TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
+        protected function _get_category( $output = OBJECT, $filter = 'raw' ) {
+            if ( !isset( $this->_data['autounsync'] ) || empty( $this->_data['autounsync'] ) ) {
+                $category = get_term( $this->_data['category_id'], TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
             } else {
-                $category = get_category( $id, $output );
+                $category = get_category( $this->_data['category_id'], $output );
             }
             
             if ( is_wp_error( $category ) ) {

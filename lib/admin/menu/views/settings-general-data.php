@@ -39,8 +39,10 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td><input type="submit" name="cancel_organization" class="button button-secondary" value="<?php _e( 'Cancel organization', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about cancel organization', 'timepad' ) . ' ' . $data['organizations']['organizations'][$data['current_organization_id']]['name'] . '?'; ?>');" /></td>
         <td></td>
     </tr>
-    <?php endif;
-    if ( !empty( $data['current_organization_id'] ) && !empty( $category ) ) : ?>
+    <?php
+    endif;
+    if ( !empty( $data['current_organization_id'] ) && !empty( $category ) ) :
+    ?>
     <tr>
         <td colspan="3" width="60%">
             <h3 class="title"><?php _e( 'Import TimePad events as custom post types', 'timepad' ); ?></h3>
@@ -64,7 +66,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td><input type="submit" name="syncronize" class="button button-secondary" value="<?php _e( 'Synchronize now', 'timepad' ); ?>" /></td>
         <td colspan="2"></td>
     </tr>
-    <tr>
+    <tr class="timepad_cat_tr"<?php echo ( isset( $data['autounsync'] ) && !empty( $data['autounsync'] ) ) ? ' style="display:none;"' : ''; ?>>
         <th scope="row"><label for="cat_name"><?php _e( 'The name of the event category', 'timepad' ) ?></label></th>
         <td colspan="2">
             <input type="text" name="cat_name" id="cat_name" value="<?php echo esc_attr( $category->name ); ?>" maxlength="50" required="required" aria-required="true" autocomplete="off" />
@@ -72,7 +74,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
-    <tr>
+    <tr class="timepad_cat_tr"<?php echo ( isset( $data['autounsync'] ) && !empty( $data['autounsync'] ) ) ? ' style="display:none;"' : ''; ?>>
         <th scope="row"><label for="cat_slug"><?php _e( 'Events category label', 'timepad' ) ?></label></th>
         <td colspan="2">
             <input type="text" name="cat_slug" id="cat_slug" value="<?php echo esc_attr( $category->slug ); ?>" maxlength="50" required="required" aria-required="true" autocomplete="off" />

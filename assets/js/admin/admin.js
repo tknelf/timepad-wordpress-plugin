@@ -43,8 +43,10 @@ jQuery(document).ready(function() {
             var $_this = jQuery(this);
             if ( $_this.is(':checked') ) {
                 jQuery('.timepad_unsync_tr').show();
+                jQuery('.timepad_cat_tr').hide();
             } else {
                 jQuery('.timepad_unsync_tr').hide();
+                jQuery('.timepad_cat_tr').show();
             }
             
             return false;

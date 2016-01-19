@@ -288,7 +288,7 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             } else {
                 switch ( $action ) {
                     case 'delete':
-                        if ( !empty( $post_id ) ) {
+                        if ( !empty( $post_id ) && !empty( $excluded_events ) && is_array( $excluded_events ) ) {
                             $event_id = intval( array_search( $post_id, $excluded_events ) );
                             unset( $excluded_events[$event_id] );
                             return update_option( 'timepad_excluded_from_api', $excluded_events );

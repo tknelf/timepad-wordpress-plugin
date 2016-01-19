@@ -308,11 +308,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $insert_args['post_category'] = array( $category_id );
                     $taxonomy                     = TIMEPADEVENTS_POST_TYPE . '_category';
                     if ( isset( $this->_data['autounsync'] ) && !empty( $this->_data['autounsync'] ) ) {
-                        if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['autounsync_to_post_category'] ) && !empty( $this->_data['autounsync_to_post_category'] ) ) {
-                            $category_id                  = intval( $this->_data['autounsync_to_post_category'] );
+                        if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) ) {
+                            $category_id                  = intval( $this->_data['category_id'] );
                             $insert_args['post_type']     = $this->_data['autounsync_to_post_type'];
                             $insert_args['post_category'] = array( $category_id );
-                            $insert_args['post_status']   = $this->_data['timepad_autounsync_to_status'];
+                            $insert_args['post_status']   = $this->_data['autounsync_to_status'];
                             $taxonomy                     = 'category';
                         }
                     }
@@ -556,8 +556,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $cat_nicename = TIMEPADEVENTS_POST_TYPE_CATEGORY;
                             $cat_taxonomy = TIMEPADEVENTS_POST_TYPE . '_category';
                             if ( isset( $this->_data['autounsync'] ) && !empty( $this->_data['autounsync'] ) ) {
-                                if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['autounsync_to_post_category'] ) && !empty( $this->_data['autounsync_to_post_category'] ) ) {
-                                    $cat          = get_category( $this->_data['autounsync_to_post_category'] );
+                                if ( isset( $this->_data['autounsync_to_post_type'] ) && !empty( $this->_data['autounsync_to_post_type'] ) && isset( $this->_data['category_id'] ) && !empty( $this->_data['category_id'] ) ) {
+                                    $cat          = get_category( $this->_data['category_id'] );
                                     $cat_name     = $cat->name;
                                     $cat_nicename = $cat->slug;
                                     $cat_taxonomy = 'category';
@@ -729,7 +729,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     foreach ( $events['exist_not_excluded'] as $org_id => $not_excl_event ) {
                         $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event );
                         if ( !empty( $exist_not_excluded_post ) ) {
-                            $this->_make_wp_event_status( $exist_not_excluded_post->ID, ( isset( $this->_data['timepad_autounsync_to_status'] ) && !empty( $this->_data['timepad_autounsync_to_status'] ) ) ? $this->_data['timepad_autounsync_to_status'] : 'publish' );
+                            $this->_make_wp_event_status( $exist_not_excluded_post->ID, ( isset( $this->_data['autounsync_to_status'] ) && !empty( $this->_data['autounsync_to_status'] ) ) ? $this->_data['autounsync_to_status'] : 'publish' );
                         }
                     }
                 }
@@ -759,7 +759,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general.php';
                 } else {
                     $data       = $this->_data;
-                    $category   = isset( $this->_data['category_id'] ) ? $this->_get_category( $this->_data['category_id'] ) : array();
+                    $category   = isset( $this->_data['category_id'] ) ? $this->_get_category() : array();
                     $post_types = TimepadEvents_Helpers::get_post_types_array();
                     include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-data.php';
                 }
