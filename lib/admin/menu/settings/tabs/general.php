@@ -191,18 +191,20 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return object|array single post object or array of WP posts objects
          */
         protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = false ) {
-
-            $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
-            $meta_array = array(
-                'event_id'         => intval( $event['id'] )
-                ,'organization_id' => intval( $org_id )
-            );
-            $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
-            $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
             
-            $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, '%' . $this->_db->esc_like( $generated_meta_value ) . '%' ) );
+            if ( !empty( $event ) && isset( $event['id'] ) ) {
+                $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
+                $meta_array = array(
+                    'event_id'         => intval( $event['id'] )
+                    ,'organization_id' => intval( $org_id )
+                );
+                $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
+                $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
 
-            return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
+                $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, '%' . $this->_db->esc_like( $generated_meta_value ) . '%' ) );
+
+                return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
+            }
         }
         
         /**
@@ -331,6 +333,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         $insert_args['ID'] = $check_post->ID;
                         unset( $insert_args['post_title'] );
                         unset( $insert_args['post_content'] );
+                        unset( $insert_args['post_type'] );
                         wp_update_post( $insert_args );
                         $this->_set_post_thumbnail( $check_post->ID, $event );
                     }
