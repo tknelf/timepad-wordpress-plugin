@@ -53,7 +53,7 @@ if ( ! defined( 'TIMEPADEVENTS_SITEURL' ) ) {
      * @return  string Your site WordPress URL
      * @example https://wordpress.google.com
      */
-    define( 'TIMEPADEVENTS_SITEURL', site_url() );
+    define( 'TIMEPADEVENTS_SITEURL', get_site_url() );
 }
 
 if ( !defined( 'TIMEPADEVENTS_ADMIN_URL' ) ) {
