@@ -663,6 +663,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $ret_array             = array();
                     $ret_array_exists      = array();
                     $exist_events          = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
+                    $current_events_ids    = array_keys( $exist_events );
                     $excluded_events_array = $this->_get_excluded_events( $events, $exist_events );
                     
                     foreach ( $events as $event ) {
@@ -671,13 +672,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 if ( isset( $this->_data['previous_events'] ) && $this->_data['previous_events'] == 'accept' ) {
                                     $ret_array[] = $event;
                                 } else {
-                                    if ( !isset( $this->_data['events'][$organization_id][$event['id']] ) || empty( $this->_data['events'][$organization_id][$event['id']] ) ) {
+                                    if ( !in_array( $event['id'], $current_events_ids ) ) {
                                         $ret_array[] = $event;
                                     } else {
                                         $ret_array_exists[] = $event;
                                     }
                                 }
-                                $all_events['all'][$event['id']] = $event;
+                                $all_events[] = $event;
                             }
                         }
                     }
