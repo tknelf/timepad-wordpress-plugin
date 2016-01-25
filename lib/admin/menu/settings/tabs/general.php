@@ -657,12 +657,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return array
          */
         private function _prepare_events( array $events, $organization_id, $return_exists = false ) {
+            $all_events = array();
             if ( is_array( $events ) && !empty( $organization_id ) ) {
                 if ( !empty( $events ) ) {
                     $ret_array             = array();
                     $ret_array_exists      = array();
                     $exist_events          = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
-                    $current_events_ids    = array_keys( $exist_events );
                     $excluded_events_array = $this->_get_excluded_events( $events, $exist_events );
                     
                     foreach ( $events as $event ) {
@@ -671,19 +671,20 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 if ( isset( $this->_data['previous_events'] ) && $this->_data['previous_events'] == 'accept' ) {
                                     $ret_array[] = $event;
                                 } else {
-                                    if ( !in_array( $event['id'], $current_events_ids ) ) {
+                                    if ( !isset( $this->_data['events'][$organization_id][$event['id']] ) || empty( $this->_data['events'][$organization_id][$event['id']] ) ) {
                                         $ret_array[] = $event;
                                     } else {
                                         $ret_array_exists[] = $event;
                                     }
                                 }
+                                $all_events['all'][$event['id']] = $event;
                             }
                         }
                     }
                 }
-                $ret_array_exist_not_excluded = @array_diff( $ret_array_exists, $excluded_events_array );
+                $ret_array_exist_not_excluded = @array_diff( $excluded_events_array, $ret_array_exists );
                 
-                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $events );
+                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
             }
             
             return array();
