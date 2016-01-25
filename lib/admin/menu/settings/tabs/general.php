@@ -623,25 +623,30 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return array
          */
         protected function _get_excluded_events( array $events, $exist_events = false ) {
+            $events = $this->_make_events_array( $events );
             $ret_array = array();
             if ( !$exist_events ) {
                 $exist_events = isset( $this->_data['events'][$this->_data['current_organization_id']] ) ? $this->_data['events'][$this->_data['current_organization_id']] : array();
             }
-            $current_excluded_events  = @array_diff( $events, $exist_events );
+            $current_excluded_events  = @array_diff( array_keys( $events ), array_keys( $exist_events ) );
             $excluded_from_api_events = TimepadEvents_Helpers::get_excluded_from_api_events();
-            if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
-                if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
-                    foreach ( $current_excluded_events as $current_excluded_event ) {
-                        if ( isset( $current_excluded_event['starts_at'] ) && !empty( $current_excluded_event['starts_at'] ) ) {
-                            $current_event_starts_at = strtotime( $current_excluded_event['starts_at'] );
-                            if ( time() > $current_event_starts_at || isset( $excluded_from_api_events[$current_excluded_event['id']] ) ) {
-                                $ret_array[$current_excluded_event['id']] = $current_excluded_event;
+            if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
+                foreach ( $current_excluded_events as $current_excluded_event_key ) {
+                    if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
+                        if ( isset( $events[$current_excluded_event_key]['starts_at'] ) && !empty( $events[$current_excluded_event_key]['starts_at'] ) ) {
+                            $current_event_starts_at = strtotime( $events[$current_excluded_event_key]['starts_at'] );
+                            if ( time() > $current_event_starts_at || isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                                $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
                             }
                         }
+                    } else {
+                        if ( $this->_data['previous_events'] == 'accept' && isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                            $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
+                        }
                     }
-                    
-                    return $ret_array;
                 }
+                
+                return $ret_array;
             }
             
             return $current_excluded_events;
