@@ -724,7 +724,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $pages_count = ceil( $events_count / $this->_default_limit ) - 1;
                     for ( $i = 1; $i <= $pages_count; $i++ ) {
                         $offset_events = $this->_get_request_array( $query_str . '&skip=' . $i * $this->_default_limit );
-                        array_push( $events['values'], $offset_events['values'] );
+                        $offset_events_array = $offset_events['values'];
+                        if ( !empty( $offset_events_array ) && is_array( $offset_events_array ) ) {
+                            foreach ( $offset_events_array as $offset_event_key => $offset_event_array ) {
+                                $events['values'][($i * $this->_default_limit) + $offset_event_key] = $offset_event_array;
+                            }
+                        }
                     }
                 }
             }
