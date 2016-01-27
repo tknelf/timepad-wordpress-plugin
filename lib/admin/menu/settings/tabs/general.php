@@ -635,7 +635,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
                         if ( isset( $events[$current_excluded_event_key]['starts_at'] ) && !empty( $events[$current_excluded_event_key]['starts_at'] ) ) {
                             $current_event_starts_at = strtotime( $events[$current_excluded_event_key]['starts_at'] );
-                            if ( time() > $current_event_starts_at || isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                            if ( time() > $current_event_starts_at && !isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
                                 $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
                             }
                         }
@@ -675,15 +675,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         if ( isset( $event['id'] ) ) {
                             if ( !isset( $excluded_events_array[$event['id']] ) ) {
                                 if ( isset( $this->_data['previous_events'] ) && $this->_data['previous_events'] == 'accept' ) {
-                                    $ret_array[] = $event;
+                                    $ret_array[$event['id']] = $event;
                                 } else {
                                     if ( !in_array( $event['id'], $current_events_ids ) ) {
-                                        $ret_array[] = $event;
+                                        $ret_array[$event['id']] = $event;
                                     } else {
-                                        $ret_array_exists[] = $event;
+                                        $ret_array_exists[$event['id']] = $event;
                                     }
                                 }
-                                $all_events[] = $event;
+                                $all_events[$event['id']] = $event;
                             }
                         }
                     }
