@@ -641,7 +641,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     } else {
                         if ( $this->_data['previous_events'] == 'accept' && isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
-                            $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
+                            if ( !isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                                $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
+                            }
                         }
                     }
                 }
