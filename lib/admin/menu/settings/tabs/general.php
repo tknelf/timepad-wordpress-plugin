@@ -635,20 +635,23 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
                         if ( isset( $events[$current_excluded_event_key]['starts_at'] ) && !empty( $events[$current_excluded_event_key]['starts_at'] ) ) {
                             $current_event_starts_at = strtotime( $events[$current_excluded_event_key]['starts_at'] );
-                            if ( time() > $current_event_starts_at && !isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                            if ( time() > $current_event_starts_at || isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
                                 $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
                             }
                         }
                     } else {
                         if ( $this->_data['previous_events'] == 'accept' && isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
-                            if ( !isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
+                            if ( isset( $excluded_from_api_events[$events[$current_excluded_event_key]['id']] ) ) {
                                 $ret_array[$events[$current_excluded_event_key]['id']] = $events[$current_excluded_event_key];
                             }
                         }
                     }
                 }
                 
-                return $ret_array;
+                return array(
+                    'keys'    => array_merge( array_keys( $ret_array ), array_keys( $excluded_from_api_events ) )
+                    ,'values' => $ret_array
+                );
             }
             
             return $current_excluded_events;
@@ -675,7 +678,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     
                     foreach ( $events as $event ) {
                         if ( isset( $event['id'] ) ) {
-                            if ( !isset( $excluded_events_array[$event['id']] ) ) {
+                            if ( !in_array( $event['id'], $excluded_events_array['keys'] ) ) {
+                            //if ( !isset( $excluded_events_array[$event['id']] ) ) {
                                 if ( isset( $this->_data['previous_events'] ) && $this->_data['previous_events'] == 'accept' ) {
                                     $ret_array[$event['id']] = $event;
                                 } else {
@@ -690,9 +694,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     }
                 }
-                $ret_array_exist_not_excluded = @array_diff( $excluded_events_array, $ret_array_exists );
+                $ret_array_exist_not_excluded = @array_diff( $excluded_events_array['values'], $ret_array_exists );
                 
-                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array, 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
+                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array['values'], 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
             }
             
             return array();
@@ -743,15 +747,15 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     $this->_update_events_content( $events_exist );
                 }
                 if ( !empty( $events['excluded'] ) && is_array( $events['excluded'] ) ) {
-                    foreach ( $events['excluded'] as $org_id => $excl_event ) {
+                    foreach ( $events['excluded'] as $event_id => $excl_event ) {
                         $excluded_post = $this->_get_posts_by_timepad_event_id( $excl_event );
-                        if ( !empty( $excluded_post ) ) {
+                        if ( !empty( $excluded_post ) && $excluded_post->post_type == TIMEPADEVENTS_POST_TYPE ) {
                             $this->_make_wp_event_status( $excluded_post->ID, 'private' );
                         }
                     }
                 }
                 if ( !empty( $events['exist_not_excluded'] ) && is_array( $events['exist_not_excluded'] ) ) {
-                    foreach ( $events['exist_not_excluded'] as $org_id => $not_excl_event ) {
+                    foreach ( $events['exist_not_excluded'] as $event_id => $not_excl_event ) {
                         $exist_not_excluded_post = $this->_get_posts_by_timepad_event_id( $not_excl_event );
                         if ( !empty( $exist_not_excluded_post ) ) {
                             $this->_make_wp_event_status( $exist_not_excluded_post->ID, ( isset( $this->_data['autounsync_to_status'] ) && !empty( $this->_data['autounsync_to_status'] ) ) ? $this->_data['autounsync_to_status'] : 'publish' );
