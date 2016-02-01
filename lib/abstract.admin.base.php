@@ -36,10 +36,21 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          */
         protected $_wp_version;
 
+        /**
+         * Timepad event ids
+         *
+         * @var int[]
+         */
+        protected $_eventIds = [];
+
         public function __construct() {
             parent::__construct();
-            
+
             $this->_data = get_option( TIMEPADEVENTS_OPTION );
+
+            if (isset($this->_data['current_organization_id'])) {
+                $this->getEventIds($this->_data['current_organization_id']);
+            }
             
             $this->_current_user_id = get_current_user_id();
             
@@ -164,6 +175,37 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
             
             $this->unsyncronize_event_to_post( $post_id, $event_id, $organization_id );
             wp_die(1);
+        }
+
+        /**
+         * @param $orgId
+         * @param bool $recount
+         * @return array
+         */
+        public function getEventIds($orgId, $recount = false) {
+            if ($this->_eventIds && !$recount) {
+                return $this->_eventIds;
+            }
+
+            $sql_prepare            = "SELECT p.id, REPLACE(pm.meta_value, 'org{$orgId}event', '') as event_id
+                                FROM {$this->_db->posts} p
+                                LEFT JOIN {$this->_db->postmeta} pm ON p.ID = pm.post_id
+                                WHERE
+                                    pm.meta_key  = %s
+                                    AND pm.meta_value  LIKE %s";
+
+
+
+            $posts      = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY,  "org{$orgId}event%"));
+            $aPosts     = [];
+
+            foreach ($posts as $post) {
+                $aPosts[$post->id]   = $post->event_id;
+            }
+
+            $this->_eventIds[$orgId]    = $aPosts;
+
+            return $this->_eventIds;
         }
 
     }

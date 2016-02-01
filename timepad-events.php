@@ -116,6 +116,15 @@ if ( ! defined ( 'TIMEPADEVENTS_META' ) ) {
      */
     define( 'TIMEPADEVENTS_META',  'timepad_meta' );
 }
+if ( ! defined ( 'TIMEPADEVENTS_KEY' ) ) {
+    /**
+     * Post meta key for TimePad Events plugin
+     *
+     * @var string
+     * @return string
+     */
+    define( 'TIMEPADEVENTS_KEY',  'timepad_key' );
+}
 
 if ( ! defined ( 'TIMEPADEVENTS_SETTINGS' ) ) {
     /**

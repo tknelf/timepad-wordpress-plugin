@@ -190,18 +190,26 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @access protected
          * @return object|array single post object or array of WP posts objects
          */
-        protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = false ) {
-            
-            if ( !empty( $event ) && isset( $event['id'] ) ) {
-                $org_id = $organization_id ? $organization_id : $this->_data['current_organization_id'];
-                $meta_array = array(
-                    'event_id'         => intval( $event['id'] )
-                    ,'organization_id' => intval( $org_id )
-                );
-                $generated_meta_value = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
-                $sql_prepare = "SELECT * FROM {$this->_db->posts} LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id WHERE {$this->_db->postmeta}.meta_value LIKE %s";
+        protected function _get_posts_by_timepad_event_id( $event, $single = true, $status = 'publish', $organization_id = null ) {
 
-                $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, '%' . $this->_db->esc_like( $generated_meta_value ) . '%' ) );
+            if ( !empty( $event ) && isset( $event['id'] ) ) {
+                $org_id                 = $organization_id ? $organization_id : $this->_data['current_organization_id'];
+                $meta_array             = array(
+                    'event_id'         => intval( $event['id'] )
+                ,'organization_id' => intval( $org_id )
+                );
+
+                $generated_meta_value   = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
+                $sql_prepare            = "SELECT *
+                                FROM {$this->_db->posts}
+                                LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id
+                                WHERE
+                                    {$this->_db->postmeta}.meta_key  = %s
+                                    AND {$this->_db->postmeta}.meta_value LIKE %s";
+
+
+
+                $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY, $generated_meta_value ) );
 
                 return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
             }
@@ -326,6 +334,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
                             update_post_meta( $id, TIMEPADEVENTS_META, $meta_array );
+                            update_post_meta( $id, TIMEPADEVENTS_KEY, $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] ) );
                             $this->_set_post_thumbnail( $id, $event );
                             wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }
@@ -626,10 +635,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $events = $this->_make_events_array( $events );
             $ret_array = array();
             if ( !$exist_events ) {
-                $exist_events = isset( $this->_data['events'][$this->_data['current_organization_id']] ) ? $this->_data['events'][$this->_data['current_organization_id']] : array();
+                $exist_events = isset( $this->_eventIds[$this->_data['current_organization_id']] ) ? $this->_eventIds[$this->_data['current_organization_id']] : array();
             }
-            $current_excluded_events  = @array_diff( array_keys( $events ), array_keys( $exist_events ) );
-            $excluded_from_api_events = TimepadEvents_Helpers::get_excluded_from_api_events();
+            $current_excluded_events    = @array_diff( array_keys( $events ), array_keys( $exist_events ) );
+            $excluded_from_api_events   = TimepadEvents_Helpers::get_excluded_from_api_events();
+            $excluded_from_api_events   = $excluded_from_api_events ? $excluded_from_api_events : [];
             if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
                 foreach ( $current_excluded_events as $current_excluded_event_key ) {
                     if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
@@ -672,13 +682,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 if ( !empty( $events ) ) {
                     $ret_array             = array();
                     $ret_array_exists      = array();
-                    $exist_events          = isset( $this->_data['events'][$organization_id] ) ? $this->_data['events'][$organization_id] : array();
-                    $current_events_ids    = array_keys( $exist_events );
+                    $exist_events          = isset( $this->_eventIds[$organization_id] ) ? $this->_eventIds[$organization_id] : array();
+                    $current_events_ids    = array_values( $exist_events );
                     $excluded_events_array = $this->_get_excluded_events( $events, $exist_events );
                     
                     foreach ( $events as $event ) {
                         if ( isset( $event['id'] ) ) {
-                            if ( !in_array( $event['id'], $excluded_events_array['keys'] ) ) {
+                            if (isset($excluded_events_array['keys']) &&  !in_array( $event['id'], $excluded_events_array['keys'] ) ) {
                             //if ( !isset( $excluded_events_array[$event['id']] ) ) {
                                 if ( isset( $this->_data['previous_events'] ) && $this->_data['previous_events'] == 'accept' ) {
                                     $ret_array[$event['id']] = $event;
@@ -694,6 +704,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     }
                 }
+                $excluded_events_array['values']    = isset($excluded_events_array['values']) ? $excluded_events_array['values']  : [];
                 $ret_array_exist_not_excluded = @array_diff( $excluded_events_array['values'], $ret_array_exists );
                 
                 return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array['values'], 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
@@ -739,9 +750,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                 }
             }
+
+
             if ( isset( $events['values'] ) ) {
                 $events = $this->_prepare_events( $events['values'], $organization_id, true );
-                $this->_data['events'][$organization_id] = $this->_make_events_array( $events['all'] );
+                //$this->_data['events'][$organization_id] = $this->_make_events_array( $events['all'] );
+                //$events     = $this->getEventIds($organization_id);
+
                 if ( !empty( $events['exist'] ) && is_array( $events['exist'] ) ) {
                     $events_exist = $this->_make_events_array( $events['exist'] );
                     $this->_update_events_content( $events_exist );
@@ -769,8 +784,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     return $events;
                 }
             }
-            
-            return TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
+
+            return true;
+            #return TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
         }
 
         /**
@@ -798,7 +814,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general.php';
             }
         }
-        
+
     }
     
 endif;
