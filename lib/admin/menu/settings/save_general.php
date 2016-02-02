@@ -88,6 +88,10 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             
             update_option( 'timepad_data', $data );
         }
+
+        if ( isset( $_POST['reset_sync'] ) && !empty( $_POST['reset_sync'] ) ) {
+            TimepadEvents_Setup_Admin::timepadevents_plugin_uninstall();
+        }
         
         if ( isset( $_POST['cancel_organization'] ) && !empty( $_POST['cancel_organization'] ) ) {
             $data = get_option( 'timepad_data' );

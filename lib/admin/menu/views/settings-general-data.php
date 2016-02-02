@@ -8,6 +8,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <th scope="row"><?php _e( 'TimePad account', 'timepad' ); ?></th>
         <th><?php echo $data['organizations']['user_email']; ?></th>
         <td><input type="submit" name="cancel_account" class="button button-secondary" value="<?php _e( 'Cancel account', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about cancel account', 'timepad' ) . ' ' . $data['organizations']['user_email'] . '?'; ?>');" /></td>
+        <td><input type="submit" name="reset_sync" class="button button-secondary" value="<?php _e( 'Reset sync', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about reset sync', 'timepad' ) . ' ' . $data['organizations']['user_email'] . '?'; ?>');" /></td>
         <td></td>
     </tr>
     <?php if ( empty( $data['current_organization_id'] ) ) : ?>
