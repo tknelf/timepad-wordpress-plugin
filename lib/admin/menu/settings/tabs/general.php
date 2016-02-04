@@ -201,11 +201,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
 
                 $generated_meta_value   = $this->_generate_event_meta_value( $meta_array['organization_id'] , $meta_array['event_id'] );
                 $sql_prepare            = "SELECT *
-                                FROM {$this->_db->posts}
-                                LEFT JOIN {$this->_db->postmeta} ON {$this->_db->posts}.ID = {$this->_db->postmeta}.post_id
+                                FROM {$this->_db->posts} p
+                                LEFT JOIN {$this->_db->postmeta} pm ON p.ID = pm.post_id
                                 WHERE
-                                    {$this->_db->postmeta}.meta_key  = %s
-                                    AND {$this->_db->postmeta}.meta_value LIKE %s";
+                                    pm.meta_key  = %s
+                                    AND pm.meta_value LIKE %s";
 
 
 
@@ -330,6 +330,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                     
                     $check_post = $this->_get_posts_by_timepad_event_id( $event );
+                    
                     if ( empty( $check_post ) ) {
                         //if post not exists - insert new post
                         if ( $id = wp_insert_post( $insert_args ) ) {
@@ -338,7 +339,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $this->_set_post_thumbnail( $id, $event );
                             wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }
-                    } else {
+                    } else if ($check_post->ID && $check_post->post_status != 'trash') {
                         $insert_args['ID'] = $check_post->ID;
                         unset( $insert_args['post_title'] );
                         unset( $insert_args['post_content'] );
