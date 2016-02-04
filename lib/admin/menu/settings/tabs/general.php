@@ -205,12 +205,11 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 LEFT JOIN {$this->_db->postmeta} pm ON p.ID = pm.post_id
                                 WHERE
                                     pm.meta_key  = %s
-                                    AND pm.meta_value LIKE %s
-                                    AND p.post_status != %s";
+                                    AND pm.meta_value LIKE %s";
 
 
 
-                $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY, $generated_meta_value, 'trash' ) );
+                $posts = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY, $generated_meta_value ) );
 
                 return ( $single && isset( $posts[0] ) ) ? $posts[0] : $posts;
             }
@@ -340,7 +339,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             $this->_set_post_thumbnail( $id, $event );
                             wp_set_post_terms( $id, array( $category_id ), $taxonomy, true );
                         }
-                    } else {
+                    } else if ($check_post->ID && $check_post->post_status != 'trash') {
                         $insert_args['ID'] = $check_post->ID;
                         unset( $insert_args['post_title'] );
                         unset( $insert_args['post_content'] );
