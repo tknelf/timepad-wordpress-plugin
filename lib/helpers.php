@@ -16,28 +16,42 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         }
         
         /**
+         * Returns web image extension by MIME
+         * 
+         * @since  1.1
+         * @param  string $mime Given MIME-type
+         * @access public
+         * @return boolean|string
+         */
+        public static function get_file_extension_by_mime( $mime ) {
+            switch ( $mime ) {
+                case 'image/jpeg':
+                    return 'jpg';
+                case 'image/png':
+                    return 'png';
+                case 'image/gif':
+                    return 'gif';
+            }
+            
+            return false;
+        }
+
+        /**
          * Function to get extension from mime-type of file path
          * 
-         * @since 1.0.0
+         * @since  1.0.0
          * @param  string $path
          * @access public
          * @return string File extension from the $path
          */
         public static function get_file_extension_mime_by_path( $path ) {
-            $ext = '';
+            $ext  = '';
             $mime = '';
             if ( $path ) {
                 $image_info = getimagesize( $path );
                 if ( $image_info['mime'] ) {
                     $mime = $image_info['mime'];
-                    switch ( $image_info['mime'] ) {
-                        case 'image/jpeg':
-                            $ext = 'jpg';
-                        case 'image/png':
-                            $ext = 'png';
-                        case 'image/gif':
-                            $ext = 'gif';
-                    }
+                    $ext  = self::get_file_extension_by_mime( $mime );
                 }
             }
             
@@ -163,6 +177,62 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
         }
         
         /**
+         * This function get sanitized filename without extension
+         * @example /public_html/wp-content/uploads/2015/11/file.jpg -> file
+         * 
+         * @since  1.1
+         * @param  string $path Any path to a file
+         * @access public
+         * @return string Filename without extension
+         */
+        public static function get_filename( $path ) {
+            $basename       = wp_basename( $path );
+            $basename_array = explode( '.', $basename );
+            unset( $basename_array[count( $basename_array ) - 1] );
+            
+            return join( '.', $basename_array );
+        }
+        
+        /**
+         * Get data from the TimePad API cover image path
+         * 
+         * @since  1.1
+         * @param  string $timepad_api_link URI from TimePad API with the cover image
+         * @access public
+         * @return array Array of file data basename => filename without ext, ext => extension, mime => file mime-type
+         */
+        public static function get_api_cover_data( $timepad_api_link, $http = false ) {
+            $path_arr = explode( '/', $timepad_api_link );
+            if ( !empty( $path_arr ) && is_array( $path_arr ) && isset( $path_arr[3] ) ) {
+                if ( !$http ) {
+                    $ext_mime     = self::get_file_extension_mime_by_path( $timepad_api_link );
+                    if ( !empty( $ext_mime['ext'] ) && !empty( $ext_mime['mime'] ) ) {
+                        return array(
+                            'basename' => $path_arr[3]
+                            ,'ext'     => $ext_mime['ext']
+                            ,'mime'    => $ext_mime['mime']
+                        );
+                    }
+                } else {
+                    if ( $buffer = file_get_contents( $timepad_api_link ) ) {
+                        $finfo  = new finfo( FILEINFO_MIME_TYPE );
+                        $mime   = $finfo->buffer( $buffer );
+                        $ext    = self::get_file_extension_by_mime( $mime );
+                        if ( !empty( $ext ) && !empty( $mime ) ) {
+                            return array(
+                                'basename' => $path_arr[3]
+                                ,'ext'     => $ext
+                                ,'mime'    => $mime
+                            );
+                        }
+                    }
+                }
+            }
+            
+            return array();
+        }
+        
+        /**
          * The function get TimePad API event banner link 
          * and copy the one to WordPress native upload folder
          * 
@@ -171,26 +241,86 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
          * @access public
          * @return array
          */
-        public static function copy_file_to_wp_dir( $timepad_api_link ) {
-            $timepad_api_link = !stripos( $timepad_api_link, 'http:' ) ? 'http:' . $timepad_api_link : $timepad_api_link;
-            $ext_mime = self::get_file_extension_mime_by_path( $timepad_api_link );
-            if ( !empty( $ext_mime['ext'] ) && !empty( $ext_mime['mime'] ) ) {
-                $path_arr = explode( '/', $timepad_api_link );
-                if ( !empty( $path_arr ) && is_array( $path_arr ) && isset( $path_arr[3] ) ) {
-                    $filename = $path_arr[3] . '.' . $ext_mime['ext'];
-                    $wp_upload_dir = wp_upload_dir();
-                    $abs_path = $wp_upload_dir['path'] . '/' . $filename;
-                    if ( copy( $timepad_api_link, $abs_path ) ) {
-                        return array(
-                            'file'  => $abs_path
-                            ,'url'  => $wp_upload_dir['url'] . '/' . $filename
-                            ,'type' => $ext_mime['mime']
-                        );
-                    }
-                }
+        public static function copy_file_to_wp_dir( $timepad_api_link, $data ) {
+            $filename      = $data['basename'] . '.' . $data['ext'];
+            $wp_upload_dir = wp_upload_dir();
+            $abs_path      = $wp_upload_dir['path'] . '/' . $filename;
+            if ( copy( $timepad_api_link, $abs_path ) ) {
+                return array(
+                    'file'  => $abs_path
+                    ,'url'  => $wp_upload_dir['url'] . '/' . $filename
+                    ,'type' => $data['mime']
+                );
             }
             
             return array();
+        }
+        
+        /**
+         * Get excluded from syncronize TimePad events by post ID or event ID or just an array
+         * 
+         * @since  1.1
+         * @param  int $event_id TimePad event ID from syncronize to WordPress
+         * @param  int $post_id WordPress post ID
+         * @access public
+         * @return boolean|array|int
+         */
+        public static function get_excluded_from_api_events( $event_id = false, $post_id = false, $action = false ) {
+            $excluded_events = get_option( 'timepad_excluded_from_api' );
+            if ( empty( $action ) ) {
+                if ( !empty( $excluded_events ) && is_array( $excluded_events ) ) {
+                    if ( empty( $post_id ) && empty( $event_id ) ) {
+                        return $excluded_events;
+                    } else {
+                        if ( !empty( $post_id ) ) {
+                            if ( !empty( $event_id ) ) {
+                                return ( isset( $excluded_events[$event_id] ) && $excluded_events[$event_id] == $post_id );
+                            } else {
+                                return array_search( $post_id, $excluded_events );
+                            }
+                        } else {
+                            if ( !empty( $event_id ) ) {
+                                return isset( $excluded_events[$event_id] ) ? $excluded_events[$event_id] : false;
+                            }
+                        }
+                    }
+                }
+            } else {
+                switch ( $action ) {
+                    case 'delete':
+                        if ( !empty( $post_id ) && !empty( $excluded_events ) && is_array( $excluded_events ) ) {
+                            $event_id = intval( array_search( $post_id, $excluded_events ) );
+                            unset( $excluded_events[$event_id] );
+                            return update_option( 'timepad_excluded_from_api', $excluded_events );
+                        }
+                        break;
+                }
+            }
+            
+            return false;
+        }
+        
+        /**
+         * This function get human array list with [post_type] => [name] array
+         * 
+         * @since  1.1
+         * @access public
+         * @return array
+         */
+        public static function get_post_types_array() {
+            $ret_array = array();
+            $post_types = get_post_types();
+            unset( $post_types['attachment'] );
+            unset( $post_types['revision'] );
+            unset( $post_types['nav_menu_item'] );
+            unset( $post_types['page'] );
+            unset( $post_types[TIMEPADEVENTS_POST_TYPE] );
+            foreach ( $post_types as $post_type ) {
+                $post_type_obj = get_post_type_object( $post_type );
+                $ret_array[$post_type] = sanitize_text_field( $post_type_obj->labels->name );
+            }
+            
+            return $ret_array;
         }
     }
 endif;

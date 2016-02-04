@@ -7,11 +7,11 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
     /**
      * Base Admin abstract class
      *
-     * @class       TimepadEvents_Admin_Base
+     * @class       TimepadEvents_Base
      * @since       1.0.0
      * @package     TimepadEvents/Base
      * @author      Igor Sazonov <sovletig@yandex.ru>
-     * @category    Admin Base Abstract class
+     * @category    Base Abstract class
      * @abstract
      */
     abstract class TimepadEvents_Base {
@@ -19,7 +19,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         /**
          * TimePad Events plugin configs from config.ini
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_config = array();
 
@@ -27,14 +27,14 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * This array collect all local TimepadEvents Classes of some part of the plugin
          *
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_classes = array();
         
         /**
          * Arguments to make requests
          * @access protected
-         * @var array
+         * @var    array
          */
         protected $_request_args = array();
 
@@ -46,20 +46,26 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          * By the $handler you can get access to Class Name and to Class instance
          *
          * @access public
-         * @var string Handler of current class taken from class name
+         * @var    string Handler of current class taken from class name
          */
         public $handler;
         
         /**
          * 
-         * @since 1.1
+         * @since  1.1
          * @access public
-         * @var array Minimal requirements of the plugin: PHP version, WP version
+         * @var    array Minimal requirements of the plugin: PHP version, WP version
          */
-        public $requirements = array(
-            'php' => 5.4
-            ,'wp' => 4.0
-        );
+        public $requirements = array();
+        
+        /**
+         * WPDB global object
+         * 
+         * @since  1.1
+         * @access protected
+         * @var    object
+         */
+        protected $_db;
         
         /**
          * Singleton
@@ -67,10 +73,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
         private static $_instances = array();
 
         public function __construct( $post = null ) {
-            
-            if ( !isset( $_COOKIE['timepad_admin_url'] ) || empty( $_COOKIE['timepad_admin_url'] ) ) {
-                setcookie( 'timepad_admin_url', TIMEPADEVENTS_ADMIN_URL, 3600 * 24 * 5, '/' );
-            }
             
             //default request header to make correct json request
             $this->_request_args = array(
@@ -80,7 +82,10 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $this->_config = self::_get_config();
             
             $this->handler = TimepadEvents_Helpers::get_class_handler( $this->get_called_class() );
-
+            
+            global $wpdb;
+            $this->_db = $wpdb;
+            
         }
 
         /**
@@ -110,6 +115,33 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
          */
         private static function _get_config() {
             return parse_ini_file( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'config.ini' );
+        }
+        
+        /**
+         * Plugin config var
+         * 
+         * @since  1.1
+         * @access public
+         * @param  string $var Config maybe variable
+         * @return string
+         */
+        public function get_config_var( $var ) {
+            return isset( $this->_config[$var] ) ? $this->_config[$var] : '';
+        }
+        
+        /**
+         * Plugin data by key
+         * 
+         * @since  1.1
+         * @param  $var Data maybe variable
+         * @access public
+         * @return array|null
+         */
+        public function get_data_var( $var ) {
+            if ( in_array( $var, array( 'events', 'token' ) ) ) {
+                return;
+            }
+            return isset( $this->_data[$var] ) ? $this->_data[$var] : '';
         }
 
         /**
@@ -182,16 +214,6 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
                  */
                 define( 'TIMEPADEVENTS_PLUGIN_HTTP_PATH', str_ireplace( ABSPATH, TIMEPADEVENTS_SITEURL . '/', TIMEPADEVENTS_PLUGIN_ABS_PATH ) );
             }
-
-            if ( ! defined( 'TIMEPADEVENTS_SECURITY_NONCE' ) ) {
-                /**
-                 * Handler for security WordPress-based nonce
-                 *
-                 * @var string
-                 * @return string Handler for security WordPress-based nonce
-                 */
-                define( 'TIMEPADEVENTS_SECURITY_NONCE', $config['security_nonce'] );
-            }
         }
         
         /**
@@ -206,7 +228,7 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $ret_array = array();
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
-                $body = wp_remote_retrieve_body( $request );
+                $body      = wp_remote_retrieve_body( $request );
                 $ret_array = json_decode( $body );
             }
             

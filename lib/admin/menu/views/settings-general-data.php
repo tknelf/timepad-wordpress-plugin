@@ -1,4 +1,5 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( !empty( $data['organizations'] ) ) : ?>
@@ -7,9 +8,11 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <th scope="row"><?php _e( 'TimePad account', 'timepad' ); ?></th>
         <th><?php echo $data['organizations']['user_email']; ?></th>
         <td><input type="submit" name="cancel_account" class="button button-secondary" value="<?php _e( 'Cancel account', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about cancel account', 'timepad' ) . ' ' . $data['organizations']['user_email'] . '?'; ?>');" /></td>
+        <td><input type="submit" name="reset_sync" class="button button-secondary" value="<?php _e( 'Reset sync', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about reset sync', 'timepad' ) . ' ' . $data['organizations']['user_email'] . '?'; ?>');" /></td>
         <td></td>
     </tr>
     <?php if ( empty( $data['current_organization_id'] ) ) : ?>
+    <?php include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-autounsync.php'; ?>
     <tr>
         <td colspan="3">
             <p><?php _e( 'To start work with events, select one of TimePad organizations', 'timepad' ); ?></p>
@@ -38,8 +41,10 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td><input type="submit" name="cancel_organization" class="button button-secondary" value="<?php _e( 'Cancel organization', 'timepad' ); ?>" onclick="return confirm('<?php echo __( 'Are you sure about cancel organization', 'timepad' ) . ' ' . $data['organizations']['organizations'][$data['current_organization_id']]['name'] . '?'; ?>');" /></td>
         <td></td>
     </tr>
-    <?php endif;
-    if ( !empty( $data['current_organization_id'] ) && !empty( $category ) ) : ?>
+    <?php
+    endif;
+    if ( !empty( $data['current_organization_id'] ) && !empty( $category ) ) :
+    ?>
     <tr>
         <td colspan="3" width="60%">
             <h3 class="title"><?php _e( 'Import TimePad events as custom post types', 'timepad' ); ?></h3>
@@ -63,7 +68,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         <td><input type="submit" name="syncronize" class="button button-secondary" value="<?php _e( 'Synchronize now', 'timepad' ); ?>" /></td>
         <td colspan="2"></td>
     </tr>
-    <tr>
+    <tr class="timepad_cat_tr"<?php echo ( isset( $data['autounsync'] ) && !empty( $data['autounsync'] ) ) ? ' style="display:none;"' : ''; ?>>
         <th scope="row"><label for="cat_name"><?php _e( 'The name of the event category', 'timepad' ) ?></label></th>
         <td colspan="2">
             <input type="text" name="cat_name" id="cat_name" value="<?php echo esc_attr( $category->name ); ?>" maxlength="50" required="required" aria-required="true" autocomplete="off" />
@@ -71,7 +76,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
-    <tr>
+    <tr class="timepad_cat_tr"<?php echo ( isset( $data['autounsync'] ) && !empty( $data['autounsync'] ) ) ? ' style="display:none;"' : ''; ?>>
         <th scope="row"><label for="cat_slug"><?php _e( 'Events category label', 'timepad' ) ?></label></th>
         <td colspan="2">
             <input type="text" name="cat_slug" id="cat_slug" value="<?php echo esc_attr( $category->slug ); ?>" maxlength="50" required="required" aria-required="true" autocomplete="off" />
@@ -79,6 +84,7 @@ if ( !empty( $data['organizations'] ) ) : ?>
         </td>
         <td></td>
     </tr>
+    <?php include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general-autounsync.php'; ?>
 </table>
 <input type="submit" class="button button-primary" name="save_changes" value="<?php _e( 'Save changes', 'timepad' ); ?>" />
 <?php else : ?>

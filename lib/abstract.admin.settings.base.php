@@ -24,6 +24,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
         protected $_settings_tabs = array();
         
         /**
+         * Settings tab title
+         * 
+         * @access public
+         * @var    string
+         */
+        public $tab_title;
+        
+        /**
          * Active settings page tab
          * @access protected
          * @var string
@@ -36,7 +44,13 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
          * @var string
          */
         public $action;
-
+        
+        /**
+         * Settings tab logo
+         * @access public
+         * @var    string
+         */
+        public $logo;
 
         public function __construct() {
             parent::__construct();
@@ -45,7 +59,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
             if ( isset( $_COOKIE['timepad_token'] ) && !empty( $_COOKIE['timepad_token'] ) ) {
                 $this->_token = esc_attr( $_COOKIE['timepad_token'] );
                 if ( !isset( $this->_data['token'] ) || empty( $this->_data['token'] ) ) {
-                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'], $this->_token, 'token' );
+                    TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_token, 'token' );
                     $this->_data['token'] = $this->_token;
                 }
             } else {
@@ -58,25 +72,27 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                 }
             }
             
-            //default settings page tab action url
-            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save.php';
+            $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_' . $this->handler . '.php';
+            
+            $this->logo = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'assets/images/admin/timepad-logo.png';
             
             /**
              * Action about post trash.
              * If plugin data exist the TimePad event - the one need to be deleted from the option
              */
-            add_action( 'wp_trash_post', function( $id ) {
-                $post_data = get_post_meta( $id, 'timepad_meta', true );
-                $tmp_events = isset( $this->_data['events'] ) ? $this->_data['events'] : array();
+            $tmp_this = $this;
+            add_action( 'wp_trash_post', function( $id ) use ( $tmp_this ) {
+                $post_data = get_post_meta( $id, TIMEPADEVENTS_META, true );
+                $tmp_events = isset( $tmp_this->_data['events'] ) ? $tmp_this->_data['events'] : array();
                 if ( !empty( $tmp_events ) && is_array( $tmp_events ) && !empty( $post_data ) && is_array( $post_data ) ) {
                     foreach ( $tmp_events as $org_id => $event_array ) {
                         if ( isset( $event_array[$post_data['event_id']] ) ) {
-                            unset( $this->_data['events'][$org_id][$post_data['event_id']] );
+                            unset( $tmp_this->_data['events'][$org_id][$post_data['event_id']] );
                         }
-                        if ( empty( $this->_data['events'][$org_id] ) ) unset( $this->_data['events'][$org_id] );
+                        if ( empty( $tmp_this->_data['events'][$org_id] ) ) unset( $tmp_this->_data['events'][$org_id] );
                     }
                     
-                    TimepadEvents_Helpers::update_option_key( $this->_config['optionkey'] , $this->_data['events'], 'events' );
+                    TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $tmp_this->_data['events'], 'events' );
                 }
             } );
         }
@@ -90,13 +106,22 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
          * @access protected
          * @return object|array
          */
-        protected function _get_category( $id, $output = OBJECT, $filter = 'raw' ) {
-            $category = get_term( $id, TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
-            if ( is_wp_error( $category ) )
+        protected function _get_category( $output = OBJECT, $filter = 'raw' ) {
+            if ( !isset( $this->_data['autounsync'] ) || empty( $this->_data['autounsync'] ) ) {
+                $category = get_term( $this->_data['term_id'], TIMEPADEVENTS_POST_TYPE . '_category', $output, $filter );
+                if ( empty( $category ) ) {
+                    $category = get_category( $this->_data['category_id'], $output );
+                }
+            } else {
+                $category = get_category( $this->_data['category_id'], $output );
+            }
+            
+            if ( is_wp_error( $category ) ) {
                 return $category;
+            }
             
             _make_cat_compat( $category );
-
+            
             return $category;
         }
 

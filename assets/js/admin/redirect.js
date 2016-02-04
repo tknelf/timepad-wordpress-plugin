@@ -1,7 +1,7 @@
 jQuery(document).ready(function() {
     'use strict';
     
-    if ( jQuery.cookie( 'timepad_admin_url' ) != null ) {
+    if ( timepad_redirect._settings_url != null ) {
 
         var getParameterByName = function(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -61,7 +61,7 @@ jQuery(document).ready(function() {
             }
         }
 
-        var _url_to_go = jQuery.cookie( 'timepad_admin_url' ) + 'edit.php?post_type=timepad-events&page=timepad-events-options' + _error_url;
+        var _url_to_go = timepad_redirect._settings_url + _error_url;
         location.href = _url_to_go;
 
     }
