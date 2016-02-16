@@ -106,7 +106,6 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             $data = get_option( 'timepad_data' );
             $data['current_organization_id'] = intval( $_POST['organization'] );
             $data = timepad_save_autounsync( $data, $_POST );
-            $additional_url = '&syncronize=1';
             update_option( 'timepad_data', $data );
         }
         
