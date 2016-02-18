@@ -40,7 +40,13 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
-= 1.1 =
+= 1.1.0 =
+
+* Event syncronization made more seamless
+* Now every event can be transformed into post
+* Added widget configuration in plugin settings
+* Added PHP error handling for older versions of PHP
+* Fixed event poster updates
 
 = 1.0.4 =
 * Fixed security issues while activating plugin
