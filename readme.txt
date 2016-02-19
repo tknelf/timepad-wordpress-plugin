@@ -40,6 +40,10 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
+= 1.1.1 =
+
+* Events now don't start syncing automatically after changing organization in settings
+
 = 1.1.0 =
 
 * Event syncronization made more seamless
