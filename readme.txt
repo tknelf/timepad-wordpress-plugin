@@ -40,6 +40,10 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
+= 1.1.2 =
+
+* New app ID
+
 = 1.1.1 =
 
 * Events now don't start syncing automatically after changing organization in settings
