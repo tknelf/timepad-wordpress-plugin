@@ -41,7 +41,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
          *
          * @var int[]
          */
-        protected $_eventIds = [];
+        protected $_eventIds = array();
 
         public function __construct() {
             parent::__construct();
@@ -197,7 +197,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
 
 
             $posts      = $this->_db->get_results( $this->_db->prepare( $sql_prepare, TIMEPADEVENTS_KEY,  "org{$orgId}event%"));
-            $aPosts     = [];
+            $aPosts     = array();
 
             foreach ($posts as $post) {
                 $aPosts[$post->id]   = $post->event_id;
