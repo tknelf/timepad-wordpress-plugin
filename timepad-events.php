@@ -1,11 +1,11 @@
 <?php
 
 /**
- * TimePad Events is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
+ * TimePad Events is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
- * 
+ *
  * @wordpress-plugin
  * Plugin Name: TimePad Events
  * Plugin URI:  http://dev.timepad.ru/modules/wordpress-events-about/
@@ -38,7 +38,7 @@ if ( ! defined( 'WPINC' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_FILE' ) ) {
     /**
      * The main file basename of the plugin
-     * 
+     *
      * @var string
      * @return string plugin basename
      */
@@ -70,7 +70,7 @@ if ( !defined( 'TIMEPADEVENTS_ADMIN_URL' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
     /**
      * Post type slug for TimePad Events plugin
-     * 
+     *
      * @var string
      * @return string
      */
@@ -80,7 +80,7 @@ if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_SECURITY_NONCE' ) ) {
     /**
      * Security nonce key for TimePad Events plugin
-     * 
+     *
      * @var string
      * @return string
      */
@@ -100,7 +100,7 @@ if ( ! defined ( 'TIMEPADEVENTS_POST_TYPE_CATEGORY' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_OPTION' ) ) {
     /**
      * Option data key for TimePad Events plugin
-     * 
+     *
      * @var string
      * @return string
      */
@@ -110,7 +110,7 @@ if ( ! defined ( 'TIMEPADEVENTS_OPTION' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_META' ) ) {
     /**
      * Post meta key for TimePad Events plugin
-     * 
+     *
      * @var string
      * @return string
      */
@@ -129,7 +129,7 @@ if ( ! defined ( 'TIMEPADEVENTS_KEY' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_SETTINGS' ) ) {
     /**
      * TimePad settings key
-     * 
+     *
      * @var string
      * @return string
      */
@@ -139,7 +139,7 @@ if ( ! defined ( 'TIMEPADEVENTS_SETTINGS' ) ) {
 if ( ! defined ( 'TIMEPADEVENTS_ADMIN_OPTIONS_PAGE' ) ) {
     /**
      * TimePad settings key
-     * 
+     *
      * @var string
      * @return string
      */
@@ -149,7 +149,7 @@ if ( ! defined ( 'TIMEPADEVENTS_ADMIN_OPTIONS_PAGE' ) ) {
 if ( ! defined( 'TIMEPADEVENTS_PLUGIN_ABS_PATH' ) && defined( 'TIMEPADEVENTS_FILE' ) ) {
     /**
      * Path to plugin absolute path
-     * 
+     *
      * @var string
      * @return string
      * @example /home/user/var/www/wordpress/wp-content/plugins/my-plugin/
@@ -204,7 +204,7 @@ add_filter( 'cron_schedules', function( $intervals ) {
         'interval' => HOUR_IN_SECONDS / 20
         ,'display' => __( 'Once in three minutes', 'timepad' )
     );
-    
+
     return $intervals;
 } );
 
@@ -225,7 +225,7 @@ require_once( TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/setup.admin.php' );
 add_action( 'plugins_loaded', array( 'TimepadEvents_Setup_Admin', 'getInstance' ), 9999 );
 
 if ( ! is_admin() ) {
-    
+
     /**
      * Hack to display events at general posts stock
      */
@@ -236,7 +236,7 @@ if ( ! is_admin() ) {
 
 	return $query;
     } );
-    
+
     /**
      * Enable new shortcode to display the one at site posts and pages
      */
@@ -248,8 +248,8 @@ if ( ! is_admin() ) {
             $return .= " data-timepad-customized=\"" . intval( $customizeid ) . "\"";
         }
         $return .= " charset=\"UTF-8\" data-timepad-widget-v2=\"event_register\" src=\"https://timepad.ru/js/tpwf/loader/min/loader.js\">\n\t(function(){return {\"event\":{\"id\":\"" . $atts['eventid'] . "\"},\"bindEvents\":{\"preRoute\":\"TWFpreRouteHandler\"},\"isInEventPage\":true}; })();\n</script></div>";
-        
+
         return $return;
     } );
-    
+
 }
