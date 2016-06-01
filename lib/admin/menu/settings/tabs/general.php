@@ -640,7 +640,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             }
             $current_excluded_events    = @array_diff( array_keys( $events ), array_keys( $exist_events ) );
             $excluded_from_api_events   = TimepadEvents_Helpers::get_excluded_from_api_events();
-            $excluded_from_api_events   = $excluded_from_api_events ? $excluded_from_api_events : [];
+            $excluded_from_api_events   = $excluded_from_api_events ? $excluded_from_api_events : array();
             if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
                 foreach ( $current_excluded_events as $current_excluded_event_key ) {
                     if ( !isset( $this->_data['previous_events'] ) || $this->_data['previous_events'] == 'ignore' ) {
@@ -705,7 +705,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                         }
                     }
                 }
-                $excluded_events_array['values']    = isset($excluded_events_array['values']) ? $excluded_events_array['values']  : [];
+                $excluded_events_array['values']    = isset($excluded_events_array['values']) ? $excluded_events_array['values']  : array();
                 $ret_array_exist_not_excluded = @array_diff( $excluded_events_array['values'], $ret_array_exists );
                 
                 return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array['values'], 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );

@@ -40,9 +40,13 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
-= 1.1.2 =
+= 1.1.3 =
 
 * New app ID
+
+= 1.1.2 =
+
+* Improved compatibylity with PHP 5.4
 
 = 1.1.1 =
 
