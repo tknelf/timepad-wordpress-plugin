@@ -40,6 +40,10 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
+= 1.1.4 =
+
+* Auth module changed
+
 = 1.1.3 =
 
 * New app ID
