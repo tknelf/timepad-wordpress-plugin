@@ -148,10 +148,9 @@ if ( ! class_exists( 'TimepadEvents_Admin_Base' ) ) :
                     if ( wp_update_post( $post ) ) {
                         $unsyncronized_events[intval( $event_id )] = $post_id;
                         unset( $this->_data['events'][$organization_id][$event_id] );
-                        if ( TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' ) ) {
-                            if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
-                                return true;
-                            }
+
+                        if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
+                            return true;
                         }
                     }
                 }

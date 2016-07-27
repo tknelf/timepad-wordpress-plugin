@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Main Frontend class that prepares all TimepadEvents frontend
  *
  * @class       TimepadEvents_Setup_Admin
- * @version     1.1.4
+ * @version     1.1.5
  * @package     TimepadEvents/Admin
  * @author      TimepadEvents Team
  * @extends     TimepadEvents_Admin_Base

@@ -103,7 +103,7 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
                 } else {
                     $option = $value;
                 }
-                
+
                 return @update_option( $option_name, $option );
             }
             
@@ -321,6 +321,25 @@ if ( ! class_exists( 'TimepadEvents_Helpers' ) ) :
             }
             
             return $ret_array;
+        }
+
+        /**
+         * Add wordpress post from timepad event as exclude for update
+         *
+         *
+         * @param $eventId
+         * @param $postId
+         * @return bool
+         */
+        public static function addExcludedEvent($eventId, $postId) {
+            $unsyncronized_events = self::get_excluded_from_api_events();
+            $unsyncronized_events[intval( $eventId )] = $postId;
+
+            if ( update_option( 'timepad_excluded_from_api', $unsyncronized_events ) ) {
+                return true;
+            }
+
+            return false;
         }
     }
 endif;

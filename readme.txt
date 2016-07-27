@@ -40,6 +40,10 @@ You're done! Now all events you publish on TimePad will automatically appear on 
 
 == Changelog ==
 
+= 1.1.5 =
+
+* Bug fixes on event update
+
 = 1.1.4 =
 
 * Auth module changed
