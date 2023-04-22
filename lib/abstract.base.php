@@ -76,7 +76,8 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             
             //default request header to make correct json request
             $this->_request_args = array(
-                'headers' => array( 'Content-type' => 'application/json' )
+                'headers' => array( 'Content-type' => 'application/json' ),
+                'timeout' => 10,
             );
             
             $this->_config = self::_get_config();
@@ -228,8 +229,12 @@ if ( ! class_exists( 'TimepadEvents_Base' ) ) :
             $ret_array = array();
             $request = $method == 'get' ? wp_remote_get( $url, $this->_request_args ) : wp_remote_post( $url, $this->_request_args );
             if ( $request ) {
-                $body      = wp_remote_retrieve_body( $request );
-                $ret_array = json_decode( $body );
+                if (is_wp_error($request)) {
+                    $ret_array['error'] = $request->get_error_message();
+                } else {
+                    $body      = wp_remote_retrieve_body( $request );
+                    $ret_array = json_decode( $body );
+                }
             }
             
             return TimepadEvents_Helpers::object_to_array( $ret_array );

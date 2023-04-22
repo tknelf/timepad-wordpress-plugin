@@ -1,8 +1,9 @@
 <?php
 
 if ( isset( $_POST['_wpnonce'] ) ) {
-    
-    require_once( '../../../../../../../wp-load.php' );
+
+    if (!empty($_SERVER['DOCUMENT_ROOT']))
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-load.php');
 
     if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
@@ -83,8 +84,6 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             unset( $data['current_organization_id'] );
             
             unset( $data['token'] );
-            unset( $_COOKIE['timepad_token'] );
-            setcookie( 'timepad_token', null, -1, '/' );
             
             update_option( 'timepad_data', $data );
         }
@@ -156,6 +155,19 @@ if ( isset( $_POST['_wpnonce'] ) ) {
             }
 
         }
+
+        if (!empty($_POST['save_token_form'])) {
+
+                $data = get_option( 'timepad_data' );
+
+            if (!empty($_POST['timepad_token'])) {
+                TimepadEvents_Helpers::update_option_key(TIMEPADEVENTS_OPTION, $_POST['timepad_token'], 'token' );
+            } else {
+                $TimepadEvents_Logger->debug('POST[timepad_token] is empty');
+                wp_die( __( 'Token is empty', 'timepad' ) );
+            }
+        }
+
     } else wp_die( __( 'Wrong security nonce value.', 'timepad' ) );
     
     wp_safe_redirect( TIMEPADEVENTS_SETTINGS_HTTP_URL . $additional_url );

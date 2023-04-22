@@ -1,8 +1,9 @@
 <?php
 
 if ( isset( $_POST['_wpnonce'] ) ) {
-    
-    require_once( '../../../../../../../wp-load.php' );
+
+    if (!empty($_SERVER['DOCUMENT_ROOT']))
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/wp-load.php');
 
     if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 

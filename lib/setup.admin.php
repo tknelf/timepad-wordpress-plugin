@@ -92,7 +92,7 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             //init TimePadEvents cron functionality
             $data = $this->_data;
             add_action( 'timepad_cron', function() use ( $data ) {
-                if ( $data['autoimport'] ) {
+                if ( !empty($data['autoimport']) ) {
                     require_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/settings/tabs/general.php';
                     TimepadEvents_Admin_Settings_General::getInstance()->post_events( $data['current_organization_id'] );
                 }
@@ -187,8 +187,6 @@ if ( ! class_exists( 'TimepadEvents_Setup_Admin' ) ) :
             delete_option( 'timepad_data' );
             delete_option( 'timepad_flushed' );
             delete_option( 'timepad_excluded_from_api' );
-
-            setcookie( 'timepad_token', null, -1, '/' );
 
             wp_clear_scheduled_hook( 'timepad_cron' );
 

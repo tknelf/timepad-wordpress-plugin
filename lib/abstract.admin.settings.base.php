@@ -55,14 +55,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
         public function __construct() {
             parent::__construct();
             
-            //get token value from cookie or from option. Set token option if the one is empty
-            if ( isset( $_COOKIE['timepad_token'] ) && !empty( $_COOKIE['timepad_token'] ) ) {
-                $this->_token = esc_attr( $_COOKIE['timepad_token'] );
-                if ( !isset( $this->_data['token'] ) || empty( $this->_data['token'] ) ) {
-                    TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_token, 'token' );
-                    $this->_data['token'] = $this->_token;
-                }
-            } else {
+            //get token value from option
                 if ( isset( $this->_data['token'] ) && !empty( $this->_data['token'] ) ) {
                     $this->_token = $this->_data['token'];
                 } else {
@@ -70,7 +63,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_Base' ) ) :
                         $this->_error_response = utf8_decode( urldecode( $_GET['timepad_error'] ) );
                     }
                 }
-            }
             
             $this->action = TIMEPADEVENTS_PLUGIN_HTTP_PATH . 'lib/admin/menu/settings/save_' . $this->handler . '.php';
             

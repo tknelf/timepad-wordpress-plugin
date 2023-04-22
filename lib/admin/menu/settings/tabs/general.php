@@ -15,6 +15,14 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         protected $_default_limit = 10;
         
         /**
+         * Maximum amount of API calls (=pages) per one execute of the method "post_events"
+         *
+         * @access protected
+         * @var int
+         */
+        protected $_event_pages_per_exec = 10;
+
+        /**
          * moderation statues for events request
          * 
          * @access protected
@@ -264,7 +272,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                 if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
                                     require_once TIMEPADEVENTS_ADMIN_ABS_PATH . 'includes/image.php';
                                 }
-                                if ( wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) ) {
+                                if ( wp_generate_attachment_metadata( $id, $file_arr['file'] ) ) {
                                     if ( current_theme_supports( 'post-thumbnails' ) ) {
                                         return set_post_thumbnail( $post_id, $id );
                                     }
@@ -439,36 +447,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
         }
         
         /**
-         * This function adds new organization by Site name as Organization name and subdomain as TimePad subdomain
-         * 
-         * @since  1.0.0
-         * @param  string $site_name Organization name
-         * @param  string $subdomain Subdomain name
-         * @access protected
-         * @return array with keys 'organizations' with API response and 'errors_handle' width possible errors
-         */
-        protected function _add_new_organization( $site_name, $subdomain ) {
-            $this->add_request_body( json_encode (
-                array( 
-                    'name'       => $site_name
-                    ,'subdomain' => $subdomain
-                    ,'phone'     => '0000000000'
-                ) )
-            );
-
-            $organizations = array(
-                'organizations' => $this->_get_request_array( $this->_config['create_organization_url'], 'post' )
-            );
-            $organizations = TimepadEvents_Helpers::object_to_array( $organizations );
-            $errors_handle = $this->_errors_handle( $organizations['organizations'] );
-            
-            return array(
-                'organizations'  => $organizations
-                ,'errors_handle' => $errors_handle
-            );
-        }
-        
-        /**
          * This function handles possible errors at $response
          * 
          * @since  1.0.0
@@ -517,6 +495,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 if ( !isset( $this->_data['organizations'] ) || empty( $this->_data['organizations']['organizations'] ) ) {
                     //request about getting organizations list
                     $organizations = $this->_get_request_array( $this->_config['organizer_request_url'] . '?token=' . $this->_token );
+                    // remove 'orders' key
+                    unset($organizations['orders']);
                     if ( isset( $organizations['organizations'] ) && !empty( $organizations['organizations'] ) ) {
                         $this->_data['organizations'] = $this->_make_organizations_array( $organizations );
                         
@@ -527,39 +507,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                             TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['current_organization_id'], 'current_organization_id' );
                         }
                     } else {
-                        //if we hasn't yet organizations - make the one!
-                        $site_name = sanitize_text_field( substr( get_bloginfo( 'name' ), 0, $this->_title_maxlength ) );
-                        $subdomain = $this->_sanitize_new_organization( $_SERVER['HTTP_HOST'] );
-                        $this->add_request_headers( array( 'Authorization' => 'Bearer ' . $this->_token ) );
-                        $new_organization = $this->_add_new_organization( $site_name, $subdomain );
-                        if ( isset( $new_organization['errors_handle'] ) && !empty( $new_organization['errors_handle'] ) ) {
-                            if ( $new_organization['errors_handle']['not_unique'] === true ) {
-                                $i = 2;
-                                while ( $new_organization['errors_handle']['not_unique'] === true ) {
-                                    $new_subdomain = $subdomain . $i;
-                                    $new_organization = $this->_add_new_organization( $site_name, $new_subdomain );
-                                    $i++;
-                                    //just for security
-                                    if ( $i == 30 ) {
-                                        wp_die( $new_organization['errors_handle']['message'] );
-                                        break;
-                                    }
-                                }
-                            } else {
-                                wp_die( $new_organization['errors_handle']['message'] );
-                            }
-                        }
-                        
-                        $this->_data['organizations'] = array_merge( $organizations, $this->_make_organizations_array( $new_organization['organizations'], true ) );
-                        
-                        if ( count( $this->_data['organizations']['organizations'] ) == 1 ) {
-                            $keys = array_keys( $this->_data['organizations']['organizations'] );
-                            $this->_data['current_organization_id'] = intval( $keys[0] );
-                            TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['current_organization_id'], 'current_organization_id' );
-                        }
-                        $this->remove_request_headers( 'Authorization' );
-                        $this->remove_request_body();
-                        
+                        if (isset($organizations['active'])
+                            && !$organizations['active'])
+                            $this->_error_response = 'Check timepad API token, it looks like an invalid';
+                        else
+                            $this->_error_response = 'Unable to find organization in timepad API introspect request';
+                        return;
                     }
                     
                     TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['organizations'], 'organizations' );
@@ -594,7 +547,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                     $this->_data['category_id'] = $this->_data['term_id'] = intval( $category['term_id'] );
                                     TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['category_id'], 'category_id' );
                                     TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['term_id'], 'term_id' );
-                                    $this->post_events( $this->_data['current_organization_id'] );
                                 }
                             } else {
                                 while ( !term_exists( $cat_name, $cat_taxonomy ) ) {
@@ -608,7 +560,6 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                                         $this->_data['category_id'] = $this->_data['term_id'] = intval( $category_id );
                                         TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['category_id'], 'category_id' );
                                         TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, $this->_data['term_id'], 'term_id' );
-                                        $this->post_events( $this->_data['current_organization_id'] );
                                     } else {
                                         //security for hacks with unlimited requests
                                         if ( $cat_i == 20 ) break;
@@ -649,7 +600,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             $excluded_from_api_events   = TimepadEvents_Helpers::get_excluded_from_api_events();
             $excluded_from_api_events   = $excluded_from_api_events ? $excluded_from_api_events : array();
 
-
+            $result = $current_excluded_events;
 
             if ( !empty( $current_excluded_events ) && is_array( $current_excluded_events ) ) {
                 foreach ( $current_excluded_events as $current_excluded_event_key ) {
@@ -669,13 +620,12 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                 }
                 
-                return array(
+                $result = array(
                     'keys'    => array_merge( array_keys( $ret_array ), array_keys( $excluded_from_api_events ) )
                     ,'values' => $ret_array
                 );
             }
-//            print_r($current_excluded_events);exit();
-            return $current_excluded_events;
+            return $result;
         }
 
         /**
@@ -688,6 +638,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
          * @return array
          */
         private function _prepare_events( array $events, $organization_id, $return_exists = false ) {
+            $result = [];
             $all_events = array();
             if ( is_array( $events ) && !empty( $organization_id ) ) {
                 if ( !empty( $events ) ) {
@@ -719,12 +670,16 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                     }
                 }
                 $excluded_events_array['values']    = isset($excluded_events_array['values']) ? $excluded_events_array['values']  : array();
-                $ret_array_exist_not_excluded = @array_diff( $excluded_events_array['values'], $ret_array_exists );
+
+                if (is_array($ret_array_exists))
+                    $ret_array_exist_not_excluded = @array_diff( $excluded_events_array['values'], $ret_array_exists );
+                else
+                    $ret_array_exist_not_excluded = $excluded_events_array['values'];
                 
-                return !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array['values'], 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
+                $result = !$return_exists ? $ret_array : array( 'new' => $ret_array, 'excluded' => $excluded_events_array['values'], 'exist' => $ret_array_exists, 'exist_not_excluded' => $ret_array_exist_not_excluded, 'all' => $all_events );
             }
             
-            return array();
+            return $result;
         }
 
         /**
@@ -743,25 +698,48 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 ,'moderation_statuses' => $this->_moderation_statuses
                 ,'starts_at_min'       => $this->_starts_at_min
                 ,'fields'              => $this->_fields
-                ,'limit'               => $this->_default_limit
+                ,'limit'               => 1 // limit=1 is enough to get the events['total'] number
+                //,'access_statuses'     => 'private,draft,link_only,public'
             );
             $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
+            if ($this->_token)
+                $this->add_request_headers( array( 'Authorization' => 'Bearer ' . $this->_token ) );
             $events = $this->_get_request_array( $query_str );
             if ( isset( $events['total'] ) ) {
                 $events_count = intval( $events['total'] );
+
+                $events['values'] = [];
+
+                $query_args['limit'] = $this->_default_limit; // Set the real page size
+
                 if ( $events_count > $this->_default_limit ) {
                     
-                    //make paging
-                    $pages_count = ceil( $events_count / $this->_default_limit ) - 1;
-                    for ( $i = 1; $i <= $pages_count; $i++ ) {
-                        $offset_events = $this->_get_request_array( $query_str . '&skip=' . $i * $this->_default_limit );
-                        $offset_events_array = $offset_events['values'];
-                        if ( !empty( $offset_events_array ) && is_array( $offset_events_array ) ) {
-                            foreach ( $offset_events_array as $offset_event_key => $offset_event_array ) {
-                                $events['values'][($i * $this->_default_limit) + $offset_event_key] = $offset_event_array;
+                    $lastPage = isset($this->_data['last_events_page_idx']) ? $this->_data['last_events_page_idx'] : null;
+
+                    if ($lastPage
+                        && $lastPage >= floor($events_count / $this->_default_limit)) // Last time processed the last events page? Start again from the first
+                        $lastPage = null;
+
+                    $pageOffset = $lastPage === null ? 0 : $lastPage + 1;
+
+                    $pages_count = min($this->_event_pages_per_exec, ceil( $events_count / $this->_default_limit ) - $pageOffset); // Limit the number of API calls at one execute of the method "this->post_events()"
+
+                    for ( $i = 0; $i < $pages_count; $i++ ) {
+                        $query_str = $this->_config['events_request_url'] . '?' . http_build_query( $query_args );
+                        $offset_events = $this->_get_request_array($query_str . '&skip=' . (($i+$pageOffset) * $this->_default_limit));
+
+                        if (isset($offset_events['values'])
+                            && count($offset_events['values'])) {
+                            foreach ($offset_events['values'] as $event) {
+                                $events['values'][] = $event;
                             }
+                        } else {
+                            break; // Looks like API call failed, don't do any more attempts right now
                         }
                     }
+
+                    $this->_data['last_events_page_idx'] = ($pageOffset + $i) ? $pageOffset + $i - 1 : null;
+                    TimepadEvents_Helpers::update_option_key(TIMEPADEVENTS_OPTION, $this->_data['last_events_page_idx'], 'last_events_page_idx');
                 }
             }
 
@@ -798,7 +776,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
                 } else {
                     return $events;
                 }
-            }
+            } // else : Got no events from API
 
             return true;
             #return TimepadEvents_Helpers::update_option_key( TIMEPADEVENTS_OPTION, isset( $this->_data['events'] ) ? $this->_data['events'] : array(), 'events' );
@@ -816,6 +794,8 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             if ( $this->_data ) {
                 if ( is_array( $this->_data ) && !isset( $this->_data['organizations'] ) ) {
                     $config     = $this->_config;
+                    $error_response = $this->_error_response;
+                    $data = $this->_data;
                     include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general.php';
                 } else {
                     $data       = $this->_data;
@@ -826,6 +806,7 @@ if ( ! class_exists( 'TimepadEvents_Admin_Settings_General' ) ) :
             } else {
                 $config         = $this->_config;
                 $error_response = $this->_error_response;
+                $data = $this->_data;
                 include_once TIMEPADEVENTS_PLUGIN_ABS_PATH . 'lib/admin/menu/views/settings-general.php';
             }
         }
